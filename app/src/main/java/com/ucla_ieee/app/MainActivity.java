@@ -8,6 +8,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+import com.ucla_ieee.app.calendar.CalendarActivity;
 import com.ucla_ieee.app.scan.IntentIntegrator;
 import com.ucla_ieee.app.scan.IntentResult;
 import com.ucla_ieee.app.signin.LoginActivity;
@@ -17,7 +19,6 @@ public class MainActivity extends Activity {
 
     private TextView testText;
     public SessionManager mSessionManager;
-    private static final int SCAN = 0;
     private static final int LOGIN = 1;
 
     @Override
@@ -77,6 +78,7 @@ public class MainActivity extends Activity {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanResult != null) {
             testText.setText(scanResult.getContents());
+            Toast.makeText(this, "Thanks for checking in!", Toast.LENGTH_SHORT).show();
         } else if (requestCode == LOGIN) {
             actOnLoginStatus();
         }

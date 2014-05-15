@@ -44,7 +44,7 @@
             android:windowSoftInputMode="adjustResize|stateHidden" >
         </activity>
         <activity
-            android:name="com.ucla_ieee.app.CalendarActivity"
+            android:name=".calendar.CalendarActivity"
             android:label="@string/title_activity_calendar" >
         </activity>
         <activity
