@@ -8,9 +8,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import com.ucla_ieee.app.scan.IntentIntegrator;
+import com.ucla_ieee.app.scan.IntentResult;
 import com.ucla_ieee.app.signin.LoginActivity;
 import com.ucla_ieee.app.signin.SessionManager;
-
 
 public class MainActivity extends Activity {
 
@@ -42,13 +43,8 @@ public class MainActivity extends Activity {
         checkIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    Intent intent = new Intent("com.google.zxing.client.android.SCAN");
-                    intent.putExtra("SCAN_MODE", "QR_CODE_MODE,PRODUCT_MODE");
-                    startActivityForResult(intent, SCAN);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                IntentIntegrator barcodeScan = new IntentIntegrator(MainActivity.this);
+                barcodeScan.initiateScan();
             }
         });
 
@@ -78,23 +74,17 @@ public class MainActivity extends Activity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == 0) {
-            if (resultCode == RESULT_OK) {
-                testText.setText(intent.getStringExtra("SCAN_RESULT_FORMAT"));
-                testText.setText(intent.getStringExtra("SCAN_RESULT"));
-            } else if (resultCode == RESULT_CANCELED) {
-                testText.setText("Press a button to start a scan.");
-                testText.setText("Scan cancelled.");
-            }
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (scanResult != null) {
+            testText.setText(scanResult.getContents());
         } else if (requestCode == LOGIN) {
             actOnLoginStatus();
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
