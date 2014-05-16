@@ -273,7 +273,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         protected String doInBackground(Void... params) {
 
             HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost("http://192.168.1.104:8888");
+            HttpPost httpPost = new HttpPost("http://192.168.0.8:8888");
 
             List<NameValuePair> loginParams = new ArrayList<NameValuePair>();
             loginParams.add(new BasicNameValuePair("service", "login"));

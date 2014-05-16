@@ -40,7 +40,7 @@
             android:layout_weight="0.5"
             android:gravity="center"
             android:text="My Membership"
-            android:id="@+id/button2"
+            android:id="@+id/myMembership"
             android:layout_column="0"
             android:textStyle="bold"
             android:background="#ceacb8"/>

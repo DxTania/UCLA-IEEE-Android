@@ -13,6 +13,7 @@ import com.ucla_ieee.app.calendar.CalendarActivity;
 import com.ucla_ieee.app.scan.IntentIntegrator;
 import com.ucla_ieee.app.scan.IntentResult;
 import com.ucla_ieee.app.signin.LoginActivity;
+import com.ucla_ieee.app.signin.ProfileActivity;
 import com.ucla_ieee.app.signin.SessionManager;
 
 public class MainActivity extends Activity {
@@ -36,6 +37,15 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 Intent calendarIntent = new Intent(MainActivity.this, CalendarActivity.class);
                 startActivity(calendarIntent);
+            }
+        });
+
+        Button myMembership = (Button) findViewById(R.id.myMembership);
+        myMembership.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent membershipIntent = new Intent(MainActivity.this, ProfileActivity.class);
+                startActivity(membershipIntent);
             }
         });
 

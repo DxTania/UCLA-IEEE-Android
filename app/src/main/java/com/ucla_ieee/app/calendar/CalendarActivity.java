@@ -115,7 +115,6 @@ public class CalendarActivity extends FragmentActivity {
                 mCaldroidFragment.setBackgroundResourceForDate(R.color.caldroid_lime_green, start);
             }
             if (mDateComp.format(start).equals(mDateComp.format(new Date()))) {
-                // TODO: Change this to array adapter!!!
                 mSelectedEvents.add(event);
             }
         }
