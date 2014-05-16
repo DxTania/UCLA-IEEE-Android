@@ -16,29 +16,20 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="3dp"
         android:paddingBottom="3dp"
-        android:text="Events for XXX"
+        android:text="@string/sampleDayText"
         android:textStyle="bold"
         android:id="@+id/dayText"
         android:background="@color/caldroid_gray"
         android:layout_below="@id/calendar"
         android:layout_gravity="center_horizontal"/>
 
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="100dp"
-        android:layout_below="@id/dayText"
-        android:id="@+id/scrollView">
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:divider="?android:attr/dividerVertical"
-            android:id="@+id/eventList"
-            android:showDividers="middle">
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:minHeight="100dp"
+              android:layout_below="@id/dayText"
+              android:id="@+id/eventList" />
 
-        </LinearLayout>
-    </ScrollView>
 
 </RelativeLayout>

@@ -3,7 +3,6 @@ package com.ucla_ieee.app.calendar;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
@@ -11,9 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import com.google.gson.*;
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
@@ -30,7 +27,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.*;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -40,24 +36,25 @@ public class CalendarActivity extends FragmentActivity {
     private static final String API_KEY = "AIzaSyAgLz-5vEBqTeJtCv_eiW0zQjKMlJqcztI";
     private CaldroidFragment mCaldroidFragment;
     private TextView mDayTextView;
-    private List<Event> mEvents;
-    private LinearLayout mEventsView;
+    private List<Event> mEvents, mSelectedEvents;
     private SimpleDateFormat mDateComp;
     private SimpleDateFormat mHumanDate;
     private Date mPreviousSelection;
+    private EventListAdapter mEventListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
-
         setTitle("Calendar of Events");
+
         mDayTextView = (TextView) findViewById(R.id.dayText);
-        mEventsView = (LinearLayout) findViewById(R.id.eventList);
         mDateComp = new SimpleDateFormat("yyyyMMdd");
         mHumanDate = new SimpleDateFormat("MMMM dd, yyyy");
         mPreviousSelection = null;
         mEvents = new ArrayList<Event>();
+        mSelectedEvents = new ArrayList<Event>();
+        mEventListAdapter = new EventListAdapter(this, mSelectedEvents);
 
         mDayTextView.setText("Events for " + mHumanDate.format(new Date()));
 
@@ -75,7 +72,7 @@ public class CalendarActivity extends FragmentActivity {
         t.replace(R.id.calendar, mCaldroidFragment);
         t.commit();
 
-        // Show cached events
+        // Show/get cached events
         SessionManager sessionManager = new SessionManager(CalendarActivity.this);
         String eventJson = sessionManager.getCalReq();
         if (!TextUtils.isEmpty(eventJson)) {
@@ -93,6 +90,18 @@ public class CalendarActivity extends FragmentActivity {
         // Start async task to check if new events have been added
         CalendarTask eventsTask = new CalendarTask();
         eventsTask.execute((Void) null);
+
+        // Set event list adapter
+        ListView eventListView = (ListView) findViewById(R.id.eventList);
+        eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent eventIntent = new Intent(CalendarActivity.this, EventActivity.class);
+                eventIntent.putExtra("Event", mSelectedEvents.get(position));
+                startActivity(eventIntent);
+            }
+        });
+        eventListView.setAdapter(mEventListAdapter);
     }
 
     public void addEvents(JsonArray events) {
@@ -106,40 +115,12 @@ public class CalendarActivity extends FragmentActivity {
                 mCaldroidFragment.setBackgroundResourceForDate(R.color.caldroid_lime_green, start);
             }
             if (mDateComp.format(start).equals(mDateComp.format(new Date()))) {
-                mEventsView.addView(getViewFor(event));
+                // TODO: Change this to array adapter!!!
+                mSelectedEvents.add(event);
             }
         }
+        mEventListAdapter.notifyDataSetChanged();
         mCaldroidFragment.refreshView();
-    }
-
-    private View getViewFor(final Event event) {
-        // Text for event
-        String time = "";
-        View v = View.inflate(this, R.layout.event_snippet, null);
-        TextView summary = (TextView) v.findViewById(R.id.summaryText);
-        summary.setText(event.getSummary());
-
-        TextView location = (TextView) v.findViewById(R.id.locationText);
-        if (event.getStartDate() != null && !event.getAllDay()) {
-            SimpleDateFormat format = new SimpleDateFormat("hh:mma");
-            time = format.format(event.getStartDate());
-        } else if (event.getAllDay()) {
-            time = "All Day";
-        }
-
-        String loc = event.getLocation() == null? "" : " at " + event.getLocation();
-        location.setText(time + loc + " ");
-
-        // Clicking the event
-        v.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent eventIntent = new Intent(CalendarActivity.this, EventActivity.class);
-                eventIntent.putExtra("Event", event);
-                startActivity(eventIntent);
-            }
-        });
-        return v;
     }
 
     @Override
@@ -165,11 +146,11 @@ public class CalendarActivity extends FragmentActivity {
 
         @Override
         public void onSelectDate(Date date, View view) {
-            mEventsView.removeAllViews();
+            mSelectedEvents.clear();
             boolean color = false;
             for (Event e: mEvents) {
                 if (mDateComp.format(e.getStartDate()).equals(mDateComp.format(date))) {
-                    mEventsView.addView(getViewFor(e));
+                    mSelectedEvents.add(e);
                     color = true;
                 }
             }
@@ -185,6 +166,7 @@ public class CalendarActivity extends FragmentActivity {
                 mPreviousSelection = date;
                 mCaldroidFragment.refreshView();
             }
+            mEventListAdapter.notifyDataSetChanged();
         }
     };
 
@@ -273,6 +255,7 @@ public class CalendarActivity extends FragmentActivity {
                     next = prev.substring(0, prev.length()-1) + items.substring(1, items.length());
                 }
                 sessionManager.storeCalReq(next);
+                // TODO: What about events that were just updated, not added?
                 addEvents(json.getAsJsonArray("items"));
             }
         }

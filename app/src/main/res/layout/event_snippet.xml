@@ -8,12 +8,11 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
-        android:clickable="true"
         android:layout_marginTop="5dp">
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="40dp"
-            android:text="Summary text Summary text Summary text Summary text Summary text Summary text Summary text Summary text Summary text Summary text Summary text Summary text "
+            android:text="@string/longSampleText"
             android:id="@+id/summaryText"
             android:gravity="center_vertical"
             android:lines="2"
@@ -23,9 +22,11 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="20dp"
-            android:text="X:XXpm in Boelter Hall 2444"
+            android:text="@string/sampleDateLoc"
             android:textStyle="italic"
             android:gravity="right"
             android:id="@+id/locationText"
+            android:singleLine="true"
+            android:ellipsize="end"
             android:layout_gravity="center_horizontal"/>
     </LinearLayout>

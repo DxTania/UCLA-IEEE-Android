@@ -13,5 +13,8 @@
     <string name="title_activity_register">RegisterActivity</string>
     <string name="title_activity_register_success">RegisterSuccessActivity</string>
     <string name="title_activity_event">EventActivity</string>
+    <string name="longSampleText">Summary text Summary text Summary text Summary text Summary text Summary text Summary text Summary text Summary text Summary text Summary text Summary text </string>
+    <string name="sampleDateLoc">X:XXpm in Boelter Hall 2444</string>
+    <string name="sampleDayText">Events for XXX</string>
 
 </resources>
