@@ -1,7 +1,9 @@
 package com.ucla_ieee.app.calendar;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
@@ -9,11 +11,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.google.gson.*;
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
 import com.ucla_ieee.app.R;
+import com.ucla_ieee.app.signin.SessionManager;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -25,7 +30,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.*;
-import java.text.ParseException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -34,18 +39,29 @@ public class CalendarActivity extends FragmentActivity {
     private static final String CAL_ID = "umh1upatck4qihkji9k6ntpc9k@group.calendar.google.com";
     private static final String API_KEY = "AIzaSyAgLz-5vEBqTeJtCv_eiW0zQjKMlJqcztI";
     private CaldroidFragment mCaldroidFragment;
-    private ArrayList<Event> mEvents;
+    private TextView mDayTextView;
+    private List<Event> mEvents;
+    private LinearLayout mEventsView;
+    private SimpleDateFormat mDateComp;
+    private SimpleDateFormat mHumanDate;
+    private Date mPreviousSelection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
 
-        setTitle("Calendar Events");
+        setTitle("Calendar of Events");
+        mDayTextView = (TextView) findViewById(R.id.dayText);
+        mEventsView = (LinearLayout) findViewById(R.id.eventList);
+        mDateComp = new SimpleDateFormat("yyyyMMdd");
+        mHumanDate = new SimpleDateFormat("MMMM dd, yyyy");
+        mPreviousSelection = null;
+        mEvents = new ArrayList<Event>();
 
-        CalendarTask eventsTask = new CalendarTask();
-        eventsTask.execute((Void) null);
+        mDayTextView.setText("Events for " + mHumanDate.format(new Date()));
 
+        // Set up calendar
         mCaldroidFragment = new CaldroidFragment();
         Bundle args = new Bundle();
         Calendar cal = Calendar.getInstance();
@@ -54,29 +70,80 @@ public class CalendarActivity extends FragmentActivity {
         mCaldroidFragment.setArguments(args);
         mCaldroidFragment.setCaldroidListener(listener);
 
+        // Display calendar
         FragmentTransaction t = getSupportFragmentManager().beginTransaction();
-        t.replace(R.id.calendar1, mCaldroidFragment);
+        t.replace(R.id.calendar, mCaldroidFragment);
         t.commit();
 
+        // Show cached events
+        SessionManager sessionManager = new SessionManager(CalendarActivity.this);
+        String eventJson = sessionManager.getCalReq();
+        if (!TextUtils.isEmpty(eventJson)) {
+            JsonArray json;
+            try {
+                JsonParser parser = new JsonParser();
+                json = (JsonArray) parser.parse(eventJson);
+            } catch (JsonSyntaxException e) {
+                e.printStackTrace();
+                return;
+            }
+            addEvents(json);
+        }
+
+        // Start async task to check if new events have been added
+        CalendarTask eventsTask = new CalendarTask();
+        eventsTask.execute((Void) null);
     }
 
     public void addEvents(JsonArray events) {
-        EventCreator e = new EventCreator();
-        mEvents = e.createEvents(events);
+        ArrayList<Event> newEvents = EventCreator.createEvents(events);
+        mEvents.addAll(newEvents);
+        Collections.sort(mEvents, new DateComp());
 
-        for (Event event : mEvents) {
-            Date start = event.getmStartDate();
+        for (Event event : newEvents) {
+            Date start = event.getStartDate();
             if (start != null) {
                 mCaldroidFragment.setBackgroundResourceForDate(R.color.caldroid_lime_green, start);
             }
+            if (mDateComp.format(start).equals(mDateComp.format(new Date()))) {
+                mEventsView.addView(getViewFor(event));
+            }
+        }
+        mCaldroidFragment.refreshView();
+    }
+
+    private View getViewFor(final Event event) {
+        // Text for event
+        String time = "";
+        View v = View.inflate(this, R.layout.event_snippet, null);
+        TextView summary = (TextView) v.findViewById(R.id.summaryText);
+        summary.setText(event.getSummary());
+
+        TextView location = (TextView) v.findViewById(R.id.locationText);
+        if (event.getStartDate() != null && !event.getAllDay()) {
+            SimpleDateFormat format = new SimpleDateFormat("hh:mma");
+            time = format.format(event.getStartDate());
+        } else if (event.getAllDay()) {
+            time = "All Day";
         }
 
-        mCaldroidFragment.refreshView();
+        String loc = event.getLocation() == null? "" : " at " + event.getLocation();
+        location.setText(time + loc + " ");
+
+        // Clicking the event
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent eventIntent = new Intent(CalendarActivity.this, EventActivity.class);
+                eventIntent.putExtra("Event", event);
+                startActivity(eventIntent);
+            }
+        });
+        return v;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.calendar, menu);
         return true;
@@ -98,14 +165,26 @@ public class CalendarActivity extends FragmentActivity {
 
         @Override
         public void onSelectDate(Date date, View view) {
-            mCaldroidFragment.setSelectedDates(date, date);
-            mCaldroidFragment.refreshView();
-        }
-
-
-        @Override
-        public void onLongClickDate(Date date, View view) {
-
+            mEventsView.removeAllViews();
+            boolean color = false;
+            for (Event e: mEvents) {
+                if (mDateComp.format(e.getStartDate()).equals(mDateComp.format(date))) {
+                    mEventsView.addView(getViewFor(e));
+                    color = true;
+                }
+            }
+            if (color) {
+                mDayTextView.setText("Events for " + mHumanDate.format(date));
+                mCaldroidFragment.setSelectedDates(date, date);
+                mCaldroidFragment.setBackgroundResourceForDate(R.color.caldroid_sky_blue, date);
+                if (mPreviousSelection != null &&
+                        !mDateComp.format(mPreviousSelection).equals(mDateComp.format(date))) {
+                    mCaldroidFragment.setBackgroundResourceForDate(
+                            R.color.caldroid_lime_green, mPreviousSelection);
+                }
+                mPreviousSelection = date;
+                mCaldroidFragment.refreshView();
+            }
         }
     };
 
@@ -113,8 +192,11 @@ public class CalendarActivity extends FragmentActivity {
      * Represents an asynchronous get task used to retrieve calendar events
      */
     public class CalendarTask extends AsyncTask<Void, Void, String> {
+        SessionManager sessionManager;
 
-        CalendarTask() {  }
+        public CalendarTask() {
+            sessionManager = new SessionManager(CalendarActivity.this);
+        }
 
         @Override
         protected String doInBackground(Void... params) {
@@ -123,7 +205,11 @@ public class CalendarActivity extends FragmentActivity {
 
             List<NameValuePair> calendarParams = new ArrayList<NameValuePair>();
             calendarParams.add(new BasicNameValuePair("key", API_KEY));
-            // Add more parameters here
+            // TODO: Only retrieve events for current school year
+            String syncToken = sessionManager.getSyncToken();
+            if (!TextUtils.isEmpty(syncToken)) {
+                calendarParams.add(new BasicNameValuePair("syncToken", syncToken));
+            }
             String paramString = URLEncodedUtils.format(calendarParams, "UTF-8");
 
             HttpGet httpGet = new HttpGet("https://www.googleapis.com/calendar/v3/calendars/"
@@ -173,7 +259,22 @@ public class CalendarActivity extends FragmentActivity {
                 return;
             }
 
-            addEvents(json.getAsJsonArray("items"));
+            String nextSyncToken = json.get("nextSyncToken").getAsString();
+            sessionManager.setSyncToken(nextSyncToken);
+
+            // Append new items to end of JsonArray string in user prefs
+            String items = json.get("items").getAsJsonArray().toString();
+            if (!TextUtils.isEmpty(items) && !items.equals("[]")) {
+                String prev = sessionManager.getCalReq();
+                String next;
+                if (TextUtils.isEmpty(prev)) {
+                    next = items;
+                } else {
+                    next = prev.substring(0, prev.length()-1) + items.substring(1, items.length());
+                }
+                sessionManager.storeCalReq(next);
+                addEvents(json.getAsJsonArray("items"));
+            }
         }
     }
 

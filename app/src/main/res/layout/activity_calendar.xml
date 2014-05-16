@@ -1,21 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <FrameLayout android:id="@+id/calendar1"
+    <FrameLayout android:id="@+id/calendar"
               android:layout_width="fill_parent"
-              android:layout_height="0dp"
-              android:layout_weight="0.8" />
+              android:layout_height="wrap_content" />
 
-    <LinearLayout
-        android:orientation="vertical"
+    <TextView
         android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.2">
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:text="Events for XXX"
+        android:textStyle="bold"
+        android:id="@+id/dayText"
+        android:background="@color/caldroid_gray"
+        android:layout_below="@id/calendar"
+        android:layout_gravity="center_horizontal"/>
 
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="100dp"
+        android:layout_below="@id/dayText"
+        android:id="@+id/scrollView">
 
-</LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:divider="?android:attr/dividerVertical"
+            android:id="@+id/eventList"
+            android:showDividers="middle">
+
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

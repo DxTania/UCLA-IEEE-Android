@@ -1,12 +1,12 @@
 package com.ucla_ieee.app.calendar;
 
+import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import com.ucla_ieee.app.R;
+import android.widget.Toast;
+import com.google.gson.*;
 
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,13 +17,14 @@ import java.util.Date;
  */
 public class EventCreator {
 
-    public ArrayList<Event> createEvents(JsonArray events) {
+    public static ArrayList<Event> createEvents(JsonArray events) {
         ArrayList<Event> allEvents = new ArrayList<Event>();
         for (JsonElement jEvent : events) {
             Event event = new Event();
             JsonObject eventObj = jEvent.getAsJsonObject();
 
-            if (eventObj.getAsJsonPrimitive("status").getAsString().equals("cancelled")) {
+            JsonPrimitive status = eventObj.getAsJsonPrimitive("status");
+            if (status != null && status.getAsString().equals("cancelled")) {
                 continue;
             }
 
@@ -31,24 +32,28 @@ public class EventCreator {
             if (startObj == null) {
                 startObj = eventObj.getAsJsonObject("originalStartTime");
             }
-            if (startObj == null) {
-                continue;
+            if (startObj != null) {
+                event.setStartDate(getDate(startObj));
+
+                JsonPrimitive allDay = startObj.getAsJsonPrimitive("date");
+                if (allDay != null) {
+                    event.setAllDay(true);
+                }
             }
-            event.setmStartDate(getDate(startObj));
 
             JsonObject endObj = eventObj.getAsJsonObject("end");
             if (endObj != null) {
-                event.setmEndDate(getDate(endObj));
+                event.setEndDate(getDate(endObj));
             }
 
             JsonPrimitive summary = eventObj.getAsJsonPrimitive("summary");
             if (summary != null) {
-                event.setmSummary(summary.getAsString());
+                event.setSummary(summary.getAsString());
             }
 
             JsonPrimitive location = eventObj.getAsJsonPrimitive("location");
             if (location != null) {
-                event.setmLocation(location.getAsString());
+                event.setLocation(location.getAsString());
             }
 
             JsonObject creator = eventObj.getAsJsonObject("creator");
@@ -62,7 +67,7 @@ public class EventCreator {
         return allEvents;
     }
 
-    private Date getDate(JsonObject d) {
+    private static Date getDate(JsonObject d) {
         Date calDate = null;
         try {
             JsonPrimitive date = d.getAsJsonPrimitive("date");
@@ -83,7 +88,7 @@ public class EventCreator {
         return calDate;
     }
 
-    private String getCreatorEmail(JsonObject c) {
+    private static String getCreatorEmail(JsonObject c) {
         JsonPrimitive email = c.getAsJsonPrimitive("email");
         if (email != null) {
             return email.getAsString();
@@ -91,7 +96,7 @@ public class EventCreator {
         return null;
     }
 
-    private String getCreatorName(JsonObject c) {
+    private static String getCreatorName(JsonObject c) {
         JsonPrimitive name = c.getAsJsonPrimitive("displayName");
         if (name != null) {
             return name.getAsString();

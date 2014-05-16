@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Helper functions for session management of the user
  */
@@ -19,6 +23,8 @@ public class SessionManager {
     // Keys
     private static final String KEY_LOGGED_IN = "IsLoggedIn";
     public static final String KEY_EMAIL = "email";
+    private static final String KEY_TOKEN = "syncToken";
+    private static final String KEY_JSON = "json";
 
     public SessionManager (Context context) {
         mContext = context;
@@ -33,8 +39,27 @@ public class SessionManager {
     }
 
     public void logoutUser () {
-        mEditor.clear();
+        mEditor.putBoolean(KEY_LOGGED_IN, false);
+        mEditor.remove(KEY_EMAIL);
         mEditor.commit();
+    }
+
+    public void setSyncToken(String token) {
+        mEditor.putString(KEY_TOKEN, token);
+        mEditor.commit();
+    }
+
+    public String getSyncToken() {
+        return mSharedPrefs.getString(KEY_TOKEN, null);
+    }
+
+    public void storeCalReq(String s) {
+        mEditor.putString(KEY_JSON, s);
+        mEditor.commit();
+    }
+
+    public String getCalReq() {
+        return mSharedPrefs.getString(KEY_JSON, null);
     }
 
     public boolean isLoggedIn () {
