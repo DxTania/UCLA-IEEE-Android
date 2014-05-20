@@ -31,8 +31,7 @@ import java.util.*;
 
 
 public class CalendarActivity extends FragmentActivity {
-    private static final String CAL_ID = "umh1upatck4qihkji9k6ntpc9k@group.calendar.google.com";
-    private static final String API_KEY = "AIzaSyAgLz-5vEBqTeJtCv_eiW0zQjKMlJqcztI";
+
     private CaldroidFragment mCaldroidFragment;
     private TextView mDayTextView;
     private List<Event> mEvents, mSelectedEvents;
@@ -89,7 +88,7 @@ public class CalendarActivity extends FragmentActivity {
         }
 
         // Start async task to check if new events have been added
-        CalendarTask eventsTask = new CalendarTask();
+        CalendarTask eventsTask = new CalendarTask(this);
         eventsTask.execute((Void) null);
 
         // Set event list adapter
@@ -183,99 +182,4 @@ public class CalendarActivity extends FragmentActivity {
 
         }
     };
-
-    /**
-     * Represents an asynchronous get task used to retrieve calendar events
-     */
-    public class CalendarTask extends AsyncTask<Void, Void, String> {
-        SessionManager sessionManager;
-
-        public CalendarTask() {
-            sessionManager = new SessionManager(CalendarActivity.this);
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-
-            HttpClient httpClient = new DefaultHttpClient();
-
-            List<NameValuePair> calendarParams = new ArrayList<NameValuePair>();
-            calendarParams.add(new BasicNameValuePair("key", API_KEY));
-            // TODO: Only retrieve events for current school year
-            String syncToken = sessionManager.getSyncToken();
-            if (!TextUtils.isEmpty(syncToken)) {
-                calendarParams.add(new BasicNameValuePair("syncToken", syncToken));
-            }
-            String paramString = URLEncodedUtils.format(calendarParams, "UTF-8");
-
-            HttpGet httpGet = new HttpGet("https://www.googleapis.com/calendar/v3/calendars/"
-                    + CAL_ID + "/events?" + paramString);
-
-            // Read and parse HTTP response
-            try {
-                HttpResponse response = httpClient.execute(httpGet);
-                HttpEntity entity = response.getEntity();
-
-                if (entity != null) {
-                    InputStream instream = entity.getContent();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(instream));
-                    StringBuilder builder = new StringBuilder();
-
-                    String st;
-                    while((st = reader.readLine()) != null) {
-                        builder.append(st).append("\n");
-                    }
-
-                    instream.close();
-                    return builder.toString();
-                }
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String response) {
-            if (TextUtils.isEmpty(response)) {
-                Toast.makeText(CalendarActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            JsonParser parser = new JsonParser();
-            JsonObject json;
-            try {
-                json = (JsonObject) parser.parse(response);
-            } catch (JsonSyntaxException e) {
-                e.printStackTrace();
-                Toast.makeText(CalendarActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            String nextSyncToken = json.get("nextSyncToken").getAsString();
-            if (!TextUtils.isEmpty(nextSyncToken)) {
-                sessionManager.setSyncToken(nextSyncToken);
-            }
-
-            JsonArray newItems = json.get("items").getAsJsonArray();
-            JsonArray prevItems = parser.parse(sessionManager.getCalReq()).getAsJsonArray();
-            if (newItems.size() > 0 && prevItems != null) {
-                // Make sure we don't duplicate events
-                String items = EventManager.reviseJson(newItems, prevItems);
-                sessionManager.storeCalReq(items);
-            } else if (prevItems == null) {
-                // We don't have anything cached, store entire req
-                sessionManager.storeCalReq(newItems.toString());
-            } // Else no new items, leave stored req alone
-
-            // TODO: Deal with 410 GONE response
-            if (newItems.size() > 0) {
-                addEvents(newItems);
-            }
-        }
-    }
-
 }

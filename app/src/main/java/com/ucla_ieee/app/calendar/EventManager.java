@@ -111,6 +111,7 @@ public class EventManager {
         return null;
     }
 
+    // TODO: Test stale event code for json AND events that were cached...
     // Returns a json array string including all new items and previous items
     // that do not match any ids in the new items
     public static String reviseJson(JsonArray newItems, JsonArray prevItems) {
