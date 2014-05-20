@@ -37,6 +37,7 @@ public class CalendarActivity extends FragmentActivity {
     private List<Event> mEvents, mSelectedEvents;
     private SimpleDateFormat mDateComp;
     private SimpleDateFormat mHumanDate;
+    private Date mSelectedDate;
     private Date mPreviousSelection;
     private EventListAdapter mEventListAdapter;
     private TextView mNoEventsView;
@@ -55,7 +56,7 @@ public class CalendarActivity extends FragmentActivity {
         mSelectedEvents = new ArrayList<Event>();
         mEventListAdapter = new EventListAdapter(this, mSelectedEvents);
         mNoEventsView = (TextView) findViewById(R.id.noEventsText);
-
+        mSelectedDate = new Date();
         mDayTextView.setText("Events for " + mHumanDate.format(new Date()));
 
         // Set up calendar
@@ -105,13 +106,23 @@ public class CalendarActivity extends FragmentActivity {
     }
 
     public void addEvents(JsonArray events) {
-        ArrayList<Event> newEvents = EventManager.createEvents(events);
-
+        ArrayList<Event> cancelled = new ArrayList<Event>();
+        ArrayList<Event> newEvents = EventManager.createEvents(events, cancelled);
+        // create two lists cancelled nd not cancelled
+        // remove stale on both
         // Remove stale events & add new ones
-        EventManager.removeStaleEvents(newEvents, mEvents);
-        EventManager.removeStaleEvents(newEvents, mSelectedEvents);
+        EventManager.removeStaleEvents(cancelled, mEvents, true);
+        EventManager.removeStaleEvents(newEvents, mEvents, false);
+        EventManager.removeStaleEvents(newEvents, mSelectedEvents, false);
         mEvents.addAll(newEvents);
         Collections.sort(mEvents, new DateComp());
+
+        for(Event event : cancelled) {
+            Date start = event.getStartDate();
+            if (start != null) {
+                mCaldroidFragment.setBackgroundResourceForDate(R.color.caldroid_white, start);
+            }
+        }
 
         // Add new events to calendar
         for (Event event : newEvents) {
@@ -128,6 +139,7 @@ public class CalendarActivity extends FragmentActivity {
         mEventListAdapter.notifyDataSetChanged();
         if (mSelectedEvents.size() > 0) {
             mNoEventsView.setVisibility(View.GONE);
+            // TODO: color for events for TODAY
         }
         mCaldroidFragment.refreshView();
     }
@@ -156,6 +168,7 @@ public class CalendarActivity extends FragmentActivity {
         @Override
         public void onSelectDate(Date date, View view) {
             boolean color = false;
+            mSelectedDate = date;
             ArrayList<Event> newSelectedEvents = new ArrayList<Event>();
             for (Event e: mEvents) {
                 if (mDateComp.format(e.getStartDate()).equals(mDateComp.format(date))) {
@@ -179,7 +192,6 @@ public class CalendarActivity extends FragmentActivity {
                 mEventListAdapter.notifyDataSetChanged();
                 mNoEventsView.setVisibility(View.GONE);
             }
-
         }
     };
 }

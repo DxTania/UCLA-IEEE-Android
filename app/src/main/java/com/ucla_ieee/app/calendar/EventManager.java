@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class EventManager {
 
-    public static ArrayList<Event> createEvents(JsonArray events) {
+    public static ArrayList<Event> createEvents(JsonArray events, List<Event> cancelled) {
         ArrayList<Event> allEvents = new ArrayList<Event>();
         for (JsonElement jEvent : events) {
             Event event = new Event();
@@ -28,11 +28,6 @@ public class EventManager {
             JsonPrimitive id = eventObj.getAsJsonPrimitive("id");
             if (id != null) {
                 event.setId(id.getAsString());
-            }
-
-            JsonPrimitive status = eventObj.getAsJsonPrimitive("status");
-            if (status != null && status.getAsString().equals("cancelled")) {
-                continue;
             }
 
             JsonObject startObj = eventObj.getAsJsonObject("start");
@@ -51,6 +46,12 @@ public class EventManager {
             JsonObject endObj = eventObj.getAsJsonObject("end");
             if (endObj != null) {
                 event.setEndDate(getDate(endObj));
+            }
+
+            JsonPrimitive status = eventObj.getAsJsonPrimitive("status");
+            if (status != null && status.getAsString().equals("cancelled")) {
+                cancelled.add(event);
+                continue;
             }
 
             JsonPrimitive summary = eventObj.getAsJsonPrimitive("summary");
@@ -131,16 +132,24 @@ public class EventManager {
                 items.add(pItem);
             }
         }
-        items.addAll(newItems);
+        for (JsonElement nItem : newItems) {
+            if (!nItem.getAsJsonObject().getAsJsonPrimitive("status")
+                    .getAsString().equals("cancelled")) {
+                items.add(nItem);
+            }
+        }
         return items.toString();
     }
 
     // Removes events from prevEvents with matching id in newEvents
-    public static void removeStaleEvents(List<Event> newEvents, List<Event> prevEvents) {
+    public static void removeStaleEvents(List<Event> newEvents, List<Event> prevEvents, boolean cancelled) {
         for(Iterator<Event> it = prevEvents.iterator(); it.hasNext();) {
             Event event = it.next();
             for(Event nEvent : newEvents) {
                 if (event.getId().equals(nEvent.getId())) {
+                    if (cancelled) {
+                        nEvent.setStartDate(event.getStartDate());
+                    }
                     it.remove();
                 }
             }
