@@ -16,6 +16,7 @@ public class Event implements Parcelable {
     private String location;
     private String creatorEmail;
     private String creatorName;
+    private String id;
     private boolean allDay;
 
     public Event() {
@@ -26,7 +27,12 @@ public class Event implements Parcelable {
         creatorEmail = null;
         creatorName = null;
         allDay = false;
+        id = null;
     }
+
+    public void setId(String id) { this.id = id; }
+
+    public String getId() { return id; }
 
     public void setAllDay(boolean allDay) {
         this.allDay = allDay;

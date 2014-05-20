@@ -11,17 +11,24 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Helper class to convert json event objects to event objects
  */
-public class EventCreator {
+public class EventManager {
 
     public static ArrayList<Event> createEvents(JsonArray events) {
         ArrayList<Event> allEvents = new ArrayList<Event>();
         for (JsonElement jEvent : events) {
             Event event = new Event();
             JsonObject eventObj = jEvent.getAsJsonObject();
+
+            JsonPrimitive id = eventObj.getAsJsonPrimitive("id");
+            if (id != null) {
+                event.setId(id.getAsString());
+            }
 
             JsonPrimitive status = eventObj.getAsJsonPrimitive("status");
             if (status != null && status.getAsString().equals("cancelled")) {
@@ -102,5 +109,40 @@ public class EventCreator {
             return name.getAsString();
         }
         return null;
+    }
+
+    // Returns a json array string including all new items and previous items
+    // that do not match any ids in the new items
+    public static String reviseJson(JsonArray newItems, JsonArray prevItems) {
+        JsonArray items = new JsonArray();
+        for(JsonElement pItem : prevItems) {
+            boolean match = false;
+            for (JsonElement item : newItems) {
+                String newId = item.getAsJsonObject().getAsJsonPrimitive("id").getAsString();
+                String prevId = pItem.getAsJsonObject().getAsJsonPrimitive("id").getAsString();
+                if (newId.equals(prevId)) {
+                    // Item is stale
+                    match = true;
+                    break;
+                }
+            }
+            if (!match) {
+                items.add(pItem);
+            }
+        }
+        items.addAll(newItems);
+        return items.toString();
+    }
+
+    // Removes events from prevEvents with matching id in newEvents
+    public static void removeStaleEvents(List<Event> newEvents, List<Event> prevEvents) {
+        for(Iterator<Event> it = prevEvents.iterator(); it.hasNext();) {
+            Event event = it.next();
+            for(Event nEvent : newEvents) {
+                if (event.getId().equals(nEvent.getId())) {
+                    it.remove();
+                }
+            }
+        }
     }
 }

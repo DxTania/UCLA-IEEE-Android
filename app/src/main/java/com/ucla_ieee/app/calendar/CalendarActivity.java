@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +40,7 @@ public class CalendarActivity extends FragmentActivity {
     private SimpleDateFormat mHumanDate;
     private Date mPreviousSelection;
     private EventListAdapter mEventListAdapter;
+    private TextView mNoEventsView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +55,7 @@ public class CalendarActivity extends FragmentActivity {
         mEvents = new ArrayList<Event>();
         mSelectedEvents = new ArrayList<Event>();
         mEventListAdapter = new EventListAdapter(this, mSelectedEvents);
+        mNoEventsView = (TextView) findViewById(R.id.noEventsText);
 
         mDayTextView.setText("Events for " + mHumanDate.format(new Date()));
 
@@ -105,10 +106,15 @@ public class CalendarActivity extends FragmentActivity {
     }
 
     public void addEvents(JsonArray events) {
-        ArrayList<Event> newEvents = EventCreator.createEvents(events);
+        ArrayList<Event> newEvents = EventManager.createEvents(events);
+
+        // Remove stale events & add new ones
+        EventManager.removeStaleEvents(newEvents, mEvents);
+        EventManager.removeStaleEvents(newEvents, mSelectedEvents);
         mEvents.addAll(newEvents);
         Collections.sort(mEvents, new DateComp());
 
+        // Add new events to calendar
         for (Event event : newEvents) {
             Date start = event.getStartDate();
             if (start != null) {
@@ -118,7 +124,12 @@ public class CalendarActivity extends FragmentActivity {
                 mSelectedEvents.add(event);
             }
         }
+
+        // Refresh views
         mEventListAdapter.notifyDataSetChanged();
+        if (mSelectedEvents.size() > 0) {
+            mNoEventsView.setVisibility(View.GONE);
+        }
         mCaldroidFragment.refreshView();
     }
 
@@ -145,15 +156,17 @@ public class CalendarActivity extends FragmentActivity {
 
         @Override
         public void onSelectDate(Date date, View view) {
-            mSelectedEvents.clear();
             boolean color = false;
+            ArrayList<Event> newSelectedEvents = new ArrayList<Event>();
             for (Event e: mEvents) {
                 if (mDateComp.format(e.getStartDate()).equals(mDateComp.format(date))) {
-                    mSelectedEvents.add(e);
+                    newSelectedEvents.add(e);
                     color = true;
                 }
             }
             if (color) {
+                mSelectedEvents.clear();
+                mSelectedEvents.addAll(newSelectedEvents);
                 mDayTextView.setText("Events for " + mHumanDate.format(date));
                 mCaldroidFragment.setSelectedDates(date, date);
                 mCaldroidFragment.setBackgroundResourceForDate(R.color.caldroid_sky_blue, date);
@@ -164,8 +177,10 @@ public class CalendarActivity extends FragmentActivity {
                 }
                 mPreviousSelection = date;
                 mCaldroidFragment.refreshView();
+                mEventListAdapter.notifyDataSetChanged();
+                mNoEventsView.setVisibility(View.GONE);
             }
-            mEventListAdapter.notifyDataSetChanged();
+
         }
     };
 
@@ -196,6 +211,7 @@ public class CalendarActivity extends FragmentActivity {
             HttpGet httpGet = new HttpGet("https://www.googleapis.com/calendar/v3/calendars/"
                     + CAL_ID + "/events?" + paramString);
 
+            // Read and parse HTTP response
             try {
                 HttpResponse response = httpClient.execute(httpGet);
                 HttpEntity entity = response.getEntity();
@@ -224,15 +240,14 @@ public class CalendarActivity extends FragmentActivity {
 
         @Override
         protected void onPostExecute(String response) {
-
             if (TextUtils.isEmpty(response)) {
                 Toast.makeText(CalendarActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                 return;
             }
 
+            JsonParser parser = new JsonParser();
             JsonObject json;
             try {
-                JsonParser parser = new JsonParser();
                 json = (JsonObject) parser.parse(response);
             } catch (JsonSyntaxException e) {
                 e.printStackTrace();
@@ -241,21 +256,24 @@ public class CalendarActivity extends FragmentActivity {
             }
 
             String nextSyncToken = json.get("nextSyncToken").getAsString();
-            sessionManager.setSyncToken(nextSyncToken);
+            if (!TextUtils.isEmpty(nextSyncToken)) {
+                sessionManager.setSyncToken(nextSyncToken);
+            }
 
-            // Append new items to end of JsonArray string in user prefs
-            String items = json.get("items").getAsJsonArray().toString();
-            if (!TextUtils.isEmpty(items) && !items.equals("[]")) {
-                String prev = sessionManager.getCalReq();
-                String next;
-                if (TextUtils.isEmpty(prev)) {
-                    next = items;
-                } else {
-                    next = prev.substring(0, prev.length()-1) + items.substring(1, items.length());
-                }
-                sessionManager.storeCalReq(next);
-                // TODO: What about events that were just updated, not added?
-                addEvents(json.getAsJsonArray("items"));
+            JsonArray newItems = json.get("items").getAsJsonArray();
+            JsonArray prevItems = parser.parse(sessionManager.getCalReq()).getAsJsonArray();
+            if (newItems.size() > 0 && prevItems != null) {
+                // Make sure we don't duplicate events
+                String items = EventManager.reviseJson(newItems, prevItems);
+                sessionManager.storeCalReq(items);
+            } else if (prevItems == null) {
+                // We don't have anything cached, store entire req
+                sessionManager.storeCalReq(newItems.toString());
+            } // Else no new items, leave stored req alone
+
+            // TODO: Deal with 410 GONE response
+            if (newItems.size() > 0) {
+                addEvents(newItems);
             }
         }
     }

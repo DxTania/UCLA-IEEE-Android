@@ -1,74 +1,151 @@
-<TableLayout
+<LinearLayout
+    android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TableRow
+    <ImageView
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.3">
+        android:layout_weight="0.2"
+        android:src="@drawable/logo"
+        android:minWidth="50dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:padding="15dp"
+        android:layout_margin="20dp"
+        android:contentDescription="@string/ucla_ieee"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.2"
+        android:paddingBottom="5dp">
 
         <TextView
             android:layout_width="fill_parent"
-            android:layout_weight="1"
-            android:layout_height="fill_parent"
-            android:text="IEEE"
-            android:gravity="center"
-            android:id="@+id/testText"
-            android:textSize="30sp"/>
-    </TableRow>
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:paddingBottom="5dp"
+            android:text="@string/announcements"/>
 
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:scrollbars="vertical"
+            android:text="@string/sample_announcement"
+            android:id="@+id/announcementsView"/>
+    </LinearLayout>
 
-    <TableRow
+    <TableLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.35">
-        <Button
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="fill_parent"
-            android:gravity="center"
-            android:text="Calendar and Events"
-            android:id="@+id/calendar"
-            android:layout_column="0"
-            android:clickable="false"
-            android:textStyle="bold"
-            android:background="#a47ace"/>
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="0.5"
-            android:gravity="center"
-            android:text="My Membership"
-            android:id="@+id/myMembership"
-            android:layout_column="0"
-            android:textStyle="bold"
-            android:background="#ceacb8"/>
-    </TableRow>
+        android:stretchColumns="*"
+        android:layout_weight="0.6">
 
-    <TableRow
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.35">
-        <Button
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="fill_parent"
-            android:gravity="center"
-            android:text="Event Check-In"
-            android:id="@+id/eventCheckIn"
-            android:layout_column="0"
-            android:textStyle="bold"
-            android:background="#a2cece"/>
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="0.5"
-            android:gravity="center"
-            android:text="Other Resources"
-            android:id="@+id/button4"
-            android:layout_column="0"
-            android:textStyle="bold"
-            android:background="#accea6"/>
-    </TableRow>
-</TableLayout>
+        <TableRow
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:paddingBottom="5dp"
+            android:layout_weight="0.3">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:gravity="center"
+                android:layout_height="fill_parent">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/membership_desc"
+                    android:src="@drawable/membership"/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/my_membership"
+                    android:id="@+id/myMembership"
+                    android:textStyle="bold"
+                    android:background="@android:color/transparent"/>
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:gravity="center"
+                android:layout_height="fill_parent">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/calendar_desc"
+                    android:src="@drawable/cal"/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/calendar_events"
+                    android:id="@+id/calendarButton"
+                    android:textStyle="bold"
+                    android:background="@android:color/transparent"/>
+            </LinearLayout>
+
+        </TableRow>
+
+        <TableRow
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.3">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:gravity="center"
+                android:layout_height="fill_parent">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/achievements_desc"
+                    android:src="@drawable/achievements"/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/achievementText"
+                    android:id="@+id/achievementsButton"
+                    android:textStyle="bold"
+                    android:background="@android:color/transparent"/>
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:gravity="center"
+                android:layout_height="fill_parent">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/gears"
+                    android:contentDescription="@string/settings_desc"/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/settings"
+                    android:id="@+id/settingsButton"
+                    android:textStyle="bold"
+                    android:background="@android:color/transparent"/>
+            </LinearLayout>
+        </TableRow>
+
+    </TableLayout>
+
+</LinearLayout>

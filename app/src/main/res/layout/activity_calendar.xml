@@ -16,12 +16,13 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="3dp"
         android:paddingBottom="3dp"
-        android:text="@string/sampleDayText"
+        android:text="@string/sample_day_text"
         android:textStyle="bold"
         android:id="@+id/dayText"
         android:background="@color/caldroid_gray"
         android:layout_below="@id/calendar"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal"
+        android:textSize="18sp"/>
 
 
     <ListView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -30,6 +31,15 @@
               android:minHeight="100dp"
               android:layout_below="@id/dayText"
               android:id="@+id/eventList" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dayText"
+        android:paddingTop="20dp"
+        android:id="@+id/noEventsText"
+        android:text="@string/no_events"
+        android:gravity="center"/>
 
 
 </RelativeLayout>

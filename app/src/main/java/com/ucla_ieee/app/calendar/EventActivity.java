@@ -15,7 +15,7 @@ public class EventActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
 
-        Event event = getIntent().getParcelableExtra("Event");
+        Event event = getIntent().getParcelableExtra("event");
         TextView test = (TextView) findViewById(R.id.parcelTest);
         if (event != null) {
             test.setText(event.getSummary());

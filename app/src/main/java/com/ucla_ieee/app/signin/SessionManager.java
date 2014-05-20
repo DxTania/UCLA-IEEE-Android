@@ -41,6 +41,8 @@ public class SessionManager {
     public void logoutUser () {
         mEditor.putBoolean(KEY_LOGGED_IN, false);
         mEditor.remove(KEY_EMAIL);
+        mEditor.remove(KEY_JSON);
+        mEditor.remove(KEY_TOKEN);
         mEditor.commit();
     }
 

@@ -3,9 +3,11 @@ package com.ucla_ieee.app;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,21 +19,23 @@ import com.ucla_ieee.app.signin.ProfileActivity;
 import com.ucla_ieee.app.signin.SessionManager;
 
 public class MainActivity extends Activity {
-
-    private TextView testText;
-    public SessionManager mSessionManager;
     private static final int LOGIN = 1;
+
+    private SessionManager mSessionManager;
+    private TextView mAnnouncementsView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
         mSessionManager = new SessionManager(this);
-        testText = (TextView) findViewById(R.id.testText);
+        mAnnouncementsView = (TextView) findViewById(R.id.announcementsView);
+        mAnnouncementsView.setMovementMethod(new ScrollingMovementMethod());
 
         // CALENDAR
-        Button calendar = (Button) findViewById(R.id.calendar);
+        Button calendar = (Button) findViewById(R.id.calendarButton);
         calendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -49,18 +53,8 @@ public class MainActivity extends Activity {
             }
         });
 
-        // CHECK-IN
-        Button checkIn = (Button) findViewById(R.id.eventCheckIn);
-        checkIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IntentIntegrator barcodeScan = new IntentIntegrator(MainActivity.this);
-                barcodeScan.initiateScan();
-            }
-        });
-
         // LOGOUT
-        Button logout = (Button) findViewById(R.id.button4);
+        Button logout = (Button) findViewById(R.id.achievementsButton);
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,7 +81,7 @@ public class MainActivity extends Activity {
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanResult != null) {
-            testText.setText(scanResult.getContents());
+//            testText.setText(scanResult.getContents());
             Toast.makeText(this, "Thanks for checking in!", Toast.LENGTH_SHORT).show();
         } else if (requestCode == LOGIN) {
             actOnLoginStatus();

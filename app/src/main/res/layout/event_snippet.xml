@@ -9,20 +9,36 @@
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
         android:layout_marginTop="5dp">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
         <TextView
-            android:layout_width="fill_parent"
+            android:layout_width="0dp"
+            android:layout_weight="0.9"
             android:layout_height="40dp"
-            android:text="@string/longSampleText"
+            android:text="@string/long_sample_text"
             android:id="@+id/summaryText"
             android:gravity="center_vertical"
             android:lines="2"
             android:layout_gravity="center_horizontal"
             android:singleLine="false"
             android:ellipsize="end"/>
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="0.1"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/eventCheckIn"
+            android:contentDescription="@string/check_in_desc"
+            android:src="@android:drawable/ic_menu_myplaces"/>
+
+        </LinearLayout>
+
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="20dp"
-            android:text="@string/sampleDateLoc"
+            android:text="@string/sample_date_loc"
             android:textStyle="italic"
             android:gravity="right"
             android:id="@+id/locationText"

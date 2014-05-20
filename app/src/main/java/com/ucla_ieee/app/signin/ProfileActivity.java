@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import com.ucla_ieee.app.R;
 
 
@@ -14,6 +18,15 @@ public class ProfileActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         setTitle("My Membership");
+
+        ImageButton aboutNextReward = (ImageButton) findViewById(R.id.aboutNextReward);
+        aboutNextReward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LinearLayout ll = (LinearLayout) findViewById(R.id.nextRewardHint);
+                ll.setVisibility(ll.getVisibility() == View.VISIBLE? View.GONE : View.VISIBLE);
+            }
+        });
     }
 
 

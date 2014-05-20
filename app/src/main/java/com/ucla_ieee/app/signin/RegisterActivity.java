@@ -156,7 +156,7 @@ public class RegisterActivity extends Activity {
         protected String doInBackground(Void... params) {
 
             HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost("http://192.168.0.8:8888");
+            HttpPost httpPost = new HttpPost("http://ieeebruins.org/membership_serve/test.php");
 
             List<NameValuePair> loginParams = new ArrayList<NameValuePair>();
             loginParams.add(new BasicNameValuePair("service", "register"));
