@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.ucla_ieee.app.calendar.CalendarActivity;
@@ -35,7 +36,7 @@ public class MainActivity extends Activity {
         mAnnouncementsView.setMovementMethod(new ScrollingMovementMethod());
 
         // CALENDAR
-        Button calendar = (Button) findViewById(R.id.calendarButton);
+        LinearLayout calendar = (LinearLayout) findViewById(R.id.calendarButton);
         calendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -44,7 +45,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        Button myMembership = (Button) findViewById(R.id.myMembership);
+        LinearLayout myMembership = (LinearLayout) findViewById(R.id.myMembership);
         myMembership.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,12 +55,22 @@ public class MainActivity extends Activity {
         });
 
         // LOGOUT
-        Button logout = (Button) findViewById(R.id.achievementsButton);
+        LinearLayout logout = (LinearLayout) findViewById(R.id.achievementsButton);
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mSessionManager.logoutUser();
                 actOnLoginStatus();
+            }
+        });
+
+        // SETTINGS
+        LinearLayout settings = (LinearLayout) findViewById(R.id.settingsButton);
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(settingsIntent);
             }
         });
     }

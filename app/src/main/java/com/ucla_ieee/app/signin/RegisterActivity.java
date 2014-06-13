@@ -64,10 +64,17 @@ public class RegisterActivity extends Activity {
                 String firstname = fnameView.getText().toString();
                 String lastname = lnameView.getText().toString();
 
-                // TODO: Check validity of password & email
 
                 if (!rpassword.equals(password)) {
-                    Toast.makeText(RegisterActivity.this, "Passwords don't match!", Toast.LENGTH_SHORT).show();
+                    rpasswordView.setError("Passwords don't match!");
+                    rpasswordView.requestFocus();
+                    return;
+                }
+
+                if (!LoginActivity.isPasswordValid(password)) {
+                    passwordView.setError("Passwords must be at least 4 char long and include at " +
+                            "least one number");
+                    passwordView.requestFocus();
                     return;
                 }
 

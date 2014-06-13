@@ -25,6 +25,7 @@ public class SessionManager {
     public static final String KEY_EMAIL = "email";
     private static final String KEY_TOKEN = "syncToken";
     private static final String KEY_JSON = "json";
+    private static final String KEY_COOKIE = "cookie";
 
     public SessionManager (Context context) {
         mContext = context;
@@ -32,9 +33,10 @@ public class SessionManager {
         mEditor = mSharedPrefs.edit();
     }
 
-    public void loginUser (String email) {
+    public void loginUser (String email, String cookie) {
         mEditor.putBoolean(KEY_LOGGED_IN, true);
         mEditor.putString(KEY_EMAIL, email);
+        mEditor.putString(KEY_COOKIE, cookie);
         mEditor.commit();
     }
 
@@ -65,6 +67,9 @@ public class SessionManager {
     }
 
     public boolean isLoggedIn () {
+        if (mSharedPrefs.getBoolean(KEY_LOGGED_IN, false)) {
+            // send request to server to check login status
+        }
         return mSharedPrefs.getBoolean(KEY_LOGGED_IN, false);
     }
 }

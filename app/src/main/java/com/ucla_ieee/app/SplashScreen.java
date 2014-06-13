@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Window;
+import com.ucla_ieee.app.signin.LoginActivity;
+import com.ucla_ieee.app.signin.SessionManager;
 
 public class SplashScreen extends Activity {
 
@@ -15,8 +17,6 @@ public class SplashScreen extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-        // TODO: If user is signed in, go to main activity after splash & hide buttons
 
         setContentView(R.layout.activity_splash_screen);
 
@@ -38,8 +38,6 @@ public class SplashScreen extends Activity {
                 finish();
             }
         }, SPLASH_TIME_OUT);
-
-        // TODO: If user is not signed in, display sign in / become member buttons
     }
 
 }

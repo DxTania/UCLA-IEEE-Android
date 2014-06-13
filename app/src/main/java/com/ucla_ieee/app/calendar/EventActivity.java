@@ -16,6 +16,9 @@ public class EventActivity extends Activity {
         setContentView(R.layout.activity_event);
 
         Event event = getIntent().getParcelableExtra("event");
+
+        // TODO: Allow setting of notification for an event
+
         TextView test = (TextView) findViewById(R.id.parcelTest);
         if (event != null) {
             test.setText(event.getSummary());

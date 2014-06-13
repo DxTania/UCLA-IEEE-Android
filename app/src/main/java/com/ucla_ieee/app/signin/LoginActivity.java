@@ -209,12 +209,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             mAuthTask.execute((Void) null);
         }
     }
-    private boolean isEmailValid(String email) {
+    public static boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
         return email.contains("@");
     }
 
-    private boolean isPasswordValid(String password) {
+    public static boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
         return password.length() > 4;
     }
@@ -336,7 +336,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             if (json.get("success") != null && json.get("success").getAsInt() == 1) {
                 // TODO: Display profile? Welcome, name
                 SessionManager sessionManager = new SessionManager(getApplicationContext());
-                sessionManager.loginUser(mEmail);
+                sessionManager.loginUser(mEmail, json.get("cookie").getAsString());
                 finish();
             } else {
                 // TODO: dissect error
