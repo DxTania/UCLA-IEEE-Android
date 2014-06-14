@@ -336,7 +336,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             if (json.get("success") != null && json.get("success").getAsInt() == 1) {
                 // TODO: Display profile? Welcome, name
                 SessionManager sessionManager = new SessionManager(getApplicationContext());
-                sessionManager.loginUser(mEmail, json.get("cookie").getAsString());
+                sessionManager.loginUser(json.get("user").getAsJsonObject(), json.get("cookie").getAsString());
                 finish();
             } else {
                 // TODO: dissect error

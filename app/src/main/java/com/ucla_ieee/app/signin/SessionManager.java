@@ -3,6 +3,8 @@ package com.ucla_ieee.app.signin;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,6 +28,8 @@ public class SessionManager {
     private static final String KEY_TOKEN = "syncToken";
     private static final String KEY_JSON = "json";
     private static final String KEY_COOKIE = "cookie";
+    private static final String KEY_NAME = "name";
+    private static final String KEY_IEEE_ID = "ieeeId";
 
     public SessionManager (Context context) {
         mContext = context;
@@ -33,18 +37,24 @@ public class SessionManager {
         mEditor = mSharedPrefs.edit();
     }
 
-    public void loginUser (String email, String cookie) {
+    public void loginUser (JsonObject json, String cookie) {
         mEditor.putBoolean(KEY_LOGGED_IN, true);
-        mEditor.putString(KEY_EMAIL, email);
+        mEditor.putString(KEY_EMAIL, json.get("email").getAsString());
         mEditor.putString(KEY_COOKIE, cookie);
+        mEditor.putString(KEY_NAME, json.get("firstname").getAsString() + " " + json.get("lastname").getAsString());
+        mEditor.putString(KEY_IEEE_ID, !json.get("ieee_id").isJsonNull()? json.get("ieee_id").getAsString() : "");
         mEditor.commit();
     }
 
     public void logoutUser () {
+        // TODO: use enumeration
         mEditor.putBoolean(KEY_LOGGED_IN, false);
         mEditor.remove(KEY_EMAIL);
         mEditor.remove(KEY_JSON);
         mEditor.remove(KEY_TOKEN);
+        mEditor.remove(KEY_COOKIE);
+        mEditor.remove(KEY_NAME);
+        mEditor.remove(KEY_IEEE_ID);
         mEditor.commit();
     }
 
@@ -67,9 +77,27 @@ public class SessionManager {
     }
 
     public boolean isLoggedIn () {
-        if (mSharedPrefs.getBoolean(KEY_LOGGED_IN, false)) {
-            // send request to server to check login status
-        }
         return mSharedPrefs.getBoolean(KEY_LOGGED_IN, false);
+    }
+
+    public String getEmail() {
+        return mSharedPrefs.getString(KEY_EMAIL, null);
+    }
+
+    public String getName() {
+        return mSharedPrefs.getString(KEY_NAME, null);
+    }
+
+    public String getIEEEId() {
+        return mSharedPrefs.getString(KEY_IEEE_ID, null);
+    }
+
+    public String getCookie() {
+        return mSharedPrefs.getString(KEY_COOKIE, null);
+    }
+
+    public void updateSession(String email) {
+        mEditor.putString(KEY_EMAIL, email);
+        mEditor.commit();
     }
 }

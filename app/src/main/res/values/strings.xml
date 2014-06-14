@@ -36,5 +36,13 @@
     <string name="calendar_desc">Calendar icon</string>
     <string name="membership_desc">Membership icon</string>
     <string name="check_in_desc">Check in icon</string>
+    <string name="test_email">rawrtan@gmail.com</string>
+    <string name="test_name">Tania DePasquale</string>
+    <string name="test_id">12938vdkja2189</string>
+    <string name="email">Email</string>
+    <string name="name">Name</string>
+    <string name="save">Save Changes</string>
+    <string name="no_attended_events">Sorry, you haven\'t checked into any events!</string>
+    <string name="password">Password</string>
 
 </resources>
