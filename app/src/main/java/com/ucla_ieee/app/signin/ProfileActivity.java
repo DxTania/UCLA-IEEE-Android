@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,6 +39,8 @@ public class ProfileActivity extends Activity {
     private EditText email, name, memberId;
     private TextView emailText, nameText, memberIdText, passwordText;
     private Boolean alertReady = false;
+    private String cachePassword = "";
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,25 +48,61 @@ public class ProfileActivity extends Activity {
         setContentView(R.layout.activity_profile);
         setTitle("My Membership");
 
-        final SessionManager sessionManager = new SessionManager(this);
+        sessionManager = new SessionManager(this);
 
-        email = (EditText) findViewById(R.id.memberEmail);
-        emailText = (TextView) findViewById(R.id.memberEmailText);
-        email.setText(sessionManager.getEmail());
-        emailText.setText(sessionManager.getEmail());
+        setUpViews();
+        setUpImageButtons();
+        setUpSaveChanges();
 
-        name = (EditText) findViewById(R.id.memberName);
-        nameText = (TextView) findViewById(R.id.memberNameText);
-        name.setText(sessionManager.getName());
-        nameText.setText(sessionManager.getName());
+        // TODO: Populate events list
+        ListView attendedEvents = (ListView) findViewById(R.id.attendedEventList);
+        TextView noEvents = (TextView) findViewById(R.id.noEventsText);
+        noEvents.setVisibility(View.VISIBLE);
+    }
 
-        memberId = (EditText) findViewById(R.id.memberId);
-        memberIdText = (TextView) findViewById(R.id.memberIdText);
-        memberId.setText(sessionManager.getIEEEId());
-        memberIdText.setText(sessionManager.getIEEEId());
+    // Click listener for save changes button
+    private void setUpSaveChanges() {
+        Button saveChanges = (Button) findViewById(R.id.saveChanges);
+        saveChanges.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // send post request
+                mAuthTask = new MembershipEditTask(sessionManager.getEmail(), sessionManager.getCookie());
 
-        passwordText = (TextView) findViewById(R.id.passwordText);
+                String newEmail, newName, newId, newPassword;
+                newEmail = email.getText().toString();
+                newName = name.getText().toString();
+                newId = memberId.getText().toString();
+                newPassword = passwordText.getText().toString();
 
+                List<BasicNameValuePair> valuePairs = new ArrayList<BasicNameValuePair>();
+                if (!newEmail.equals(sessionManager.getEmail())) {
+                    valuePairs.add(new BasicNameValuePair("newEmail", newEmail));
+                }
+                if (!newName.equals(sessionManager.getName())) {
+                    valuePairs.add(new BasicNameValuePair("newName", newName));
+                }
+                if (!newId.equals(sessionManager.getIEEEId())) {
+                    valuePairs.add(new BasicNameValuePair("newId", newId));
+                }
+                if (!TextUtils.isEmpty(newPassword)) {
+                    valuePairs.add(new BasicNameValuePair("newPassword", newPassword));
+                    valuePairs.add(new BasicNameValuePair("password", cachePassword));
+                }
+
+                if (valuePairs.size() == 0) {
+                    Toast.makeText(ProfileActivity.this, "Nothing to change", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                mAuthTask.execute(valuePairs);
+                toggleOffEdits();
+            }
+        });
+    }
+
+    // Click listeners for image buttons
+    private void setUpImageButtons() {
         ImageButton aboutNextReward = (ImageButton) findViewById(R.id.aboutNextReward);
         aboutNextReward.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,114 +143,84 @@ public class ProfileActivity extends Activity {
         changePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final EditText passwordView = new EditText(ProfileActivity.this);
-                passwordView.setHint("Current Password");
-                passwordView.setInputType(EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
-
-                final EditText newpassword = new EditText(ProfileActivity.this);
-                newpassword.setHint("New Password");
-                newpassword.setId(R.id.password);
-                newpassword.setInputType(EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
-
-                final EditText retypepassword = new EditText(ProfileActivity.this);
-                retypepassword.setHint("Re-type Password");
-                retypepassword.setInputType(EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
-
-                LinearLayout ll = new LinearLayout(ProfileActivity.this);
-                ll.setOrientation(LinearLayout.VERTICAL);
-                ll.addView(passwordView);
-                ll.addView(newpassword);
-                ll.addView(retypepassword);
-                ll.setPadding(5, 5, 5, 5);
-
-                final AlertDialog alert = new AlertDialog.Builder(ProfileActivity.this)
-                        .setTitle("Update Password")
-                        .setMessage("Please fill in the following fields")
-                        .setView(ll)
-                        .setPositiveButton("Save", null)
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int whichButton) {}
-                        }).create();
-
-                if (!alertReady) {
-                    alert.setOnShowListener(new DialogInterface.OnShowListener() {
-                        @Override
-                        public void onShow(DialogInterface dialog) {
-                            Button button = alert.getButton(DialogInterface.BUTTON_POSITIVE);
-                            if (button != null) {
-                                button.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        String newPassword = newpassword.getText().toString();
-                                        String retypedPassword = retypepassword.getText().toString();
-                                        String password = passwordView.getText().toString();
-
-                                        if (!newPassword.equals(retypedPassword)) {
-                                            retypepassword.setError("Passwords don't match!");
-                                            retypepassword.requestFocus();
-                                        } else {
-                                            List<BasicNameValuePair> valuePairs = new ArrayList<BasicNameValuePair>();
-                                            valuePairs.add(new BasicNameValuePair("newPassword", newPassword));
-                                            valuePairs.add(new BasicNameValuePair("password", password));
-
-
-                                            mAuthTask = new MembershipEditTask(sessionManager.getEmail(), sessionManager.getCookie());
-                                            mAuthTask.execute(valuePairs);
-                                            alert.dismiss();
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    });
-                }
-
-                alert.show();
+                setUpAlertDialog();
             }
         });
-
-        Button saveChanges = (Button) findViewById(R.id.saveChanges);
-        saveChanges.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // send post request
-                mAuthTask = new MembershipEditTask(sessionManager.getEmail(), sessionManager.getCookie());
-
-                String newEmail, newName, newId;
-                newEmail = email.getText().toString();
-                newName = name.getText().toString();
-                newId = memberId.getText().toString();
-
-                List<BasicNameValuePair> valuePairs = new ArrayList<BasicNameValuePair>();
-                if (!newEmail.equals(sessionManager.getEmail())) {
-                    valuePairs.add(new BasicNameValuePair("newEmail", newEmail));
-                }
-                if (!newName.equals(sessionManager.getName())) {
-                    valuePairs.add(new BasicNameValuePair("newName", newName));
-                }
-                if (!newId.equals(sessionManager.getIEEEId())) {
-                    valuePairs.add(new BasicNameValuePair("newId", newId));
-                }
-
-                mAuthTask.execute(valuePairs);
-                toggleOffEdits();
-            }
-        });
-
-        // TODO: Populate events list
-        ListView attendedEvents = (ListView) findViewById(R.id.attendedEventList);
-        TextView noEvents = (TextView) findViewById(R.id.noEventsText);
-        noEvents.setVisibility(View.VISIBLE);
     }
 
-    public void toggleOffEdits() {
+    // Password change alert dialog
+    private void setUpAlertDialog() {
+        View ll = LayoutInflater.from(ProfileActivity.this).inflate(R.layout.password_snippet, null);
+        final EditText newpassword = (EditText) ll.findViewById(R.id.newPassword);
+        final EditText retypepassword = (EditText) ll.findViewById(R.id.retypedPassword);
+        final EditText passwordView = (EditText) ll.findViewById(R.id.curPassword);
+
+        final AlertDialog alert = new AlertDialog.Builder(ProfileActivity.this)
+                .setTitle("Update Password")
+                .setMessage("Please fill in the following fields")
+                .setView(ll)
+                .setPositiveButton("Ok", null)
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int whichButton) {}
+                }).create();
+
+        if (!alertReady) {
+            alert.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface dialog) {
+                    Button button = alert.getButton(DialogInterface.BUTTON_POSITIVE);
+                    if (button != null) {
+                        button.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                String newPassword = newpassword.getText().toString();
+                                String retypedPassword = retypepassword.getText().toString();
+
+                                if (!newPassword.equals(retypedPassword)) {
+                                    retypepassword.setError("Passwords don't match!");
+                                    retypepassword.requestFocus();
+                                } else {
+                                    cachePassword = passwordView.getText().toString();
+                                    passwordText.setText(newPassword);
+                                    alert.dismiss();
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+        alert.show();
+    }
+
+    private void setUpViews() {
+        email = (EditText) findViewById(R.id.memberEmail);
+        emailText = (TextView) findViewById(R.id.memberEmailText);
+        email.setText(sessionManager.getEmail());
+        emailText.setText(sessionManager.getEmail());
+
+        name = (EditText) findViewById(R.id.memberName);
+        nameText = (TextView) findViewById(R.id.memberNameText);
+        name.setText(sessionManager.getName());
+        nameText.setText(sessionManager.getName());
+
+        memberId = (EditText) findViewById(R.id.memberId);
+        memberIdText = (TextView) findViewById(R.id.memberIdText);
+        memberId.setText(sessionManager.getIEEEId());
+        memberIdText.setText(sessionManager.getIEEEId());
+
+        passwordText = (TextView) findViewById(R.id.passwordText);
+    }
+
+    private void toggleOffEdits() {
         toggleVisibility(email, emailText, true);
         toggleVisibility(name, nameText, true);
         toggleVisibility(memberId, memberIdText, true);
     }
 
-    public void toggleVisibility(EditText editText, TextView textView, boolean forceText) {
+    private void toggleVisibility(EditText editText, TextView textView, boolean forceText) {
         if (editText.getVisibility() == View.VISIBLE || forceText) {
             editText.setVisibility(View.GONE);
             textView.setVisibility(View.VISIBLE);
@@ -330,6 +339,8 @@ public class ProfileActivity extends Activity {
                 email = json.get("email").getAsString();
                 name = json.get("name").getAsString();
                 id = json.get("ieee_id").getAsString();
+
+                passwordText.setText("");
 
                 sessionManager.updateSession(email, name, id);
                 Toast.makeText(ProfileActivity.this, "Changes saved successfully", Toast.LENGTH_SHORT).show();

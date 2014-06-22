@@ -89,6 +89,7 @@
                     android:layout_gravity="center_vertical"/>
 
                 <TextView
+                    android:editable="false"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:width="0dp"
@@ -97,6 +98,7 @@
                     android:textSize="14sp"
                     android:layout_marginRight="10dp"
                     android:id="@+id/passwordText"
+                    android:password="true"
                     android:textStyle="italic"/>
 
                 <ImageButton

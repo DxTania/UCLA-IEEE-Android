@@ -63,7 +63,7 @@
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:ems="10"
-        android:hint="Password"
+        android:hint="@string/password"
         android:id="@+id/reg_password"/>
 
     <EditText
@@ -71,14 +71,14 @@
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:ems="10"
-        android:hint="Re-Type Password"
-        android:id="@+id/reg_rpassword"
+        android:hint="@string/retype_password"
+        android:id="@+id/retype_password"
         android:layout_gravity="center_horizontal"/>
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Register"
+        android:text="@string/register"
         android:id="@+id/register_button"
         android:layout_gravity="center_horizontal"/>
         </LinearLayout>

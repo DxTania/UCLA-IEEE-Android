@@ -50,7 +50,7 @@ public class RegisterActivity extends Activity {
         final EditText passwordView = (EditText) findViewById(R.id.reg_password);
         final EditText fnameView = (EditText) findViewById(R.id.reg_firstName);
         final EditText lnameView = (EditText) findViewById(R.id.reg_lastName);
-        final EditText rpasswordView = (EditText) findViewById(R.id.reg_rpassword);
+        final EditText rpasswordView = (EditText) findViewById(R.id.retype_password);
         registerForm = (LinearLayout) findViewById(R.id.register_form);
         registerProgress = (ProgressBar) findViewById(R.id.register_progress);
 

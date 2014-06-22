@@ -342,6 +342,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 // start main ieee activity
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
+                finish();
             } else {
                 if (json.get("error_code").getAsInt() == 0) {
                     mPasswordView.setError(getString(R.string.error_incorrect_password));

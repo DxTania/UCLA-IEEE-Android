@@ -45,5 +45,9 @@
     <string name="no_attended_events">Sorry, you haven\'t checked into any events!</string>
     <string name="password">Password</string>
     <string name="error_incorrect_email">Email does not exist</string>
+    <string name="new_password">New Password</string>
+    <string name="cur_password">Current Password</string>
+    <string name="retype_password">Re-Type Password</string>
+    <string name="register">Register</string>
 
 </resources>
