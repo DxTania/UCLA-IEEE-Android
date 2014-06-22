@@ -29,7 +29,7 @@ public class SessionManager {
     private static final String KEY_JSON = "json";
     private static final String KEY_COOKIE = "cookie";
     private static final String KEY_NAME = "name";
-    private static final String KEY_IEEE_ID = "ieeeId";
+    private static final String KEY_IEEE_ID = "ieee_id";
 
     public SessionManager (Context context) {
         mContext = context;
@@ -39,10 +39,13 @@ public class SessionManager {
 
     public void loginUser (JsonObject json, String cookie) {
         mEditor.putBoolean(KEY_LOGGED_IN, true);
-        mEditor.putString(KEY_EMAIL, json.get("email").getAsString());
+        mEditor.putString(KEY_EMAIL, !json.get(KEY_EMAIL).isJsonNull()?
+                json.get(KEY_EMAIL).getAsString() : "");
         mEditor.putString(KEY_COOKIE, cookie);
-        mEditor.putString(KEY_NAME, json.get("firstname").getAsString() + " " + json.get("lastname").getAsString());
-        mEditor.putString(KEY_IEEE_ID, !json.get("ieee_id").isJsonNull()? json.get("ieee_id").getAsString() : "");
+        mEditor.putString(KEY_NAME, !json.get(KEY_NAME).isJsonNull()?
+                json.get(KEY_NAME).getAsString() : "");
+        mEditor.putString(KEY_IEEE_ID, !json.get(KEY_IEEE_ID).isJsonNull()?
+                json.get(KEY_IEEE_ID).getAsString() : "");
         mEditor.commit();
     }
 
@@ -81,23 +84,25 @@ public class SessionManager {
     }
 
     public String getEmail() {
-        return mSharedPrefs.getString(KEY_EMAIL, null);
+        return mSharedPrefs.getString(KEY_EMAIL, "");
     }
 
     public String getName() {
-        return mSharedPrefs.getString(KEY_NAME, null);
+        return mSharedPrefs.getString(KEY_NAME, "");
     }
 
     public String getIEEEId() {
-        return mSharedPrefs.getString(KEY_IEEE_ID, null);
+        return mSharedPrefs.getString(KEY_IEEE_ID, "");
     }
 
     public String getCookie() {
         return mSharedPrefs.getString(KEY_COOKIE, null);
     }
 
-    public void updateSession(String email) {
+    public void updateSession(String email, String name, String id) {
         mEditor.putString(KEY_EMAIL, email);
+        mEditor.putString(KEY_NAME, name);
+        mEditor.putString(KEY_IEEE_ID, id);
         mEditor.commit();
     }
 }

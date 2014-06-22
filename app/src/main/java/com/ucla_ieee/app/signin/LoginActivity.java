@@ -28,6 +28,8 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.ucla_ieee.app.MainActivity;
 import com.ucla_ieee.app.R;
+import com.ucla_ieee.app.scan.IntentIntegrator;
+import com.ucla_ieee.app.scan.IntentResult;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -46,7 +48,6 @@ import java.util.List;
  * A login screen that offers login via email/password
  */
 public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
-
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -334,14 +335,23 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             }
 
             if (json.get("success") != null && json.get("success").getAsInt() == 1) {
-                // TODO: Display profile? Welcome, name
+                // log in user
                 SessionManager sessionManager = new SessionManager(getApplicationContext());
                 sessionManager.loginUser(json.get("user").getAsJsonObject(), json.get("cookie").getAsString());
-                finish();
+
+                // start main ieee activity
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
             } else {
-                // TODO: dissect error
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                if (json.get("error_code").getAsInt() == 0) {
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
+                } else if (json.get("error_code").getAsInt() == 1) {
+                    mEmailView.setError(getString(R.string.error_incorrect_email));
+                    mEmailView.requestFocus();
+                } else {
+                    Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
             }
         }
 

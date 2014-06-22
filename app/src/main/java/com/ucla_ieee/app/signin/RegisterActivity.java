@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.*;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import com.ucla_ieee.app.MainActivity;
 import com.ucla_ieee.app.R;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -212,6 +214,7 @@ public class RegisterActivity extends Activity {
             if (TextUtils.isEmpty(response)) {
                Toast.makeText(RegisterActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                finish();
+               return;
             }
 
             Log.d("BUGS", response);
@@ -227,9 +230,17 @@ public class RegisterActivity extends Activity {
             }
 
             if (json.get("success") != null && json.get("success").getAsInt() == 1) {
-                String firstName = json.get("user").getAsJsonObject().get("firstname").getAsString();
+                // welcome user
+                String firstName = json.get("user").getAsJsonObject().get("name").getAsString();
                 Toast.makeText(RegisterActivity.this, "Welcome to IEEE, " + firstName + "!", Toast.LENGTH_SHORT).show();
-                // TODO: Go to new profile
+
+                // log in user
+                SessionManager sessionManager = new SessionManager(getApplicationContext());
+                sessionManager.loginUser(json.get("user").getAsJsonObject(), json.get("cookie").getAsString());
+
+                // start main ieee activity
+                Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                startActivity(intent);
                 finish();
             } else {
                 Toast.makeText(RegisterActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();

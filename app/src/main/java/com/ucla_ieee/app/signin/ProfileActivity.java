@@ -5,10 +5,12 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -33,8 +35,9 @@ import java.util.List;
 public class ProfileActivity extends Activity {
     private MembershipEditTask mAuthTask = null;
 
-    EditText email, name, memberId, password;
-    TextView emailText, nameText, memberIdText, passwordText;
+    private EditText email, name, memberId;
+    private TextView emailText, nameText, memberIdText, passwordText;
+    private Boolean alertReady = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +62,6 @@ public class ProfileActivity extends Activity {
         memberId.setText(sessionManager.getIEEEId());
         memberIdText.setText(sessionManager.getIEEEId());
 
-        password = (EditText) findViewById(R.id.password);
         passwordText = (TextView) findViewById(R.id.passwordText);
 
         ImageButton aboutNextReward = (ImageButton) findViewById(R.id.aboutNextReward);
@@ -71,7 +73,7 @@ public class ProfileActivity extends Activity {
             }
         });
 
-        final ImageButton changeEmail = (ImageButton) findViewById(R.id.editEmail);
+        ImageButton changeEmail = (ImageButton) findViewById(R.id.editEmail);
         changeEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,8 +104,70 @@ public class ProfileActivity extends Activity {
         changePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toggleVisibility(password, passwordText, false);
-                password.requestFocus();
+                final EditText passwordView = new EditText(ProfileActivity.this);
+                passwordView.setHint("Current Password");
+                passwordView.setInputType(EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
+
+                final EditText newpassword = new EditText(ProfileActivity.this);
+                newpassword.setHint("New Password");
+                newpassword.setId(R.id.password);
+                newpassword.setInputType(EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
+
+                final EditText retypepassword = new EditText(ProfileActivity.this);
+                retypepassword.setHint("Re-type Password");
+                retypepassword.setInputType(EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
+
+                LinearLayout ll = new LinearLayout(ProfileActivity.this);
+                ll.setOrientation(LinearLayout.VERTICAL);
+                ll.addView(passwordView);
+                ll.addView(newpassword);
+                ll.addView(retypepassword);
+                ll.setPadding(5, 5, 5, 5);
+
+                final AlertDialog alert = new AlertDialog.Builder(ProfileActivity.this)
+                        .setTitle("Update Password")
+                        .setMessage("Please fill in the following fields")
+                        .setView(ll)
+                        .setPositiveButton("Save", null)
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int whichButton) {}
+                        }).create();
+
+                if (!alertReady) {
+                    alert.setOnShowListener(new DialogInterface.OnShowListener() {
+                        @Override
+                        public void onShow(DialogInterface dialog) {
+                            Button button = alert.getButton(DialogInterface.BUTTON_POSITIVE);
+                            if (button != null) {
+                                button.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        String newPassword = newpassword.getText().toString();
+                                        String retypedPassword = retypepassword.getText().toString();
+                                        String password = passwordView.getText().toString();
+
+                                        if (!newPassword.equals(retypedPassword)) {
+                                            retypepassword.setError("Passwords don't match!");
+                                            retypepassword.requestFocus();
+                                        } else {
+                                            List<BasicNameValuePair> valuePairs = new ArrayList<BasicNameValuePair>();
+                                            valuePairs.add(new BasicNameValuePair("newPassword", newPassword));
+                                            valuePairs.add(new BasicNameValuePair("password", password));
+
+
+                                            mAuthTask = new MembershipEditTask(sessionManager.getEmail(), sessionManager.getCookie());
+                                            mAuthTask.execute(valuePairs);
+                                            alert.dismiss();
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+
+                alert.show();
             }
         });
 
@@ -114,8 +178,23 @@ public class ProfileActivity extends Activity {
                 // send post request
                 mAuthTask = new MembershipEditTask(sessionManager.getEmail(), sessionManager.getCookie());
 
-                // TODO: email, password, name, id basic name value pairs if value has changed!
-                mAuthTask.execute(email.getText().toString());
+                String newEmail, newName, newId;
+                newEmail = email.getText().toString();
+                newName = name.getText().toString();
+                newId = memberId.getText().toString();
+
+                List<BasicNameValuePair> valuePairs = new ArrayList<BasicNameValuePair>();
+                if (!newEmail.equals(sessionManager.getEmail())) {
+                    valuePairs.add(new BasicNameValuePair("newEmail", newEmail));
+                }
+                if (!newName.equals(sessionManager.getName())) {
+                    valuePairs.add(new BasicNameValuePair("newName", newName));
+                }
+                if (!newId.equals(sessionManager.getIEEEId())) {
+                    valuePairs.add(new BasicNameValuePair("newId", newId));
+                }
+
+                mAuthTask.execute(valuePairs);
                 toggleOffEdits();
             }
         });
@@ -166,7 +245,7 @@ public class ProfileActivity extends Activity {
     /**
      * Sends a request to server to authorize and change member stats
      */
-    public class MembershipEditTask extends AsyncTask<String, Void, String> {
+    public class MembershipEditTask extends AsyncTask<List<BasicNameValuePair>, Void, String> {
 
         private final String mEmail;
         private final String mCookie;
@@ -177,7 +256,7 @@ public class ProfileActivity extends Activity {
         }
 
         @Override
-        protected String doInBackground(String... params) {
+        protected String doInBackground(List<BasicNameValuePair>... params) {
 
             HttpClient httpClient = new DefaultHttpClient();
             HttpPost httpPost = new HttpPost("http://ieeebruins.org/membership_serve/test.php");
@@ -187,23 +266,9 @@ public class ProfileActivity extends Activity {
             editParams.add(new BasicNameValuePair("email", mEmail));
             editParams.add(new BasicNameValuePair("cookie", mCookie));
 
-            // TODO: change this so String... => basic name value pairs...
-
-            if (!TextUtils.isEmpty(params[0])) {
-                editParams.add(new BasicNameValuePair("newEmail", params[0]));
-            }
-
-//            if (!TextUtils.isEmpty(params[1])) {
-//                editParams.add(new BasicNameValuePair("newPassword", params[1]));
-//            }
-//
-//            if (!TextUtils.isEmpty(params[2])) {
-//                editParams.add(new BasicNameValuePair("newName", params[2]));
-//            }
-//
-//            if (!TextUtils.isEmpty(params[3])) {
-//                editParams.add(new BasicNameValuePair("newId", params[3]));
-//            }
+            // Add everything we are changing
+            List<BasicNameValuePair> pairs = params[0];
+            editParams.addAll(pairs);
 
             try {
                 httpPost.setEntity(new UrlEncodedFormEntity(editParams));
@@ -259,12 +324,20 @@ public class ProfileActivity extends Activity {
             }
 
             if (json.get("success") != null && json.get("success").getAsInt() == 1) {
-                // TODO: Display profile? Welcome, name
                 SessionManager sessionManager = new SessionManager(getApplicationContext());
-                sessionManager.updateSession(json.get("email").getAsString());
+
+                String email, name, id;
+                email = json.get("email").getAsString();
+                name = json.get("name").getAsString();
+                id = json.get("ieee_id").getAsString();
+
+                sessionManager.updateSession(email, name, id);
                 Toast.makeText(ProfileActivity.this, "Changes saved successfully", Toast.LENGTH_SHORT).show();
             } else {
-                // TODO: dissect error
+                // TODO: dissect more errors
+                if (json.get("error_code") != null && json.get("error_code").getAsInt() == 0) {
+                    Toast.makeText(ProfileActivity.this, "Incorrect password", Toast.LENGTH_SHORT).show();
+                }
             }
         }
 

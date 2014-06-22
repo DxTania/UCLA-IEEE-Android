@@ -44,5 +44,6 @@
     <string name="save">Save Changes</string>
     <string name="no_attended_events">Sorry, you haven\'t checked into any events!</string>
     <string name="password">Password</string>
+    <string name="error_incorrect_email">Email does not exist</string>
 
 </resources>

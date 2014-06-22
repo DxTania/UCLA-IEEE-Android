@@ -20,8 +20,6 @@ import com.ucla_ieee.app.signin.ProfileActivity;
 import com.ucla_ieee.app.signin.SessionManager;
 
 public class MainActivity extends Activity {
-    private static final int LOGIN = 1;
-
     private SessionManager mSessionManager;
     private TextView mAnnouncementsView;
 
@@ -78,7 +76,8 @@ public class MainActivity extends Activity {
     public void actOnLoginStatus() {
         if (!mSessionManager.isLoggedIn()) {
             Intent loginIntent = new Intent(this, LoginActivity.class);
-            startActivityForResult(loginIntent, LOGIN);
+            startActivity(loginIntent);
+            finish();
         }
     }
 
@@ -94,8 +93,6 @@ public class MainActivity extends Activity {
         if (scanResult != null) {
 //            testText.setText(scanResult.getContents());
             Toast.makeText(this, "Thanks for checking in!", Toast.LENGTH_SHORT).show();
-        } else if (requestCode == LOGIN) {
-            actOnLoginStatus();
         }
     }
 
