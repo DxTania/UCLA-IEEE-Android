@@ -151,8 +151,8 @@ public class ProfileActivity extends Activity {
     // Password change alert dialog
     private void setUpAlertDialog() {
         View ll = LayoutInflater.from(ProfileActivity.this).inflate(R.layout.password_snippet, null);
-        final EditText newpassword = (EditText) ll.findViewById(R.id.newPassword);
-        final EditText retypepassword = (EditText) ll.findViewById(R.id.retypedPassword);
+        final EditText newPasswordView = (EditText) ll.findViewById(R.id.newPassword);
+        final EditText retypedPasswordView = (EditText) ll.findViewById(R.id.retypedPassword);
         final EditText passwordView = (EditText) ll.findViewById(R.id.curPassword);
 
         final AlertDialog alert = new AlertDialog.Builder(ProfileActivity.this)
@@ -174,12 +174,12 @@ public class ProfileActivity extends Activity {
                         button.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                String newPassword = newpassword.getText().toString();
-                                String retypedPassword = retypepassword.getText().toString();
+                                String newPassword = newPasswordView.getText().toString();
+                                String retypedPassword = retypedPasswordView.getText().toString();
 
                                 if (!newPassword.equals(retypedPassword)) {
-                                    retypepassword.setError("Passwords don't match!");
-                                    retypepassword.requestFocus();
+                                    retypedPasswordView.setError("Passwords don't match!");
+                                    retypedPasswordView.requestFocus();
                                 } else {
                                     cachePassword = passwordView.getText().toString();
                                     passwordText.setText(newPassword);
@@ -190,6 +190,7 @@ public class ProfileActivity extends Activity {
                     }
                 }
             });
+            alertReady = true;
         }
 
         alert.show();
