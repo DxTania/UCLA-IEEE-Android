@@ -56,6 +56,7 @@
         </activity>
         <activity
             android:name="com.ucla_ieee.app.signin.RegisterActivity"
+            android:parentActivityName="com.ucla_ieee.app.signin.LoginActivity"
             android:label="@string/title_activity_register" >
         </activity>
         <activity
@@ -68,6 +69,7 @@
         </activity>
         <activity
             android:name="com.ucla_ieee.app.SettingsActivity"
+            android:parentActivityName="com.ucla_ieee.app.MainActivity"
             android:label="@string/title_activity_settings" >
         </activity>
     </application>

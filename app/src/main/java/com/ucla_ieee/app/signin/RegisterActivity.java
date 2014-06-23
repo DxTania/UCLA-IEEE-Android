@@ -230,16 +230,17 @@ public class RegisterActivity extends Activity {
             }
 
             if (json.get("success") != null && json.get("success").getAsInt() == 1) {
-                // welcome user
+                // Welcome user
                 String firstName = json.get("user").getAsJsonObject().get("name").getAsString();
                 Toast.makeText(RegisterActivity.this, "Welcome to IEEE, " + firstName + "!", Toast.LENGTH_SHORT).show();
 
-                // log in user
+                // Log in user
                 SessionManager sessionManager = new SessionManager(getApplicationContext());
                 sessionManager.loginUser(json.get("user").getAsJsonObject(), json.get("cookie").getAsString());
 
-                // start main ieee activity
+                // Start main IEEE activity, clearing logout activity
                 Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
             } else {
