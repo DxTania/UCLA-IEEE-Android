@@ -18,7 +18,7 @@
         android:scaleType="fitCenter"
         android:padding="15dp"
         android:layout_margin="20dp"
-        android:contentDescription="@string/ucla_ieee"/>
+        android:contentDescription="@string/ieee_logo"/>
 
     <LinearLayout
         android:orientation="vertical"

@@ -5,13 +5,11 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -26,12 +24,10 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.w3c.dom.Text;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class ProfileActivity extends Activity {
     private MembershipEditTask mAuthTask = null;

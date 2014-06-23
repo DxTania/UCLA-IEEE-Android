@@ -49,5 +49,9 @@
     <string name="cur_password">Current Password</string>
     <string name="retype_password">Re-Type Password</string>
     <string name="register">Register</string>
+    <string name="ieee_logo">IEEE Logo</string>
+    <string name="edit">edit</string>
+    <string name="info">info</string>
+    <string name="points">Points</string>
 
 </resources>

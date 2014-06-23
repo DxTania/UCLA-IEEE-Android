@@ -30,6 +30,8 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         mSessionManager = new SessionManager(this);
+
+        // TODO: Allow clicking on announcements to see previous announcements
         mAnnouncementsView = (TextView) findViewById(R.id.announcementsView);
         mAnnouncementsView.setMovementMethod(new ScrollingMovementMethod());
 
