@@ -24,7 +24,8 @@
     <string name="question_description">What is this?</string>
     <string name="no_events">Sorry, nothing\'s going on today!</string>
     <string name="ucla_ieee">UCLA IEEE</string>
-    <string name="sample_announcement">Lab cleanup Thursday at 7:00pm, pizza may or may not be involved </string>
+    <string name="sample_announcement">Lab cleanup Thursday at 7:00pm, pizza may or may not be involved. Lab cleanup
+        Thursday at 7:00pm, pizza may or may not be involved. Lab cleanup Thursday at 7:00pm, pizza may or may not be involved</string>
     <string name="announcements">Announcements: </string>
     <string name="my_membership">Membership</string>
     <string name="calendar_events">Calendar</string>

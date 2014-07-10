@@ -21,7 +21,7 @@ import com.ucla_ieee.app.signin.SessionManager;
 
 public class MainActivity extends Activity {
     private SessionManager mSessionManager;
-    private TextView mAnnouncementsView;
+    private LinearLayout mAnnouncementsView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +32,13 @@ public class MainActivity extends Activity {
 
         mSessionManager = new SessionManager(this);
 
-        // TODO: Allow clicking on announcements to see previous announcements
-        mAnnouncementsView = (TextView) findViewById(R.id.announcementsView);
-        mAnnouncementsView.setMovementMethod(new ScrollingMovementMethod());
+        mAnnouncementsView = (LinearLayout) findViewById(R.id.announcements);
+        mAnnouncementsView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: Allow clicking on announcements to see previous announcements
+            }
+        });
 
         // CALENDAR
         LinearLayout calendar = (LinearLayout) findViewById(R.id.calendarButton);
@@ -46,6 +50,7 @@ public class MainActivity extends Activity {
             }
         });
 
+        // MEMBERSHIP
         LinearLayout myMembership = (LinearLayout) findViewById(R.id.myMembership);
         myMembership.setOnClickListener(new View.OnClickListener() {
             @Override

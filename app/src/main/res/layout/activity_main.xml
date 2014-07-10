@@ -1,151 +1,177 @@
-<LinearLayout
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="fill_parent"
+    android:layout_width="fill_parent"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:paddingTop="@dimen/activity_vertical_margin">
 
     <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.2"
-        android:src="@drawable/logo"
-        android:minWidth="50dp"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/ieee_logo"
+        android:id="@+id/logo"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_width="fill_parent"
+        android:minWidth="50dp"
+        android:padding="10dp"
         android:scaleType="fitCenter"
-        android:padding="15dp"
-        android:layout_margin="20dp"
-        android:contentDescription="@string/ieee_logo"/>
+        android:src="@drawable/logo"/>
 
     <LinearLayout
-        android:orientation="vertical"
+        android:id="@+id/announcements"
+        android:layout_below="@id/logo"
+        android:layout_height="85sp"
         android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.2"
-        android:paddingBottom="5dp">
+        android:orientation="vertical"
+        android:paddingBottom="10dp">
 
         <TextView
-            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textSize="20sp"
+            android:layout_width="fill_parent"
             android:paddingBottom="5dp"
-            android:text="@string/announcements"/>
+            android:text="@string/announcements"
+            android:textColor="#000"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
 
         <TextView
-            android:layout_width="fill_parent"
+            android:ellipsize="end"
+            android:id="@+id/announcementsView"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+            android:layout_width="fill_parent"
+            android:maxLines="2"
             android:scrollbars="vertical"
             android:text="@string/sample_announcement"
-            android:id="@+id/announcementsView"/>
+            android:textSize="18sp"/>
     </LinearLayout>
 
     <TableLayout
+        android:layout_below="@id/announcements"
+        android:layout_height="fill_parent"
         android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:stretchColumns="*"
-        android:layout_weight="0.6">
+        android:stretchColumns="*">
 
         <TableRow
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:paddingBottom="5dp"
-            android:layout_weight="0.3">
+            android:layout_weight="0.3"
+            android:layout_width="fill_parent"
+            android:orientation="horizontal"
+            android:paddingBottom="5dp">
 
             <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="0dp"
                 android:gravity="center"
                 android:id="@+id/myMembership"
-                android:layout_height="fill_parent">
+                android:layout_height="fill_parent"
+                android:layout_width="0dp"
+                android:orientation="vertical">
+
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/membership_desc"
-                    android:src="@drawable/membership"/>
-                <Button
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:paddingBottom="10dp"
+                    android:src="@drawable/members"/>
+
+                <Button
+                    android:background="@android:color/transparent"
                     android:gravity="center"
+                    android:layout_height="22sp"
+                    android:layout_width="wrap_content"
                     android:text="@string/my_membership"
-                    android:textStyle="bold"
-                    android:background="@android:color/transparent"/>
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
             </LinearLayout>
+
             <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="0dp"
                 android:gravity="center"
                 android:id="@+id/calendarButton"
-                android:layout_height="fill_parent">
+                android:layout_height="fill_parent"
+                android:layout_width="0dp"
+                android:orientation="vertical">
+
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:contentDescription="@string/calendar_desc"
-                    android:src="@drawable/cal"/>
-                <Button
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:paddingBottom="10dp"
+                    android:src="@drawable/calendar"/>
+
+                <Button
+                    android:background="@android:color/transparent"
                     android:gravity="center"
+                    android:layout_height="22sp"
+                    android:layout_width="wrap_content"
                     android:text="@string/calendar_events"
-                    android:textStyle="bold"
-                    android:background="@android:color/transparent"/>
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
             </LinearLayout>
 
         </TableRow>
 
         <TableRow
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.3">
+            android:layout_weight="0.3"
+            android:layout_width="fill_parent"
+            android:orientation="horizontal">
+
             <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="0dp"
                 android:gravity="center"
                 android:id="@+id/achievementsButton"
-                android:layout_height="fill_parent">
+                android:layout_height="fill_parent"
+                android:layout_width="0dp"
+                android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:contentDescription="@string/achievements_desc"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_width="fill_parent"
+                    android:paddingBottom="10dp"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/achievements"/>
+
                 <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
                     android:gravity="center"
+                    android:layout_height="22sp"
+                    android:layout_width="wrap_content"
                     android:text="@string/achievementText"
-                    android:textStyle="bold"
-                    android:background="@android:color/transparent"/>
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
             </LinearLayout>
+
             <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="0dp"
                 android:gravity="center"
                 android:id="@+id/settingsButton"
-                android:layout_height="fill_parent">
+                android:layout_height="fill_parent"
+                android:layout_width="0dp"
+                android:orientation="vertical">
 
                 <ImageView
+                    android:contentDescription="@string/settings_desc"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/gears"
-                    android:contentDescription="@string/settings_desc"/>
+                    android:paddingBottom="10dp"
+                    android:src="@drawable/settings"/>
+
                 <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
                     android:gravity="center"
+                    android:layout_height="22sp"
+                    android:layout_width="wrap_content"
                     android:text="@string/settings"
-                    android:textStyle="bold"
-                    android:background="@android:color/transparent"/>
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
             </LinearLayout>
         </TableRow>
 
     </TableLayout>
 
-</LinearLayout>
+</RelativeLayout>
