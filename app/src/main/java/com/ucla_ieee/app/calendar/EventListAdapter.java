@@ -61,6 +61,7 @@ public class EventListAdapter extends ArrayAdapter<Event> {
         // TODO: Update this as time goes on
         Date now = new Date();
         if (event.getStartDate() != null && event.getEndDate() != null) {
+            // TODO: Show symbol if user has attended that event, separate place to check in
             if (event.getStartDate().compareTo(now) <= 0 && event.getEndDate().compareTo(now) > 0) {
                 viewHolder.checkIn.setVisibility(View.VISIBLE);
             } else {

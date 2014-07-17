@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.ucla_ieee.app.calendar.CalendarActivity;
+import com.ucla_ieee.app.content.AnnouncementsActivity;
 import com.ucla_ieee.app.scan.IntentIntegrator;
 import com.ucla_ieee.app.scan.IntentResult;
 import com.ucla_ieee.app.signin.LoginActivity;
@@ -37,6 +38,8 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO: Allow clicking on announcements to see previous announcements
+                Intent intent = new Intent(MainActivity.this, AnnouncementsActivity.class);
+                startActivity(intent);
             }
         });
 

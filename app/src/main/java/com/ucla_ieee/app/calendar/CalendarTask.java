@@ -83,22 +83,16 @@ public class CalendarTask extends AsyncTask<Void, Void, String> {
         }
 
         JsonArray newItems = json.get("items").getAsJsonArray();
-        if (mSessionManager.getCalReq() == null) {
+        JsonArray prevItems = mSessionManager.getCalReq();
+        if (prevItems == null) {
             mSessionManager.storeCalReq(newItems.toString());
-        } else {
-            JsonArray prevItems = mSessionManager.getCalReq();
-            if (newItems.size() > 0 && prevItems != null) {
-                // Make sure we don't duplicate events
-                String items = EventManager.reviseJson(newItems, prevItems);
-                mSessionManager.storeCalReq(items);
-            } else if (prevItems == null) {
-                // We don't have anything cached, store entire request
-            } // Else no new items, leave stored req alone
-        }
+        } else if (newItems.size() > 0) {
+            // Make sure we don't duplicate events
+            String items = EventManager.reviseJson(newItems, prevItems);
+            mSessionManager.storeCalReq(items);
+            mParent.addEvents(newItems);
+        } // Else no new items, leave stored req alone
 
         // TODO: Deal with 410 GONE response
-        if (newItems.size() > 0) {
-            mParent.addEvents(newItems);
-        }
     }
 }

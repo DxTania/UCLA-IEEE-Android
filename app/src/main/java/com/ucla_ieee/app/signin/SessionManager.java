@@ -106,8 +106,8 @@ public class SessionManager {
         return mSharedPrefs.getString(KEY_COOKIE, null);
     }
 
-    public String getAnnouncements() {
-        return mSharedPrefs.getString(KEY_ANNOUNCEMENTS, null);
+    public JsonArray getAnnouncements() {
+        return mUtil.getJsonArrayFromString(mSharedPrefs.getString(KEY_ANNOUNCEMENTS, null));
     }
 
     public void setAnnouncements(String s) {

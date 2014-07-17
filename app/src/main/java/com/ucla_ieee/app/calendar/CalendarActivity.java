@@ -100,6 +100,8 @@ public class CalendarActivity extends FragmentActivity {
     public void addEvents(JsonArray events) {
         ArrayList<Event> cancelled = new ArrayList<Event>();
         ArrayList<Event> newEvents = EventManager.createEvents(events, cancelled);
+        // new Events does no include
+        // cancelled ones
         // create two lists cancelled nd not cancelled
         // remove stale on both
         // Remove stale events & add new ones
@@ -109,6 +111,7 @@ public class CalendarActivity extends FragmentActivity {
         mEvents.addAll(newEvents);
         Collections.sort(mEvents, new DateComp());
 
+        // Remove colored date from calendar
         for(Event event : cancelled) {
             Date start = event.getStartDate();
             if (start != null) {
@@ -116,7 +119,7 @@ public class CalendarActivity extends FragmentActivity {
             }
         }
 
-        // Add new events to calendar
+        // Add new events to calendar and color the dates
         for (Event event : newEvents) {
             Date start = event.getStartDate();
             if (start != null) {
@@ -131,7 +134,7 @@ public class CalendarActivity extends FragmentActivity {
         mEventListAdapter.notifyDataSetChanged();
         if (mSelectedEvents.size() > 0) {
             mNoEventsView.setVisibility(View.GONE);
-            // TODO: color for events for TODAY
+            // TODO: color for events for TODAY differently
         }
         mCaldroidFragment.refreshView();
     }

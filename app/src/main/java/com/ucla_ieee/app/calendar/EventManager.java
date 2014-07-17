@@ -147,7 +147,7 @@ public class EventManager {
             for(Event nEvent : newEvents) {
                 if (event.getId().equals(nEvent.getId())) {
                     if (cancelled) {
-                        nEvent.setStartDate(event.getStartDate());
+                        nEvent.setStartDate(event.getStartDate()); // what??
                     }
                     it.remove();
                 }

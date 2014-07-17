@@ -48,8 +48,7 @@ public class JsonServerUtil {
         }
         try {
             JsonParser parser = new JsonParser();
-            JsonObject json = (JsonObject) parser.parse(string);
-            return json.getAsJsonArray();
+            return (JsonArray) parser.parse(string);
         } catch (JsonSyntaxException e) {
             return null;
         }
