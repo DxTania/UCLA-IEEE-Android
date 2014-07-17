@@ -1,29 +1,21 @@
 package com.ucla_ieee.app.calendar;
+
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.widget.Toast;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
-import com.ucla_ieee.app.calendar.CalendarActivity;
-import com.ucla_ieee.app.calendar.EventManager;
 import com.ucla_ieee.app.signin.SessionManager;
 import com.ucla_ieee.app.util.JsonServerUtil;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 

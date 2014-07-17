@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Window;
-import com.ucla_ieee.app.signin.LoginActivity;
-import com.ucla_ieee.app.signin.SessionManager;
 
 public class SplashScreen extends Activity {
 

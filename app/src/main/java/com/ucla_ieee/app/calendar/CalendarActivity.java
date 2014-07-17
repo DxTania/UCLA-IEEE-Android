@@ -1,31 +1,21 @@
 package com.ucla_ieee.app.calendar;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
-import com.google.gson.*;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.TextView;
+import com.google.gson.JsonArray;
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
 import com.ucla_ieee.app.R;
 import com.ucla_ieee.app.signin.SessionManager;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 
-import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 

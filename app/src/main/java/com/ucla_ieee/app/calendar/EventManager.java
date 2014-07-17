@@ -1,12 +1,10 @@
 package com.ucla_ieee.app.calendar;
 
-import android.content.Context;
-import android.text.TextUtils;
-import android.util.Log;
-import android.widget.Toast;
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
-import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

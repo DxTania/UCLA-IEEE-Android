@@ -1,38 +1,15 @@
 package com.ucla_ieee.app.content;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.database.DataSetObserver;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.ucla_ieee.app.R;
-import com.ucla_ieee.app.calendar.EventManager;
-import com.ucla_ieee.app.content.AnnouncementsListAdapter;
 import com.ucla_ieee.app.signin.SessionManager;
-import com.ucla_ieee.app.util.JsonServerUtil;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 

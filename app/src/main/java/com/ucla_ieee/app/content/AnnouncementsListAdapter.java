@@ -1,17 +1,13 @@
 package com.ucla_ieee.app.content;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 import com.ucla_ieee.app.R;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class AnnouncementsListAdapter extends ArrayAdapter<Announcement> {

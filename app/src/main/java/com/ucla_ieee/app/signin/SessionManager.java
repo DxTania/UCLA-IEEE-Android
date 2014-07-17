@@ -4,15 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
-import com.ucla_ieee.app.content.Announcement;
 import com.ucla_ieee.app.util.JsonServerUtil;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Set;
 
 /**
  * Helper functions for session management of the user

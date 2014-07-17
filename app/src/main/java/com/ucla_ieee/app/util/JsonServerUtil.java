@@ -1,14 +1,11 @@
 package com.ucla_ieee.app.util;
 
 import android.text.TextUtils;
-import android.widget.Toast;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.IOException;

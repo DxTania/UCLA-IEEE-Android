@@ -2,8 +2,6 @@ package com.ucla_ieee.app.content;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 import com.google.gson.JsonArray;
 import com.ucla_ieee.app.signin.SessionManager;

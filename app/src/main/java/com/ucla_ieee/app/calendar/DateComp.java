@@ -1,7 +1,6 @@
 package com.ucla_ieee.app.calendar;
 
 import java.util.Comparator;
-import java.util.Date;
 
 /**
  * Created by rawrtan on 5/15/14.

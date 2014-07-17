@@ -3,7 +3,6 @@ package com.ucla_ieee.app.calendar;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Comparator;
 import java.util.Date;
 
 /**

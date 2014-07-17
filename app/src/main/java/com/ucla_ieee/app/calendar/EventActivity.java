@@ -6,7 +6,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import com.ucla_ieee.app.R;
-import org.w3c.dom.Text;
 
 public class EventActivity extends Activity {
 
