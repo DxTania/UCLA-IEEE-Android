@@ -42,17 +42,15 @@ public class AnnouncementsTask extends AsyncTask<Void, Void, String> {
         JsonArray announcements = mUtil.getJsonArrayFromString(response);
         if (announcements == null) {
             Toast.makeText(mParent, "Something went wrong", Toast.LENGTH_SHORT).show();
-            return; // error
+            return;
         }
 
         JsonArray prevItems = mSessionManager.getAnnouncements();
         if (prevItems == null) {
             mSessionManager.setAnnouncements(announcements.toString());
         } else if (announcements.size() > 0) {
-            // TODO: Make sure we don't duplicate announcements (if they are udpated)
-            // and shouldn't overwrite?? or should it?
             mSessionManager.setAnnouncements(announcements.toString());
-            mParent.addAnnouncements(announcements);
+            mParent.updateAnnouncements(announcements);
         } // Else no new announcements, leave stored req alone
     }
 }

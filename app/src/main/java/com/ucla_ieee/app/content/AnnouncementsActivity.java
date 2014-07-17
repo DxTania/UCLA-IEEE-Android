@@ -27,30 +27,41 @@ public class AnnouncementsActivity extends Activity {
         SessionManager sessionManager = new SessionManager(this);
 
         mListAdapter = new AnnouncementsListAdapter(this, new ArrayList<Announcement>());
-
-        // TODO: cache announcements (and load these first).. max?
-        addAnnouncements(sessionManager.getAnnouncements());
+        updateAnnouncements(sessionManager.getAnnouncements());
         announcements.setAdapter(mListAdapter);
 
         AnnouncementsTask announcementsTask = new AnnouncementsTask(this);
         announcementsTask.execute((Void) null);
     }
 
-    public void addAnnouncements(JsonArray announcements) {
-        // TODO: Don't just clear them...?
+    public void updateAnnouncements(JsonArray announcements) {
         if (announcements != null) {
-            // only add new announcements?
+            // TODO: test updated announcements work
             List<Announcement> announcementList = new ArrayList<Announcement>();
             for (JsonElement announcement : announcements) {
                 String content = announcement.getAsJsonObject().get("content").getAsString();
                 String date = announcement.getAsJsonObject().get("datePosted").getAsString();
-                // int uid = announcement.getAsJsonObject().get("uid").getAsInt();
-                announcementList.add(new Announcement(content, date, 0));
+                int id = announcement.getAsJsonObject().get("id").getAsInt();
+                if (didUpdate(new Announcement(content, date, id))) {
+                    continue;
+                }
+                announcementList.add(new Announcement(content, date, id));
             }
-            mListAdapter.clear();
             mListAdapter.addAll(announcementList);
             mListAdapter.notifyDataSetChanged();
         }
+    }
+
+    private boolean didUpdate(Announcement announcement) {
+        for (int i = 0; i < mListAdapter.getCount(); i++) {
+            Announcement stored = mListAdapter.getItem(i);
+            if (stored.getId() == announcement.getId()) {
+                stored.setContent(announcement.getContent());
+                stored.setDate("Updated!" + stored.getDate());
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

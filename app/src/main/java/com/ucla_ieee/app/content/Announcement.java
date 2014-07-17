@@ -6,12 +6,12 @@ package com.ucla_ieee.app.content;
 public class Announcement {
     private String content;
     private String date;
-    private int uid;
+    private int id;
 
-    public Announcement(String content, String date, int uid) {
+    public Announcement(String content, String date, int id) {
         this.content = content;
         this.date = date;
-        this.uid = uid;
+        this.id = id;
     }
 
     public String getDate() {
@@ -30,7 +30,7 @@ public class Announcement {
         this.content = content;
     }
 
-    public int getUid() {
-        return uid;
+    public int getId() {
+        return id;
     }
 }
