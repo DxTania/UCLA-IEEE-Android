@@ -9,6 +9,7 @@ import com.google.gson.JsonSyntaxException;
 import com.ucla_ieee.app.calendar.CalendarActivity;
 import com.ucla_ieee.app.calendar.EventManager;
 import com.ucla_ieee.app.signin.SessionManager;
+import com.ucla_ieee.app.util.JsonServerUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -35,10 +36,12 @@ public class CalendarTask extends AsyncTask<Void, Void, String> {
 
     SessionManager mSessionManager;
     CalendarActivity mParent;
+    JsonServerUtil mUtil;
 
     public CalendarTask(CalendarActivity parent) {
         mSessionManager = new SessionManager(parent);
         mParent = parent;
+        mUtil = new JsonServerUtil();
     }
 
     @Override
@@ -54,52 +57,24 @@ public class CalendarTask extends AsyncTask<Void, Void, String> {
             calendarParams.add(new BasicNameValuePair("syncToken", syncToken));
         }
         String paramString = URLEncodedUtils.format(calendarParams, "UTF-8");
-
         HttpGet httpGet = new HttpGet("https://www.googleapis.com/calendar/v3/calendars/"
                 + CAL_ID + "/events?" + paramString);
 
         // Read and parse HTTP response
         try {
             HttpResponse response = httpClient.execute(httpGet);
-            HttpEntity entity = response.getEntity();
-
-            if (entity != null) {
-                InputStream instream = entity.getContent();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(instream));
-                StringBuilder builder = new StringBuilder();
-
-                String st;
-                while((st = reader.readLine()) != null) {
-                    builder.append(st).append("\n");
-                }
-
-                instream.close();
-                return builder.toString();
-            }
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
+            return mUtil.getStringFromServerResponse(response.getEntity());
         } catch (IOException e) {
-            e.printStackTrace();
+            return null;
         }
-
-        return null;
     }
 
     @Override
     protected void onPostExecute(String response) {
-        if (TextUtils.isEmpty(response)) {
+        JsonObject json = mUtil.getJsonObjectFromString(response);
+        if (json == null) {
             Toast.makeText(mParent, "Something went wrong", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        JsonParser parser = new JsonParser();
-        JsonObject json;
-        try {
-            json = (JsonObject) parser.parse(response);
-        } catch (JsonSyntaxException e) {
-            e.printStackTrace();
-            Toast.makeText(mParent, "Something went wrong", Toast.LENGTH_SHORT).show();
-            return;
+            return; // error
         }
 
         String nextSyncToken = json.get("nextSyncToken").getAsString();
@@ -111,7 +86,7 @@ public class CalendarTask extends AsyncTask<Void, Void, String> {
         if (mSessionManager.getCalReq() == null) {
             mSessionManager.storeCalReq(newItems.toString());
         } else {
-            JsonArray prevItems = parser.parse(mSessionManager.getCalReq()).getAsJsonArray();
+            JsonArray prevItems = mSessionManager.getCalReq();
             if (newItems.size() > 0 && prevItems != null) {
                 // Make sure we don't duplicate events
                 String items = EventManager.reviseJson(newItems, prevItems);

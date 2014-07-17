@@ -3,12 +3,16 @@ package com.ucla_ieee.app.signin;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
+import com.ucla_ieee.app.content.Announcement;
+import com.ucla_ieee.app.util.JsonServerUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Helper functions for session management of the user
@@ -18,23 +22,26 @@ public class SessionManager {
     private SharedPreferences mSharedPrefs;
     private Editor mEditor;
     private Context mContext;
+    private JsonServerUtil mUtil;
 
     // File name for shared prefs
     private static final String PREF_NAME = "UCLAIEEEPrefs";
 
     // Keys
     private static final String KEY_LOGGED_IN = "IsLoggedIn";
-    public static final String KEY_EMAIL = "email";
+    private static final String KEY_EMAIL = "email";
     private static final String KEY_TOKEN = "syncToken";
     private static final String KEY_JSON = "json";
     private static final String KEY_COOKIE = "cookie";
     private static final String KEY_NAME = "name";
     private static final String KEY_IEEE_ID = "ieee_id";
+    private static final String KEY_ANNOUNCEMENTS = "announcements";
 
     public SessionManager (Context context) {
         mContext = context;
         mSharedPrefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         mEditor = mSharedPrefs.edit();
+        mUtil = new JsonServerUtil();
     }
 
     public void loginUser (JsonObject json, String cookie) {
@@ -75,8 +82,8 @@ public class SessionManager {
         mEditor.commit();
     }
 
-    public String getCalReq() {
-        return mSharedPrefs.getString(KEY_JSON, null);
+    public JsonArray getCalReq() {
+        return mUtil.getJsonArrayFromString(mSharedPrefs.getString(KEY_JSON, null));
     }
 
     public boolean isLoggedIn () {
@@ -97,6 +104,15 @@ public class SessionManager {
 
     public String getCookie() {
         return mSharedPrefs.getString(KEY_COOKIE, null);
+    }
+
+    public String getAnnouncements() {
+        return mSharedPrefs.getString(KEY_ANNOUNCEMENTS, null);
+    }
+
+    public void setAnnouncements(String s) {
+        mEditor.putString(KEY_ANNOUNCEMENTS, s);
+        mEditor.commit();
     }
 
     public void updateSession(String email, String name, String id) {

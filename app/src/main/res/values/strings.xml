@@ -54,5 +54,6 @@
     <string name="edit">edit</string>
     <string name="info">info</string>
     <string name="points">Points</string>
+    <string name="title_activity_announcements">AnnouncementsActivity</string>
 
 </resources>

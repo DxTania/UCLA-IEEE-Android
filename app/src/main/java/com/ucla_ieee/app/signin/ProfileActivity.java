@@ -265,7 +265,7 @@ public class ProfileActivity extends Activity {
         protected String doInBackground(List<BasicNameValuePair>... params) {
 
             HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost("http://ieeebruins.org/membership_serve/test.php");
+            HttpPost httpPost = new HttpPost("http://ieeebruins.org/membership_serve/users.php");
 
             List<NameValuePair> editParams = new ArrayList<NameValuePair>();
             editParams.add(new BasicNameValuePair("service", "edit_member"));

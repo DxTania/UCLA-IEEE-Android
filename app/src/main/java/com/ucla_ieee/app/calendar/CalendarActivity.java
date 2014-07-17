@@ -75,17 +75,9 @@ public class CalendarActivity extends FragmentActivity {
 
         // Show/get cached events
         SessionManager sessionManager = new SessionManager(CalendarActivity.this);
-        String eventJson = sessionManager.getCalReq();
-        if (!TextUtils.isEmpty(eventJson)) {
-            JsonArray json;
-            try {
-                JsonParser parser = new JsonParser();
-                json = (JsonArray) parser.parse(eventJson);
-            } catch (JsonSyntaxException e) {
-                e.printStackTrace();
-                return;
-            }
-            addEvents(json);
+        JsonArray events = sessionManager.getCalReq();
+        if (events != null) {
+            addEvents(events);
         }
 
         // Start async task to check if new events have been added
@@ -170,7 +162,7 @@ public class CalendarActivity extends FragmentActivity {
             boolean color = false;
             mSelectedDate = date;
             ArrayList<Event> newSelectedEvents = new ArrayList<Event>();
-            for (Event e: mEvents) {
+            for (Event e : mEvents) {
                 if (mDateComp.format(e.getStartDate()).equals(mDateComp.format(date))) {
                     newSelectedEvents.add(e);
                     color = true;
