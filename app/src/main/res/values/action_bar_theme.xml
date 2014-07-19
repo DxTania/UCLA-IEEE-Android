@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- the theme applied to the application or activity -->
+    <style name="CustomActionBarTheme"
+           parent="@android:style/Theme.Holo.Light">
+        <item name="android:actionBarStyle">@style/CustomActionBarTheme.ActionBar</item>
+        <item name="android:actionMenuTextColor">@color/caldroid_black</item>
+    </style>
+
+    <style name="CustomActionBarTheme.ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@color/gray</item>
+        <item name="android:titleTextStyle">@style/CustomActionBarTheme.ActionBar.Text</item>
+    </style>
+
+    <style name="CustomActionBarTheme.ActionBar.Text" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/caldroid_black</item>
+    </style>
+</resources>

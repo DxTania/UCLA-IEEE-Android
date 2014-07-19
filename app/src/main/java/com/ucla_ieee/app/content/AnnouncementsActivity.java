@@ -1,6 +1,5 @@
 package com.ucla_ieee.app.content;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -9,12 +8,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.ucla_ieee.app.R;
 import com.ucla_ieee.app.signin.SessionManager;
+import com.ucla_ieee.app.util.FadeActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class AnnouncementsActivity extends Activity {
+public class AnnouncementsActivity extends FadeActivity {
     AnnouncementsListAdapter mListAdapter;
 
     @Override
@@ -41,7 +41,7 @@ public class AnnouncementsActivity extends Activity {
             for (JsonElement announcement : announcements) {
                 String content = announcement.getAsJsonObject().get("content").getAsString();
                 String date = announcement.getAsJsonObject().get("datePosted").getAsString();
-                int id = announcement.getAsJsonObject().get("id").getAsInt();
+                int id = announcement.getAsJsonObject().get("id").getAsInt(); // TODO: null pointer exception?
                 if (didUpdate(new Announcement(content, date, id))) {
                     continue;
                 }

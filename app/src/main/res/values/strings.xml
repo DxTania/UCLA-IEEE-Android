@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <string name="ucla_ieee">UCLA IEEE</string>
     <string name="app_name">ucla-ieee</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
@@ -23,7 +23,6 @@
     <string name="sample_next_reward">You\'re next reward will be..</string>
     <string name="question_description">What is this?</string>
     <string name="no_events">Sorry, nothing\'s going on today!</string>
-    <string name="ucla_ieee">UCLA IEEE</string>
     <string name="sample_announcement">Lab cleanup Thursday at 7:00pm, pizza may or may not be involved. Lab cleanup
         Thursday at 7:00pm, pizza may or may not be involved. Lab cleanup Thursday at 7:00pm, pizza may or may not be involved</string>
     <string name="announcements">Announcements: </string>
@@ -55,5 +54,14 @@
     <string name="info">info</string>
     <string name="points">Points</string>
     <string name="title_activity_announcements">AnnouncementsActivity</string>
+    <string name="checkin_desc">Check In icon</string>
+    <string name="checkin_text">Check In</string>
+    <string name="title_activity_main_activity2">MainActivity2</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
 
 </resources>

@@ -87,7 +87,6 @@ public class RegisterActivity extends Activity {
         });
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -247,6 +246,7 @@ public class RegisterActivity extends Activity {
                 Toast.makeText(RegisterActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                 finish();
             }
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         }
 
         @Override

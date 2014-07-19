@@ -1,84 +1,54 @@
 package com.ucla_ieee.app;
 
+import android.R.anim;
+import android.app.ActionBar;
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.support.v4.widget.DrawerLayout;
+import android.view.*;
 import com.ucla_ieee.app.calendar.CalendarActivity;
-import com.ucla_ieee.app.content.AnnouncementsActivity;
-import com.ucla_ieee.app.scan.IntentIntegrator;
-import com.ucla_ieee.app.scan.IntentResult;
 import com.ucla_ieee.app.signin.LoginActivity;
 import com.ucla_ieee.app.signin.ProfileActivity;
 import com.ucla_ieee.app.signin.SessionManager;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+    /**
+     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
+     */
+    private NavigationDrawerFragment mNavigationDrawerFragment;
+
+    /**
+     * Used to store the last screen title. For use in {@link #restoreActionBar()}.
+     */
+    private CharSequence mTitle;
+
     private SessionManager mSessionManager;
-    private LinearLayout mAnnouncementsView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.activity_main_activity2);
 
-        setContentView(R.layout.activity_main);
-
+        mNavigationDrawerFragment = (NavigationDrawerFragment)
+                getFragmentManager().findFragmentById(R.id.navigation_drawer);
+        mTitle = "Welcome!";
         mSessionManager = new SessionManager(this);
 
-        mAnnouncementsView = (LinearLayout) findViewById(R.id.announcements);
-        mAnnouncementsView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: Allow clicking on announcements to see previous announcements
-                Intent intent = new Intent(MainActivity.this, AnnouncementsActivity.class);
-                startActivity(intent);
-            }
-        });
+        // Set up the drawer.
+        mNavigationDrawerFragment.setUp(
+                R.id.navigation_drawer,
+                (DrawerLayout) findViewById(R.id.drawer_layout));
+    }
 
-        // CALENDAR
-        LinearLayout calendar = (LinearLayout) findViewById(R.id.calendarButton);
-        calendar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent calendarIntent = new Intent(MainActivity.this, CalendarActivity.class);
-                startActivity(calendarIntent);
-            }
-        });
-
-        // MEMBERSHIP
-        LinearLayout myMembership = (LinearLayout) findViewById(R.id.myMembership);
-        myMembership.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent membershipIntent = new Intent(MainActivity.this, ProfileActivity.class);
-                startActivity(membershipIntent);
-            }
-        });
-
-        // LOGOUT
-        LinearLayout logout = (LinearLayout) findViewById(R.id.achievementsButton);
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mSessionManager.logoutUser();
-                actOnLoginStatus();
-            }
-        });
-
-        // SETTINGS
-        LinearLayout settings = (LinearLayout) findViewById(R.id.settingsButton);
-        settings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
-                startActivity(settingsIntent);
-            }
-        });
+    @Override
+    protected void onResume() {
+        super.onResume();
+        actOnLoginStatus();
     }
 
     public void actOnLoginStatus() {
@@ -90,26 +60,60 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        actOnLoginStatus();
+    public void onNavigationDrawerItemSelected(int position) {
+        // update the main content by replacing fragments
+        Intent intent;
+        switch(position) {
+            case 0:
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                        .commit();
+                break;
+            case 1:
+                intent = new Intent(MainActivity.this, CalendarActivity.class);
+                startActivity(intent);
+                overridePendingTransition(anim.fade_in, anim.fade_out);
+                break;
+            case 2:
+                intent = new Intent(MainActivity.this, ProfileActivity.class);
+                startActivity(intent);
+                overridePendingTransition(anim.fade_in, anim.fade_out);
+                break;
+            case 3:
+                //logout
+            default:
+
+        }
+
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        if (scanResult != null) {
-//            testText.setText(scanResult.getContents());
-            Toast.makeText(this, "Thanks for checking in!", Toast.LENGTH_SHORT).show();
+    public void onSectionAttached(int number) {
+        switch (number) {
+            case 1:
+                mTitle = "Welcome!";
         }
     }
 
+    public void restoreActionBar() {
+        ActionBar actionBar = getActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setTitle(mTitle);
+    }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+        if (!mNavigationDrawerFragment.isDrawerOpen()) {
+            // Only show items in the action bar relevant to this screen
+            // if the drawer is not showing. Otherwise, let the drawer
+            // decide what to show in the action bar.
+            getMenuInflater().inflate(R.menu.main_activity2, menu);
+            restoreActionBar();
+            return true;
+        }
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -122,6 +126,46 @@ public class MainActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * A placeholder fragment containing a simple view.
+     */
+    public static class PlaceholderFragment extends Fragment {
+        /**
+         * The fragment argument representing the section number for this
+         * fragment.
+         */
+        private static final String ARG_SECTION_NUMBER = "section_number";
+
+        /**
+         * Returns a new instance of this fragment for the given section
+         * number.
+         */
+        public static PlaceholderFragment newInstance(int sectionNumber) {
+            PlaceholderFragment fragment = new PlaceholderFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        public PlaceholderFragment() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_main_activity2, container, false);
+            return rootView;
+        }
+
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+            ((MainActivity) activity).onSectionAttached(
+                    getArguments().getInt(ARG_SECTION_NUMBER));
+        }
     }
 
 }

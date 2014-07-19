@@ -2,7 +2,6 @@ package com.ucla_ieee.app.calendar;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,12 +14,13 @@ import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
 import com.ucla_ieee.app.R;
 import com.ucla_ieee.app.signin.SessionManager;
+import com.ucla_ieee.app.util.FadeFragmentActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 
-public class CalendarActivity extends FragmentActivity {
+public class CalendarActivity extends FadeFragmentActivity {
 
     private CaldroidFragment mCaldroidFragment;
     private TextView mDayTextView;

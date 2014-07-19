@@ -1,9 +1,7 @@
 package com.ucla_ieee.app.signin;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -11,25 +9,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 import com.ucla_ieee.app.R;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
+import com.ucla_ieee.app.util.FadeActivity;
 import org.apache.http.message.BasicNameValuePair;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProfileActivity extends Activity {
+public class ProfileActivity extends FadeActivity {
     private MembershipEditTask mAuthTask = null;
 
     private EditText email, name, memberId;
@@ -50,7 +37,8 @@ public class ProfileActivity extends Activity {
         setUpImageButtons();
         setUpSaveChanges();
 
-        // TODO: Populate events list
+        // TODO: Populate events list, get events since day of most recent event they attended
+        // TODO: QR Codes should be the id of the calendar event. SHould we verify checking in with GPS?
         ListView attendedEvents = (ListView) findViewById(R.id.attendedEventList);
         TextView noEvents = (TextView) findViewById(R.id.noEventsText);
         noEvents.setVisibility(View.VISIBLE);
@@ -63,7 +51,7 @@ public class ProfileActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // send post request
-                mAuthTask = new MembershipEditTask(sessionManager.getEmail(), sessionManager.getCookie());
+                mAuthTask = new MembershipEditTask(ProfileActivity.this, passwordText);
 
                 String newEmail, newName, newId, newPassword;
                 newEmail = email.getText().toString();
@@ -144,7 +132,7 @@ public class ProfileActivity extends Activity {
         });
     }
 
-    // Password change alert dialog
+    // Password change alert dialog TODO: Can't change password twice in a row and can't undo
     private void setUpAlertDialog() {
         View ll = LayoutInflater.from(ProfileActivity.this).inflate(R.layout.password_snippet, null);
         final EditText newPasswordView = (EditText) ll.findViewById(R.id.newPassword);
@@ -247,112 +235,4 @@ public class ProfileActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    /**
-     * Sends a request to server to authorize and change member stats
-     */
-    public class MembershipEditTask extends AsyncTask<List<BasicNameValuePair>, Void, String> {
-
-        private final String mEmail;
-        private final String mCookie;
-
-        MembershipEditTask(String email, String cookie) {
-            mEmail = email;
-            mCookie = cookie;
-        }
-
-        @Override
-        protected String doInBackground(List<BasicNameValuePair>... params) {
-
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost("http://ieeebruins.org/membership_serve/users.php");
-
-            List<NameValuePair> editParams = new ArrayList<NameValuePair>();
-            editParams.add(new BasicNameValuePair("service", "edit_member"));
-            editParams.add(new BasicNameValuePair("email", mEmail));
-            editParams.add(new BasicNameValuePair("cookie", mCookie));
-
-            // Add everything we are changing
-            List<BasicNameValuePair> pairs = params[0];
-            editParams.addAll(pairs);
-
-            try {
-                httpPost.setEntity(new UrlEncodedFormEntity(editParams));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-                return null;
-            }
-
-            try {
-                HttpResponse response = httpClient.execute(httpPost);
-                HttpEntity entity = response.getEntity();
-
-                if (entity != null) {
-                    InputStream instream = entity.getContent();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(instream));
-                    StringBuilder builder = new StringBuilder();
-
-                    String st;
-                    while((st = reader.readLine()) != null) {
-                        builder.append(st).append("\n");
-                    }
-
-                    instream.close();
-                    return builder.toString();
-                }
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String response) {
-            // update user in session
-            mAuthTask = null;
-
-            if (TextUtils.isEmpty(response)) {
-                Toast.makeText(ProfileActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            JsonObject json;
-            try {
-                JsonParser parser = new JsonParser();
-                json = (JsonObject) parser.parse(response);
-            } catch (JsonSyntaxException e) {
-                e.printStackTrace();
-                Toast.makeText(ProfileActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (json.get("success") != null && json.get("success").getAsInt() == 1) {
-                SessionManager sessionManager = new SessionManager(getApplicationContext());
-
-                String email, name, id;
-                email = json.get("email").getAsString();
-                name = json.get("name").getAsString();
-                id = json.get("ieee_id").getAsString();
-
-                passwordText.setText("");
-
-                sessionManager.updateSession(email, name, id);
-                Toast.makeText(ProfileActivity.this, "Changes saved successfully", Toast.LENGTH_SHORT).show();
-            } else {
-                // TODO: dissect more errors
-                if (json.get("error_code") != null && json.get("error_code").getAsInt() == 0) {
-                    Toast.makeText(ProfileActivity.this, "Incorrect password", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-        }
-    }
-
 }

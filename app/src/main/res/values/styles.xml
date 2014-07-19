@@ -23,4 +23,6 @@
 
     <style name="ButtonBarButton" />
 
+    <color name="gray">#eaeaea</color>
+
 </resources>

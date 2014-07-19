@@ -1,7 +1,6 @@
 package com.ucla_ieee.app.calendar;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,20 +68,20 @@ public class EventListAdapter extends ArrayAdapter<Event> {
             }
         } else if (event.getStartDate() != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-            if (sdf.format(event.getStartDate()).equals(sdf.format(now))) {
-                viewHolder.checkIn.setVisibility(View.VISIBLE);
-            } else {
+//            if (sdf.format(event.getStartDate()).equals(sdf.format(now))) {
+//                viewHolder.checkIn.setVisibility(View.VISIBLE);
+//            } else {
                 viewHolder.checkIn.setVisibility(View.INVISIBLE);
-            }
+//            }
         }
-        viewHolder.checkIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent("com.google.zxing.client.android.SCAN");
-                intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
-                ((CalendarActivity) context).startActivityForResult(intent, 0);
-            }
-        });
+//        viewHolder.checkIn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent("com.google.zxing.client.android.SCAN");
+//                intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
+//                ((CalendarActivity) context).startActivityForResult(intent, 0);
+//            }
+//        });
 
         viewHolder.summary.setText(event.getSummary());
         viewHolder.location.setText(time + loc + " ");

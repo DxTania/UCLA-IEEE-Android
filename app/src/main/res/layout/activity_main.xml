@@ -154,19 +154,19 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:contentDescription="@string/settings_desc"
+                    android:contentDescription="@string/checkin_desc"
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:layout_width="wrap_content"
                     android:paddingBottom="10dp"
-                    android:src="@drawable/settings"/>
+                    android:src="@drawable/checkin"/>
 
                 <Button
                     android:background="@android:color/transparent"
                     android:gravity="center"
                     android:layout_height="22sp"
                     android:layout_width="wrap_content"
-                    android:text="@string/settings"
+                    android:text="@string/checkin_text"
                     android:textSize="18sp"
                     android:textStyle="bold"/>
             </LinearLayout>
