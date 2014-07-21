@@ -3,13 +3,13 @@ package com.ucla_ieee.app;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.*;
@@ -17,6 +17,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+import com.ucla_ieee.app.signin.LoginActivity;
+import com.ucla_ieee.app.signin.SessionManager;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -55,7 +57,7 @@ public class NavigationDrawerFragment extends Fragment {
     private boolean mUserLearnedDrawer;
 
     private MainActivity activity;
-    private int mPosition;
+    private int mPosition = 0;
 
     public NavigationDrawerFragment() {
     }
@@ -112,14 +114,10 @@ public class NavigationDrawerFragment extends Fragment {
         return mDrawerListView;
     }
 
-    private void switchFragments(int position) {
-        FragmentManager fragmentManager;
+    public void switchFragments(int position) {
         switch(position) {
             case 0:
-                fragmentManager = activity.getSupportFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, MainActivity.PlaceholderFragment.newInstance(position + 1))
-                        .commit();
+                activity.doFragment(MainActivity.PROFILE_TAG);
                 break;
             case 1:
                 activity.doFragment(MainActivity.CAL_TAG);
@@ -127,10 +125,14 @@ public class NavigationDrawerFragment extends Fragment {
             case 2:
                 activity.doFragment(MainActivity.PROFILE_TAG);
                 break;
-            case 3:
-                //logout
+            case 4:
+                SessionManager sessionManager = new SessionManager(getActivity());
+                sessionManager.logoutUser();
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                startActivity(intent);
+                getActivity().finish();
+                break;
             default:
-
         }
     }
 
@@ -215,7 +217,7 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
-    private void selectItem(int position) {
+    public void selectItem(int position) {
         mCurrentSelectedPosition = position;
         if (mDrawerListView != null) {
             mDrawerListView.setItemChecked(position, true);
