@@ -31,7 +31,7 @@ public class CalendarTask extends AsyncTask<Void, Void, String> {
     JsonServerUtil mUtil;
 
     public CalendarTask(CalendarActivity parent) {
-        mSessionManager = new SessionManager(parent);
+        mSessionManager = new SessionManager(parent.getActivity());
         mParent = parent;
         mUtil = new JsonServerUtil();
     }
@@ -65,7 +65,7 @@ public class CalendarTask extends AsyncTask<Void, Void, String> {
     protected void onPostExecute(String response) {
         JsonObject json = mUtil.getJsonObjectFromString(response);
         if (json == null) {
-            Toast.makeText(mParent, "Something went wrong", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mParent.getActivity(), "Something went wrong", Toast.LENGTH_SHORT).show();
             return; // error
         }
 

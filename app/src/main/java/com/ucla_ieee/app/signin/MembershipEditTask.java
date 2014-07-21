@@ -1,7 +1,7 @@
 package com.ucla_ieee.app.signin;
 
-import android.content.Context;
 import android.os.AsyncTask;
+import android.support.v4.app.Fragment;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.gson.JsonObject;
@@ -31,9 +31,9 @@ public class MembershipEditTask extends AsyncTask<List<BasicNameValuePair>, Void
     private TextView mTextView;
     private JsonServerUtil mUtil;
 
-    MembershipEditTask(Context context, TextView passwordText) {
+    MembershipEditTask(Fragment context, TextView passwordText) {
         mContext = (ProfileActivity) context;
-        mSessionManager = new SessionManager(mContext);
+        mSessionManager = new SessionManager(mContext.getActivity());
         mEmail = mSessionManager.getEmail();
         mCookie = mSessionManager.getCookie();
         mTextView = passwordText;
@@ -75,7 +75,7 @@ public class MembershipEditTask extends AsyncTask<List<BasicNameValuePair>, Void
     protected void onPostExecute(String response) {
         JsonObject json = mUtil.getJsonObjectFromString(response);
         if (json == null) {
-            Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext.getActivity(), "Something went wrong", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -89,11 +89,11 @@ public class MembershipEditTask extends AsyncTask<List<BasicNameValuePair>, Void
             mTextView.setText("");
 
             mSessionManager.updateSession(email, name, id);
-            Toast.makeText(mContext, "Changes saved successfully", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext.getActivity(), "Changes saved successfully", Toast.LENGTH_SHORT).show();
         } else {
             // TODO: dissect more errors
             if (json.get("error_code") != null && json.get("error_code").getAsInt() == 0) {
-                Toast.makeText(mContext, "Incorrect password", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext.getActivity(), "Incorrect password", Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -105,7 +105,7 @@ public class Event implements Parcelable {
         dest.writeLong(endDate.getTime());
     }
 
-    public static final Parcelable.Creator<Event> CREATOR = new Creator<Event>() {
+    public static final Creator<Event> CREATOR = new Creator<Event>() {
         public Event createFromParcel(Parcel source) {
             Event mEvent = new Event();
             mEvent.setSummary(source.readString());

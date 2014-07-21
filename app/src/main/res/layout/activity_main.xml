@@ -1,177 +1,31 @@
-<RelativeLayout
+<!-- A DrawerLayout is intended to be used as the top-level content view using match_parent for both width and height to consume the full space available. -->
+<android.support.v4.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="fill_parent"
-    android:layout_width="fill_parent"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.ucla.ieee.app.MainActivity">
 
-    <ImageView
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/ieee_logo"
-        android:id="@+id/logo"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_width="fill_parent"
-        android:minWidth="50dp"
-        android:padding="10dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/logo"/>
+    <!-- As the main content view, the view below consumes the entire
+         space available using match_parent in both dimensions. -->
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-    <LinearLayout
-        android:id="@+id/announcements"
-        android:layout_below="@id/logo"
-        android:layout_height="85sp"
-        android:layout_width="fill_parent"
-        android:orientation="vertical"
-        android:paddingBottom="10dp">
+    <!-- android:layout_gravity="start" tells DrawerLayout to treat
+         this as a sliding drawer on the left side for left-to-right
+         languages and on the right side for right-to-left languages.
+         If you're not building against API 17 or higher, use
+         android:layout_gravity="left" instead. -->
+    <!-- The drawer is given a fixed width in dp and extends the full height of
+         the container. -->
+    <fragment android:id="@+id/navigation_drawer"
+              android:layout_width="@dimen/navigation_drawer_width"
+              android:layout_height="match_parent"
+              android:layout_gravity="start"
+              android:name="com.ucla_ieee.app.NavigationDrawerFragment"
+              tools:layout="@layout/fragment_navigation_drawer" />
 
-        <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="fill_parent"
-            android:paddingBottom="5dp"
-            android:text="@string/announcements"
-            android:textColor="#000"
-            android:textSize="20sp"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:ellipsize="end"
-            android:id="@+id/announcementsView"
-            android:layout_height="wrap_content"
-            android:layout_width="fill_parent"
-            android:maxLines="2"
-            android:scrollbars="vertical"
-            android:text="@string/sample_announcement"
-            android:textSize="18sp"/>
-    </LinearLayout>
-
-    <TableLayout
-        android:layout_below="@id/announcements"
-        android:layout_height="fill_parent"
-        android:layout_width="fill_parent"
-        android:stretchColumns="*">
-
-        <TableRow
-            android:layout_height="0dp"
-            android:layout_weight="0.3"
-            android:layout_width="fill_parent"
-            android:orientation="horizontal"
-            android:paddingBottom="5dp">
-
-            <LinearLayout
-                android:gravity="center"
-                android:id="@+id/myMembership"
-                android:layout_height="fill_parent"
-                android:layout_width="0dp"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:adjustViewBounds="true"
-                    android:contentDescription="@string/membership_desc"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:layout_width="wrap_content"
-                    android:paddingBottom="10dp"
-                    android:src="@drawable/members"/>
-
-                <Button
-                    android:background="@android:color/transparent"
-                    android:gravity="center"
-                    android:layout_height="22sp"
-                    android:layout_width="wrap_content"
-                    android:text="@string/my_membership"
-                    android:textSize="18sp"
-                    android:textStyle="bold"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:gravity="center"
-                android:id="@+id/calendarButton"
-                android:layout_height="fill_parent"
-                android:layout_width="0dp"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:contentDescription="@string/calendar_desc"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:layout_width="wrap_content"
-                    android:paddingBottom="10dp"
-                    android:src="@drawable/calendar"/>
-
-                <Button
-                    android:background="@android:color/transparent"
-                    android:gravity="center"
-                    android:layout_height="22sp"
-                    android:layout_width="wrap_content"
-                    android:text="@string/calendar_events"
-                    android:textSize="18sp"
-                    android:textStyle="bold"/>
-            </LinearLayout>
-
-        </TableRow>
-
-        <TableRow
-            android:layout_height="0dp"
-            android:layout_weight="0.3"
-            android:layout_width="fill_parent"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:gravity="center"
-                android:id="@+id/achievementsButton"
-                android:layout_height="fill_parent"
-                android:layout_width="0dp"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:contentDescription="@string/achievements_desc"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:layout_width="fill_parent"
-                    android:paddingBottom="10dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/achievements"/>
-
-                <Button
-                    android:background="@android:color/transparent"
-                    android:gravity="center"
-                    android:layout_height="22sp"
-                    android:layout_width="wrap_content"
-                    android:text="@string/achievementText"
-                    android:textSize="18sp"
-                    android:textStyle="bold"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:gravity="center"
-                android:id="@+id/settingsButton"
-                android:layout_height="fill_parent"
-                android:layout_width="0dp"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:contentDescription="@string/checkin_desc"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:layout_width="wrap_content"
-                    android:paddingBottom="10dp"
-                    android:src="@drawable/checkin"/>
-
-                <Button
-                    android:background="@android:color/transparent"
-                    android:gravity="center"
-                    android:layout_height="22sp"
-                    android:layout_width="wrap_content"
-                    android:text="@string/checkin_text"
-                    android:textSize="18sp"
-                    android:textStyle="bold"/>
-            </LinearLayout>
-        </TableRow>
-
-    </TableLayout>
-
-</RelativeLayout>
+</android.support.v4.widget.DrawerLayout>

@@ -2,10 +2,11 @@ package com.ucla_ieee.app.calendar;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
-import android.view.Menu;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -14,13 +15,12 @@ import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
 import com.ucla_ieee.app.R;
 import com.ucla_ieee.app.signin.SessionManager;
-import com.ucla_ieee.app.util.FadeFragmentActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 
-public class CalendarActivity extends FadeFragmentActivity {
+public class CalendarActivity extends Fragment {
 
     private CaldroidFragment mCaldroidFragment;
     private TextView mDayTextView;
@@ -33,19 +33,18 @@ public class CalendarActivity extends FadeFragmentActivity {
     private TextView mNoEventsView;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_calendar);
-        setTitle("Calendar of Events");
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_calendar, container, false);
 
-        mDayTextView = (TextView) findViewById(R.id.dayText);
+        mDayTextView = (TextView) rootView.findViewById(R.id.dayText);
         mDateComp = new SimpleDateFormat("yyyyMMdd");
         mHumanDate = new SimpleDateFormat("MMMM dd, yyyy");
         mPreviousSelection = null;
         mEvents = new ArrayList<Event>();
         mSelectedEvents = new ArrayList<Event>();
-        mEventListAdapter = new EventListAdapter(this, mSelectedEvents);
-        mNoEventsView = (TextView) findViewById(R.id.noEventsText);
+        mEventListAdapter = new EventListAdapter(getActivity(), mSelectedEvents);
+        mNoEventsView = (TextView) rootView.findViewById(R.id.noEventsText);
         mSelectedDate = new Date();
         mDayTextView.setText("Events for " + mHumanDate.format(new Date()));
 
@@ -59,12 +58,12 @@ public class CalendarActivity extends FadeFragmentActivity {
         mCaldroidFragment.setCaldroidListener(listener);
 
         // Display calendar
-        FragmentTransaction t = getSupportFragmentManager().beginTransaction();
-        t.replace(R.id.calendar, mCaldroidFragment);
-        t.commit();
+        getFragmentManager().beginTransaction()
+            .replace(R.id.calendar, mCaldroidFragment)
+            .commit();
 
         // Show/get cached events
-        SessionManager sessionManager = new SessionManager(CalendarActivity.this);
+        SessionManager sessionManager = new SessionManager(getActivity());
         JsonArray events = sessionManager.getCalReq();
         if (events != null) {
             addEvents(events);
@@ -75,16 +74,18 @@ public class CalendarActivity extends FadeFragmentActivity {
         eventsTask.execute((Void) null);
 
         // Set event list adapter
-        ListView eventListView = (ListView) findViewById(R.id.eventList);
+        ListView eventListView = (ListView) rootView.findViewById(R.id.eventList);
         eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent eventIntent = new Intent(CalendarActivity.this, EventActivity.class);
+                Intent eventIntent = new Intent(getActivity(), EventActivity.class);
                 eventIntent.putExtra("Event", mSelectedEvents.get(position));
                 startActivity(eventIntent);
             }
         });
         eventListView.setAdapter(mEventListAdapter);
+
+        return rootView;
     }
 
     public void addEvents(JsonArray events) {
@@ -127,13 +128,6 @@ public class CalendarActivity extends FadeFragmentActivity {
             // TODO: color for events for TODAY differently
         }
         mCaldroidFragment.refreshView();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.calendar, menu);
-        return true;
     }
 
     @Override

@@ -3,20 +3,20 @@ package com.ucla_ieee.app.signin;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
 import com.ucla_ieee.app.R;
-import com.ucla_ieee.app.util.FadeActivity;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProfileActivity extends FadeActivity {
+public class ProfileActivity extends Fragment {
     private MembershipEditTask mAuthTask = null;
 
     private EditText email, name, memberId;
@@ -24,14 +24,14 @@ public class ProfileActivity extends FadeActivity {
     private Boolean alertReady = false;
     private String cachePassword = "";
     private SessionManager sessionManager;
+    private View rootView;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
-        setTitle("My Membership");
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        sessionManager = new SessionManager(this);
+        sessionManager = new SessionManager(getActivity());
 
         setUpViews();
         setUpImageButtons();
@@ -39,14 +39,16 @@ public class ProfileActivity extends FadeActivity {
 
         // TODO: Populate events list, get events since day of most recent event they attended
         // TODO: QR Codes should be the id of the calendar event. SHould we verify checking in with GPS?
-        ListView attendedEvents = (ListView) findViewById(R.id.attendedEventList);
-        TextView noEvents = (TextView) findViewById(R.id.noEventsText);
+        ListView attendedEvents = (ListView) rootView.findViewById(R.id.attendedEventList);
+        TextView noEvents = (TextView) rootView.findViewById(R.id.noEventsText);
         noEvents.setVisibility(View.VISIBLE);
+
+        return rootView;
     }
 
     // Click listener for save changes button
     private void setUpSaveChanges() {
-        Button saveChanges = (Button) findViewById(R.id.saveChanges);
+        Button saveChanges = (Button) rootView.findViewById(R.id.saveChanges);
         saveChanges.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,7 +77,7 @@ public class ProfileActivity extends FadeActivity {
                 }
 
                 if (valuePairs.size() == 0) {
-                    Toast.makeText(ProfileActivity.this, "Nothing to change", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Nothing to change", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -87,16 +89,16 @@ public class ProfileActivity extends FadeActivity {
 
     // Click listeners for image buttons
     private void setUpImageButtons() {
-        ImageButton aboutNextReward = (ImageButton) findViewById(R.id.aboutNextReward);
+        ImageButton aboutNextReward = (ImageButton) rootView.findViewById(R.id.aboutNextReward);
         aboutNextReward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LinearLayout ll = (LinearLayout) findViewById(R.id.nextRewardHint);
+                LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.nextRewardHint);
                 ll.setVisibility(ll.getVisibility() == View.VISIBLE? View.GONE : View.VISIBLE);
             }
         });
 
-        ImageButton changeEmail = (ImageButton) findViewById(R.id.editEmail);
+        ImageButton changeEmail = (ImageButton) rootView.findViewById(R.id.editEmail);
         changeEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,7 +107,7 @@ public class ProfileActivity extends FadeActivity {
             }
         });
 
-        ImageButton changeName = (ImageButton) findViewById(R.id.editName);
+        ImageButton changeName = (ImageButton) rootView.findViewById(R.id.editName);
         changeName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,7 +116,7 @@ public class ProfileActivity extends FadeActivity {
             }
         });
 
-        ImageButton changeId = (ImageButton) findViewById(R.id.editMembershipId);
+        ImageButton changeId = (ImageButton) rootView.findViewById(R.id.editMembershipId);
         changeId.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,7 +125,7 @@ public class ProfileActivity extends FadeActivity {
             }
         });
 
-        ImageButton changePassword = (ImageButton) findViewById(R.id.changePassword);
+        ImageButton changePassword = (ImageButton) rootView.findViewById(R.id.changePassword);
         changePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -134,12 +136,12 @@ public class ProfileActivity extends FadeActivity {
 
     // Password change alert dialog TODO: Can't change password twice in a row and can't undo
     private void setUpAlertDialog() {
-        View ll = LayoutInflater.from(ProfileActivity.this).inflate(R.layout.password_snippet, null);
+        View ll = LayoutInflater.from(getActivity()).inflate(R.layout.password_snippet, null);
         final EditText newPasswordView = (EditText) ll.findViewById(R.id.newPassword);
         final EditText retypedPasswordView = (EditText) ll.findViewById(R.id.retypedPassword);
         final EditText passwordView = (EditText) ll.findViewById(R.id.curPassword);
 
-        final AlertDialog alert = new AlertDialog.Builder(ProfileActivity.this)
+        final AlertDialog alert = new AlertDialog.Builder(getActivity())
                 .setTitle("Update Password")
                 .setMessage("Please fill in the following fields")
                 .setView(ll)
@@ -181,22 +183,22 @@ public class ProfileActivity extends FadeActivity {
     }
 
     private void setUpViews() {
-        email = (EditText) findViewById(R.id.memberEmail);
-        emailText = (TextView) findViewById(R.id.memberEmailText);
+        email = (EditText) rootView.findViewById(R.id.memberEmail);
+        emailText = (TextView) rootView.findViewById(R.id.memberEmailText);
         email.setText(sessionManager.getEmail());
         emailText.setText(sessionManager.getEmail());
 
-        name = (EditText) findViewById(R.id.memberName);
-        nameText = (TextView) findViewById(R.id.memberNameText);
+        name = (EditText) rootView.findViewById(R.id.memberName);
+        nameText = (TextView) rootView.findViewById(R.id.memberNameText);
         name.setText(sessionManager.getName());
         nameText.setText(sessionManager.getName());
 
-        memberId = (EditText) findViewById(R.id.memberId);
-        memberIdText = (TextView) findViewById(R.id.memberIdText);
+        memberId = (EditText) rootView.findViewById(R.id.memberId);
+        memberIdText = (TextView) rootView.findViewById(R.id.memberIdText);
         memberId.setText(sessionManager.getIEEEId());
         memberIdText.setText(sessionManager.getIEEEId());
 
-        passwordText = (TextView) findViewById(R.id.passwordText);
+        passwordText = (TextView) rootView.findViewById(R.id.passwordText);
     }
 
     private void toggleOffEdits() {
@@ -214,14 +216,6 @@ public class ProfileActivity extends FadeActivity {
             editText.setVisibility(View.VISIBLE);
             textView.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.profile, menu);
-        return true;
     }
 
     @Override

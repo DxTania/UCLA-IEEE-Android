@@ -3,10 +3,11 @@ package com.ucla_ieee.app;
 import android.R.anim;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.*;
 import com.ucla_ieee.app.calendar.CalendarActivity;
@@ -14,8 +15,10 @@ import com.ucla_ieee.app.signin.LoginActivity;
 import com.ucla_ieee.app.signin.ProfileActivity;
 import com.ucla_ieee.app.signin.SessionManager;
 
-public class MainActivity extends Activity
+public class MainActivity extends FragmentActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+    private final String CAL_TAG = "calendar";
+    private final String PROFILE_TAG = "profile";
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -32,10 +35,10 @@ public class MainActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_activity2);
+        setContentView(R.layout.activity_main);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
-                getFragmentManager().findFragmentById(R.id.navigation_drawer);
+                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = "Welcome!";
         mSessionManager = new SessionManager(this);
 
@@ -62,22 +65,19 @@ public class MainActivity extends Activity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        Intent intent;
+        FragmentManager fragmentManager;
         switch(position) {
             case 0:
-                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
                         .commit();
                 break;
             case 1:
-                intent = new Intent(MainActivity.this, CalendarActivity.class);
-                startActivity(intent);
-                overridePendingTransition(anim.fade_in, anim.fade_out);
+                doFragment(CAL_TAG);
                 break;
             case 2:
-                intent = new Intent(MainActivity.this, ProfileActivity.class);
-                startActivity(intent);
+                doFragment(PROFILE_TAG);
                 overridePendingTransition(anim.fade_in, anim.fade_out);
                 break;
             case 3:
@@ -85,7 +85,21 @@ public class MainActivity extends Activity
             default:
 
         }
+    }
 
+    private void doFragment(String tag) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentByTag(tag);
+        if (fragment == null) {
+            if (tag.equals(CAL_TAG)) {
+                fragment = new CalendarActivity();
+            } else {
+                fragment = new ProfileActivity();
+            }
+        }
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, fragment, tag)
+                .commit();
     }
 
     public void onSectionAttached(int number) {
@@ -156,7 +170,7 @@ public class MainActivity extends Activity
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main_activity2, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             return rootView;
         }
 
