@@ -37,18 +37,15 @@ public class CalendarActivity extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_calendar, container, false);
 
-        mDayTextView = (TextView) rootView.findViewById(R.id.dayText);
         mDateComp = new SimpleDateFormat("yyyyMMdd");
         mHumanDate = new SimpleDateFormat("MMMM dd, yyyy");
         mPreviousSelection = null;
         mEvents = new ArrayList<Event>();
         mSelectedEvents = new ArrayList<Event>();
         mEventListAdapter = new EventListAdapter(getActivity(), mSelectedEvents);
-        mNoEventsView = (TextView) rootView.findViewById(R.id.noEventsText);
         mSelectedDate = new Date();
-        mDayTextView.setText("Events for " + mHumanDate.format(new Date()));
 
-        // Set up calendar
+        // Create calendar
         mCaldroidFragment = new CaldroidFragment();
         Bundle args = new Bundle();
         Calendar cal = Calendar.getInstance();
@@ -56,11 +53,13 @@ public class CalendarActivity extends Fragment {
         args.putInt(CaldroidFragment.YEAR, cal.get(Calendar.YEAR));
         mCaldroidFragment.setArguments(args);
         mCaldroidFragment.setCaldroidListener(listener);
-
-        // Display calendar
         getFragmentManager().beginTransaction()
-            .replace(R.id.calendar, mCaldroidFragment)
-            .commit();
+                .replace(R.id.calendar, mCaldroidFragment)
+                .commit();
+
+        mDayTextView = (TextView) rootView.findViewById(R.id.dayText);
+        mDayTextView.setText("Events for " + mHumanDate.format(new Date()));
+        mNoEventsView = (TextView) rootView.findViewById(R.id.noEventsText);
 
         // Show/get cached events
         SessionManager sessionManager = new SessionManager(getActivity());
@@ -68,10 +67,6 @@ public class CalendarActivity extends Fragment {
         if (events != null) {
             addEvents(events);
         }
-
-        // Start async task to check if new events have been added
-        CalendarTask eventsTask = new CalendarTask(this);
-        eventsTask.execute((Void) null);
 
         // Set event list adapter
         ListView eventListView = (ListView) rootView.findViewById(R.id.eventList);
@@ -84,6 +79,10 @@ public class CalendarActivity extends Fragment {
             }
         });
         eventListView.setAdapter(mEventListAdapter);
+
+        // Start async task to check if new events have been added
+        CalendarTask eventsTask = new CalendarTask(this);
+        eventsTask.execute((Void) null);
 
         return rootView;
     }

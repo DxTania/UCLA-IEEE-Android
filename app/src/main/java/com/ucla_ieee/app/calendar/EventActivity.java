@@ -1,13 +1,13 @@
 package com.ucla_ieee.app.calendar;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import com.ucla_ieee.app.R;
+import com.ucla_ieee.app.util.FadeActivity;
 
-public class EventActivity extends Activity {
+public class EventActivity extends FadeActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

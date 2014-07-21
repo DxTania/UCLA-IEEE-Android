@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.*;
@@ -53,6 +54,9 @@ public class NavigationDrawerFragment extends Fragment {
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
+    private MainActivity activity;
+    private int mPosition;
+
     public NavigationDrawerFragment() {
     }
 
@@ -88,8 +92,9 @@ public class NavigationDrawerFragment extends Fragment {
                 R.layout.fragment_navigation_drawer, container, false);
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 selectItem(position);
+                mPosition = position;
             }
         });
         mDrawerListView.setAdapter(new ArrayAdapter<String>(
@@ -107,6 +112,28 @@ public class NavigationDrawerFragment extends Fragment {
         return mDrawerListView;
     }
 
+    private void switchFragments(int position) {
+        FragmentManager fragmentManager;
+        switch(position) {
+            case 0:
+                fragmentManager = activity.getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, MainActivity.PlaceholderFragment.newInstance(position + 1))
+                        .commit();
+                break;
+            case 1:
+                activity.doFragment(MainActivity.CAL_TAG);
+                break;
+            case 2:
+                activity.doFragment(MainActivity.PROFILE_TAG);
+                break;
+            case 3:
+                //logout
+            default:
+
+        }
+    }
+
     public boolean isDrawerOpen() {
         return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mFragmentContainerView);
     }
@@ -117,7 +144,8 @@ public class NavigationDrawerFragment extends Fragment {
      * @param fragmentId   The android:id of this fragment in its activity's layout.
      * @param drawerLayout The DrawerLayout containing this fragment's UI.
      */
-    public void setUp(int fragmentId, DrawerLayout drawerLayout) {
+    public void setUp(int fragmentId, DrawerLayout drawerLayout, MainActivity activity) {
+        this.activity = activity;
         mFragmentContainerView = getActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
 
@@ -144,6 +172,8 @@ public class NavigationDrawerFragment extends Fragment {
                 if (!isAdded()) {
                     return;
                 }
+
+                switchFragments(mPosition);
 
                 getActivity().invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
             }

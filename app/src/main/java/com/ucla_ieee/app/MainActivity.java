@@ -1,6 +1,5 @@
 package com.ucla_ieee.app;
 
-import android.R.anim;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
@@ -8,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.view.*;
 import com.ucla_ieee.app.calendar.CalendarActivity;
@@ -17,8 +17,8 @@ import com.ucla_ieee.app.signin.SessionManager;
 
 public class MainActivity extends FragmentActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
-    private final String CAL_TAG = "calendar";
-    private final String PROFILE_TAG = "profile";
+    public static final String CAL_TAG = "calendar";
+    public static final String PROFILE_TAG = "profile";
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -45,7 +45,8 @@ public class MainActivity extends FragmentActivity
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
+                (DrawerLayout) findViewById(R.id.drawer_layout),
+                this);
     }
 
     @Override
@@ -65,29 +66,10 @@ public class MainActivity extends FragmentActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        FragmentManager fragmentManager;
-        switch(position) {
-            case 0:
-                fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                        .commit();
-                break;
-            case 1:
-                doFragment(CAL_TAG);
-                break;
-            case 2:
-                doFragment(PROFILE_TAG);
-                overridePendingTransition(anim.fade_in, anim.fade_out);
-                break;
-            case 3:
-                //logout
-            default:
 
-        }
     }
 
-    private void doFragment(String tag) {
+    public void doFragment(String tag) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentByTag(tag);
         if (fragment == null) {
@@ -97,9 +79,13 @@ public class MainActivity extends FragmentActivity
                 fragment = new ProfileActivity();
             }
         }
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, fragment, tag)
-                .commit();
+        if (!fragment.isVisible()) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, fragment, tag)
+                    .addToBackStack(null)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .commit();
+        }
     }
 
     public void onSectionAttached(int number) {
