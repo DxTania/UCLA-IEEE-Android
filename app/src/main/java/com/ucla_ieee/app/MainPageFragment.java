@@ -6,12 +6,14 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import com.ucla_ieee.app.signin.SessionManager;
 
-public class MainPage extends Fragment {
+public class MainPageFragment extends Fragment {
 
     private SessionManager sessionManager;
     private View rootView;
+    private TextView mPointsView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -21,7 +23,10 @@ public class MainPage extends Fragment {
         MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.startAsyncCall(null);
 
+        mPointsView = (TextView) rootView.findViewById(R.id.numPoints);
         sessionManager = new SessionManager(getActivity());
+        int points = sessionManager.getPoints();
+        mPointsView.setText(String.valueOf(points) + ".");
 
         return rootView;
     }

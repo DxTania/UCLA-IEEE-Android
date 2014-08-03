@@ -136,10 +136,13 @@ public class NavigationDrawerFragment extends Fragment {
                 activity.doFragment(MainActivity.PROFILE_TAG);
                 break;
             case 4:
+                // Logout
                 SessionManager sessionManager = new SessionManager(getActivity());
                 sessionManager.logoutUser();
+                // TODO: Stop *any* async tasks
                 activity.stopCalendarTask();
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
+                // Back to sign in page
                 startActivity(intent);
                 getActivity().finish();
                 break;

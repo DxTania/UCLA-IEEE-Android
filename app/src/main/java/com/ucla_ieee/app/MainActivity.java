@@ -88,7 +88,7 @@ public class MainActivity extends FragmentActivity
             } else if (tag.equals(PROFILE_TAG)) {
                 fragment = new ProfileActivity();
             } else {
-                fragment = new MainPage();
+                fragment = new MainPageFragment();
             }
         }
         if (!fragment.isVisible()) {
@@ -143,7 +143,8 @@ public class MainActivity extends FragmentActivity
 
     @Override
     public void onBackPressed() {
-        mDrawerLayout.openDrawer(mNavigationDrawerFragment.getDrawerFragmentView());
+        finish();
+        overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
     }
 
     public void setFragmentTitle(String title) {

@@ -62,6 +62,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         SessionManager sessionManager = new SessionManager(this);
         if (sessionManager.isLoggedIn()) {
             startActivity(new Intent(this, MainActivity.class));
+            finish();
         }
 
         setContentView(R.layout.activity_login);

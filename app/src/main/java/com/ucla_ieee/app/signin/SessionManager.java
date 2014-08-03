@@ -20,15 +20,20 @@ public class SessionManager {
     // File name for shared prefs
     private static final String PREF_NAME = "UCLAIEEEPrefs";
 
-    // Keys
-    private static final String KEY_LOGGED_IN = "IsLoggedIn";
-    private static final String KEY_EMAIL = "email";
-    private static final String KEY_TOKEN = "syncToken";
-    private static final String KEY_JSON = "json";
-    private static final String KEY_COOKIE = "cookie";
-    private static final String KEY_NAME = "name";
-    private static final String KEY_IEEE_ID = "ieee_id";
-    private static final String KEY_ANNOUNCEMENTS = "announcements";
+    public enum Keys {
+        LOGGED_IN("IsLoggedIn"), EMAIL("email"), TOKEN("syncToken"), JSON("json"), COOKIE("cookie"),
+        NAME("name"), IEEE_ID("ieee_id"), ANNOUNCEMENTS("announcements"), POINTS("points");
+
+        private final String text;
+
+        private Keys(final String text) {
+            this.text = text;
+        }
+
+        public String s() {
+            return text;
+        }
+    }
 
     public SessionManager (Context context) {
         mContext = context;
@@ -38,80 +43,90 @@ public class SessionManager {
     }
 
     public void loginUser (JsonObject json, String cookie) {
-        mEditor.putBoolean(KEY_LOGGED_IN, true);
-        mEditor.putString(KEY_EMAIL, !json.get(KEY_EMAIL).isJsonNull()?
-                json.get(KEY_EMAIL).getAsString() : "");
-        mEditor.putString(KEY_COOKIE, cookie);
-        mEditor.putString(KEY_NAME, !json.get(KEY_NAME).isJsonNull()?
-                json.get(KEY_NAME).getAsString() : "");
-        mEditor.putString(KEY_IEEE_ID, !json.get(KEY_IEEE_ID).isJsonNull()?
-                json.get(KEY_IEEE_ID).getAsString() : "");
+        mEditor.putBoolean(Keys.LOGGED_IN.s(), true);
+        // Email
+        mEditor.putString(Keys.EMAIL.s(), !json.get(Keys.EMAIL.s()).isJsonNull()?
+                json.get(Keys.EMAIL.s()).getAsString() : "");
+        // Cookie
+        mEditor.putString(Keys.COOKIE.s(), cookie);
+        // Name
+        mEditor.putString(Keys.NAME.s(), !json.get(Keys.NAME.s()).isJsonNull()?
+                json.get(Keys.NAME.s()).getAsString() : "");
+        // IEEE ID
+        mEditor.putString(Keys.IEEE_ID.s(), !json.get(Keys.IEEE_ID.s()).isJsonNull()?
+                json.get(Keys.IEEE_ID.s()).getAsString() : "");
+        // TODO: get points too
         mEditor.commit();
     }
 
     public void logoutUser () {
-        // TODO: use enumeration
-        mEditor.putBoolean(KEY_LOGGED_IN, false);
-        mEditor.remove(KEY_EMAIL);
-        mEditor.remove(KEY_JSON);
-        mEditor.remove(KEY_TOKEN);
-        mEditor.remove(KEY_COOKIE);
-        mEditor.remove(KEY_NAME);
-        mEditor.remove(KEY_IEEE_ID);
+        mEditor.putBoolean(Keys.LOGGED_IN.s(), false);
+        for (Keys key : Keys.values()) {
+            mEditor.remove(key.s());
+        }
         mEditor.commit();
     }
 
     public void setSyncToken(String token) {
-        mEditor.putString(KEY_TOKEN, token);
+        mEditor.putString(Keys.TOKEN.s(), token);
         mEditor.commit();
     }
 
     public String getSyncToken() {
-        return mSharedPrefs.getString(KEY_TOKEN, null);
+        return mSharedPrefs.getString(Keys.TOKEN.s(), null);
     }
 
     public void storeCalReq(String s) {
-        mEditor.putString(KEY_JSON, s);
+        mEditor.putString(Keys.JSON.s(), s);
         mEditor.commit();
     }
 
     public JsonArray getCalReq() {
-        return mUtil.getJsonArrayFromString(mSharedPrefs.getString(KEY_JSON, null));
+        return mUtil.getJsonArrayFromString(mSharedPrefs.getString(Keys.JSON.s(), null));
     }
 
     public boolean isLoggedIn () {
-        return mSharedPrefs.getBoolean(KEY_LOGGED_IN, false);
+        return mSharedPrefs.getBoolean(Keys.LOGGED_IN.s(), false);
     }
 
     public String getEmail() {
-        return mSharedPrefs.getString(KEY_EMAIL, "");
+        return mSharedPrefs.getString(Keys.EMAIL.s(), "");
     }
 
     public String getName() {
-        return mSharedPrefs.getString(KEY_NAME, "");
+        return mSharedPrefs.getString(Keys.NAME.s(), "");
     }
 
     public String getIEEEId() {
-        return mSharedPrefs.getString(KEY_IEEE_ID, "");
+        return mSharedPrefs.getString(Keys.IEEE_ID.s(), "");
     }
 
     public String getCookie() {
-        return mSharedPrefs.getString(KEY_COOKIE, null);
+        return mSharedPrefs.getString(Keys.COOKIE.s(), null);
     }
 
     public JsonArray getAnnouncements() {
-        return mUtil.getJsonArrayFromString(mSharedPrefs.getString(KEY_ANNOUNCEMENTS, null));
+        return mUtil.getJsonArrayFromString(mSharedPrefs.getString(Keys.ANNOUNCEMENTS.s(), null));
     }
 
     public void setAnnouncements(String s) {
-        mEditor.putString(KEY_ANNOUNCEMENTS, s);
+        mEditor.putString(Keys.ANNOUNCEMENTS.s(), s);
         mEditor.commit();
     }
 
     public void updateSession(String email, String name, String id) {
-        mEditor.putString(KEY_EMAIL, email);
-        mEditor.putString(KEY_NAME, name);
-        mEditor.putString(KEY_IEEE_ID, id);
+        mEditor.putString(Keys.EMAIL.s(), email);
+        mEditor.putString(Keys.NAME.s(), name);
+        mEditor.putString(Keys.IEEE_ID.s(), id);
         mEditor.commit();
+    }
+
+    public void setPoints(int amt) {
+        mEditor.putInt(Keys.POINTS.s(), amt);
+        mEditor.commit();
+    }
+
+    public int getPoints() {
+        return mSharedPrefs.getInt(Keys.POINTS.s(), 0);
     }
 }
