@@ -1,5 +1,7 @@
 <resources>
 
-    <color name="black_overlay">#66000000</color>
+    <color name="black_overlay">#660000</color>
+    <color name="ucla_blue">#2c5e91</color>
+    <color name="ucla_gold">#ffe800</color>
 
 </resources>

@@ -11,6 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.ucla_ieee.app.calendar.CalendarActivity;
+import com.ucla_ieee.app.calendar.CalendarTask;
 import com.ucla_ieee.app.signin.LoginActivity;
 import com.ucla_ieee.app.signin.ProfileActivity;
 import com.ucla_ieee.app.signin.SessionManager;
@@ -19,6 +20,7 @@ public class MainActivity extends FragmentActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
     public static final String CAL_TAG = "calendar";
     public static final String PROFILE_TAG = "profile";
+    public static final String MAIN_TAG = "main";
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -29,8 +31,11 @@ public class MainActivity extends FragmentActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
-
     private SessionManager mSessionManager;
+    private DrawerLayout mDrawerLayout;
+    private int mPosition;
+    private CalendarTask mCalendarTask;
+    private CalendarActivity mCalendarActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,13 +44,14 @@ public class MainActivity extends FragmentActivity
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
-        mTitle = "Welcome!";
+        mTitle = "UCLA IEEE";
         mSessionManager = new SessionManager(this);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout),
+                mDrawerLayout,
                 this);
 
         mNavigationDrawerFragment.selectItem(0);
@@ -69,7 +75,8 @@ public class MainActivity extends FragmentActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-
+        mPosition = position;
+        invalidateOptionsMenu();
     }
 
     public void doFragment(String tag) {
@@ -78,8 +85,10 @@ public class MainActivity extends FragmentActivity
         if (fragment == null) {
             if (tag.equals(CAL_TAG)) {
                 fragment = new CalendarActivity();
-            } else {
+            } else if (tag.equals(PROFILE_TAG)) {
                 fragment = new ProfileActivity();
+            } else {
+                fragment = new MainPage();
             }
         }
         if (!fragment.isVisible()) {
@@ -98,14 +107,22 @@ public class MainActivity extends FragmentActivity
         actionBar.setTitle(mTitle);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
             // Only show items in the action bar relevant to this screen
             // if the drawer is not showing. Otherwise, let the drawer
             // decide what to show in the action bar.
-            getMenuInflater().inflate(R.menu.main_activity2, menu);
+            switch (mPosition) {
+                case 0:
+                    getMenuInflater().inflate(R.menu.main_activity2, menu);
+                    break;
+                case 1:
+                    getMenuInflater().inflate(R.menu.calendar, menu);
+                    break;
+                default:
+                    getMenuInflater().inflate(R.menu.main_activity2, menu);
+            }
             restoreActionBar();
             return true;
         }
@@ -122,5 +139,42 @@ public class MainActivity extends FragmentActivity
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        mDrawerLayout.openDrawer(mNavigationDrawerFragment.getDrawerFragmentView());
+    }
+
+    public void setFragmentTitle(String title) {
+        mTitle = title;
+    }
+
+    // Calendar Functions
+    public void startAsyncCall(CalendarActivity activity) {
+        if (mCalendarActivity == null) {
+            mCalendarActivity = activity;
+        }
+        if (mCalendarTask == null) {
+            mCalendarTask = new CalendarTask(this);
+            mCalendarTask.execute((Void) null);
+        }
+    }
+
+    public void setCalendar(CalendarActivity activity) {
+        mCalendarActivity = activity;
+    }
+
+    public CalendarActivity getCalendar() {
+        return mCalendarActivity;
+    }
+    public void stopCalendarTask() {
+        if (mCalendarTask != null) {
+            mCalendarTask.cancel(true);
+        }
+    }
+
+    public void setCalendarTaskNull() {
+        mCalendarTask = null;
     }
 }

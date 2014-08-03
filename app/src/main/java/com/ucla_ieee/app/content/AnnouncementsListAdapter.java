@@ -20,7 +20,7 @@ public class AnnouncementsListAdapter extends ArrayAdapter<Announcement> {
     }
 
     public AnnouncementsListAdapter(Context context, List<Announcement> announcements) {
-        super(context, R.layout.event_snippet, announcements);
+        super(context, R.layout.snippet_event, announcements);
         this.context = context;
         this.announcements = announcements;
     }

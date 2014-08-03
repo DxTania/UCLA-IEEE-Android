@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.widget.Toast;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.ucla_ieee.app.MainActivity;
 import com.ucla_ieee.app.signin.SessionManager;
 import com.ucla_ieee.app.util.JsonServerUtil;
 import org.apache.http.HttpResponse;
@@ -27,17 +28,22 @@ public class CalendarTask extends AsyncTask<Void, Void, String> {
     private static final String API_KEY = "AIzaSyAgLz-5vEBqTeJtCv_eiW0zQjKMlJqcztI";
 
     SessionManager mSessionManager;
-    CalendarActivity mParent;
+    MainActivity mParent;
     JsonServerUtil mUtil;
 
-    public CalendarTask(CalendarActivity parent) {
-        mSessionManager = new SessionManager(parent.getActivity());
+    public CalendarTask(MainActivity parent) {
+        mSessionManager = new SessionManager(parent);
         mParent = parent;
         mUtil = new JsonServerUtil();
     }
 
     @Override
     protected String doInBackground(Void... params) {
+        if (!mSessionManager.isLoggedIn()) {
+            return null;
+        } else {
+//            Toast.makeText(mParent.getApplicationContext(), "Loading new events...", Toast.LENGTH_SHORT).show();
+        }
 
         HttpClient httpClient = new DefaultHttpClient();
 
@@ -63,9 +69,10 @@ public class CalendarTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected void onPostExecute(String response) {
+        mParent.setCalendarTaskNull();
         JsonObject json = mUtil.getJsonObjectFromString(response);
         if (json == null) {
-            Toast.makeText(mParent.getActivity(), "Something went wrong", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mParent, "Couldn't load events :(", Toast.LENGTH_SHORT).show();
             return; // error
         }
 
@@ -82,8 +89,15 @@ public class CalendarTask extends AsyncTask<Void, Void, String> {
             // Make sure we don't duplicate events
             String items = EventManager.reviseJson(newItems, prevItems);
             mSessionManager.storeCalReq(items);
-            mParent.addEvents(newItems);
-        } // Else no new items, leave stored req alone
+        }
+
+        // Add to calendar if possible
+        if (newItems.size() > 0) {
+            Toast.makeText(mParent, "New events were loaded!", Toast.LENGTH_SHORT).show();
+            if (mParent.getCalendar() != null) {
+                mParent.getCalendar().addEvents(newItems);
+            }
+        }
 
         // TODO: Deal with 410 GONE response
     }

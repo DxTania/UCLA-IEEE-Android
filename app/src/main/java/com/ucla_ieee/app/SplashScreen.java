@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Window;
+import com.ucla_ieee.app.calendar.CalendarTask;
 
 public class SplashScreen extends Activity {
 
@@ -15,8 +16,10 @@ public class SplashScreen extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
         setContentView(R.layout.activity_splash_screen);
+
+        CalendarTask eventsTask = new CalendarTask(null);
+        eventsTask.execute((Void) null);
 
         new Handler().postDelayed(new Runnable() {
 

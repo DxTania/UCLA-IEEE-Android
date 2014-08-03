@@ -36,19 +36,8 @@
             android:windowSoftInputMode="adjustResize|stateHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name="com.ucla_ieee.app.calendar.CalendarActivity"
-            android:parentActivityName=".MainActivity"
-            android:label="@string/title_activity_calendar">
-        </activity>
-        <activity
-            android:name="com.ucla_ieee.app.signin.ProfileActivity"
-            android:label="@string/title_activity_profile"
-            android:parentActivityName=".MainActivity" >
         </activity>
         <activity
             android:name="com.ucla_ieee.app.signin.RegisterActivity"
@@ -56,28 +45,17 @@
             android:parentActivityName="com.ucla_ieee.app.signin.LoginActivity" >
         </activity>
         <activity
-            android:name="com.ucla_ieee.app.calendar.EventActivity"
-            android:label="@string/title_activity_event"
-            android:parentActivityName="com.ucla_ieee.app.calendar.CalendarActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="CalendarActivity" />
-        </activity>
-        <activity
             android:name="com.ucla_ieee.app.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName="com.ucla_ieee.app.MainActivity" >
         </activity>
         <activity
             android:name="com.ucla_ieee.app.content.AnnouncementsActivity"
             android:label="@string/title_activity_announcements"
-            android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="MainActivity" />
+            android:parentActivityName="com.ucla_ieee.app.MainActivity" >
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name="com.ucla_ieee.app.MainActivity"
             android:label="@string/title_activity_main_activity2" >
         </activity>
     </application>

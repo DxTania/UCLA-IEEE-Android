@@ -1,32 +1,57 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:layout_width="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.ucla_ieee.app.MainActivity$PlaceholderFragment">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Announcements:"
-        android:id="@+id/textView3"
-        android:textSize="20sp"
-        android:layout_margin="10dp"
-        android:typeface="normal"
+        android:background="@color/ucla_blue"
+        android:gravity="center_horizontal"
+        android:layout_height="150dp"
+        android:paddingTop="15dp"
+        android:layout_margin="15dp"
+        android:layout_width="fill_parent"
+        android:text="@string/points_title"
+        android:textColor="@color/caldroid_white"
+        android:textSize="40sp"
         android:textStyle="bold"/>
-
     <TextView
-        android:layout_width="wrap_content"
+        android:background="@color/ucla_gold"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
-        android:layout_margin="10dp"
-        android:id="@+id/textView"
-        android:lines="3"/>
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="-100dp"
+        android:layout_width="300dp"
+        android:padding="10dp"
+        android:id="@+id/numPoints"
+        android:text="@string/points_preview"
+        android:textSize="75sp"/>
 
+    <Space
+        android:layout_width="fill_parent"
+        android:layout_height="10dp"
+        android:background="@color/caldroid_black"/>
+    <TextView
+        android:background="@color/caldroid_gray"
+        android:id="@+id/textView3"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:text="@string/news_feed"
+        android:textColor="@color/caldroid_black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:typeface="normal"/>
+
+    <ListView
+        android:id="@+id/newsFeed"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
 
 </LinearLayout>

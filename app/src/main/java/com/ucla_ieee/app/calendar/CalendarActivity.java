@@ -10,9 +10,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.google.gson.JsonArray;
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
+import com.ucla_ieee.app.MainActivity;
 import com.ucla_ieee.app.R;
 import com.ucla_ieee.app.signin.SessionManager;
 
@@ -31,6 +33,7 @@ public class CalendarActivity extends Fragment {
     private Date mPreviousSelection;
     private EventListAdapter mEventListAdapter;
     private TextView mNoEventsView;
+    private MainActivity mActivity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,12 +52,17 @@ public class CalendarActivity extends Fragment {
         mCaldroidFragment = new CaldroidFragment();
         Bundle args = new Bundle();
         Calendar cal = Calendar.getInstance();
-        args.putInt(CaldroidFragment.MONTH, cal.get(Calendar.MONTH) + 1);
-        args.putInt(CaldroidFragment.YEAR, cal.get(Calendar.YEAR));
-        mCaldroidFragment.setArguments(args);
+        if (savedInstanceState != null) {
+            mCaldroidFragment.restoreStatesFromKey(savedInstanceState, "CALDROID_SAVED_STATE");
+        } else {
+            args.putInt(CaldroidFragment.MONTH, cal.get(Calendar.MONTH) + 1);
+            args.putInt(CaldroidFragment.YEAR, cal.get(Calendar.YEAR));
+            mCaldroidFragment.setArguments(args);
+        }
         mCaldroidFragment.setCaldroidListener(listener);
         getFragmentManager().beginTransaction()
                 .replace(R.id.calendar, mCaldroidFragment)
+                .addToBackStack(null)
                 .commit();
 
         mDayTextView = (TextView) rootView.findViewById(R.id.dayText);
@@ -81,10 +89,26 @@ public class CalendarActivity extends Fragment {
         eventListView.setAdapter(mEventListAdapter);
 
         // Start async task to check if new events have been added
-        CalendarTask eventsTask = new CalendarTask(this);
-        eventsTask.execute((Void) null);
+        mActivity = (MainActivity) getActivity();
+        mActivity.startAsyncCall(this);
 
         return rootView;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mActivity.setCalendar(null);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // TODO: figureout saving the month they were looking @
+        if (mCaldroidFragment != null) {
+            mCaldroidFragment.saveStatesToKey(outState, "CALDROID_SAVED_STATE");
+        }
     }
 
     public void addEvents(JsonArray events) {
@@ -137,6 +161,9 @@ public class CalendarActivity extends Fragment {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.action_refresh) {
+            mActivity.startAsyncCall(this);
+            Toast.makeText(getActivity(), "Loading new events...", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }

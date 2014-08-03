@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="ucla_ieee">UCLA IEEE</string>
     <string name="app_name">ucla-ieee</string>
     <string name="dummy_button">Dummy Button</string>
@@ -63,5 +64,10 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="points_title">Your Points</string>
+    <string name="news_feed">NEWS FEED</string>
+    <string name="points_preview">76.</string>
+    <string name="title_activity_main_page">MainPage</string>
 
 </resources>

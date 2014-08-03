@@ -52,9 +52,11 @@ public class JsonServerUtil {
     }
 
     public JsonObject getJsonObjectFromString(String string) {
-        JsonParser parser = new JsonParser();
-        JsonObject json;
+        if (TextUtils.isEmpty(string)) {
+            return null;
+        }
         try {
+            JsonParser parser = new JsonParser();
             return (JsonObject) parser.parse(string);
         } catch (JsonSyntaxException e) {
             return null;

@@ -24,7 +24,7 @@ public class EventListAdapter extends ArrayAdapter<Event> {
     }
 
     public EventListAdapter(Context context, List<Event> events) {
-        super(context, R.layout.event_snippet, events);
+        super(context, R.layout.snippet_event, events);
         this.context = context;
         this.events = events;
     }
@@ -36,7 +36,7 @@ public class EventListAdapter extends ArrayAdapter<Event> {
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.event_snippet, parent, false);
+            convertView = inflater.inflate(R.layout.snippet_event, parent, false);
             viewHolder.summary = (TextView) convertView.findViewById(R.id.summaryText);
             viewHolder.location = (TextView) convertView.findViewById(R.id.locationText);
             viewHolder.checkIn = (ImageView) convertView.findViewById(R.id.eventCheckIn);

@@ -59,6 +59,13 @@ public class NavigationDrawerFragment extends Fragment {
     private MainActivity activity;
     private int mPosition = 0;
 
+    public enum Navigation {
+        FRONT_PAGE,
+        CALENDAR,
+        MEMBERSHIP,
+        ACHIEVEMENTS
+    }
+
     public NavigationDrawerFragment() {
     }
 
@@ -117,17 +124,21 @@ public class NavigationDrawerFragment extends Fragment {
     public void switchFragments(int position) {
         switch(position) {
             case 0:
-                activity.doFragment(MainActivity.PROFILE_TAG);
+                activity.setFragmentTitle("UCLA IEEE");
+                activity.doFragment(MainActivity.MAIN_TAG);
                 break;
             case 1:
+                activity.setFragmentTitle("Calendar");
                 activity.doFragment(MainActivity.CAL_TAG);
                 break;
             case 2:
+                activity.setFragmentTitle("Membership");
                 activity.doFragment(MainActivity.PROFILE_TAG);
                 break;
             case 4:
                 SessionManager sessionManager = new SessionManager(getActivity());
                 sessionManager.logoutUser();
+                activity.stopCalendarTask();
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
                 getActivity().finish();
@@ -307,5 +318,9 @@ public class NavigationDrawerFragment extends Fragment {
          * Called when an item in the navigation drawer is selected.
          */
         void onNavigationDrawerItemSelected(int position);
+    }
+
+    public View getDrawerFragmentView() {
+        return mFragmentContainerView;
     }
 }
