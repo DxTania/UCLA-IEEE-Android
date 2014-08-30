@@ -1,45 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
+              android:layout_height="match_parent"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:orientation="vertical">
 
     <FrameLayout android:id="@+id/calendar"
-              android:layout_width="fill_parent"
-              android:layout_height="wrap_content" />
+              android:layout_height="wrap_content"
+              android:layout_width="fill_parent" />
 
     <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="3dp"
-        android:paddingBottom="3dp"
-        android:text="@string/sample_day_text"
-        android:textStyle="bold"
+        android:background="@color/ucla_blue"
         android:id="@+id/dayText"
-        android:background="@color/caldroid_gray"
         android:layout_below="@id/calendar"
         android:layout_gravity="center_horizontal"
-        android:textSize="18sp"/>
-
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:text="@string/sample_day_text"
+        android:textColor="@color/caldroid_white"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
 
     <ListView xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="fill_parent"
-              android:layout_height="wrap_content"
-              android:minHeight="100dp"
+              android:id="@+id/eventList"
               android:layout_below="@id/dayText"
-              android:id="@+id/eventList" />
+              android:layout_height="wrap_content"
+              android:layout_width="fill_parent"
+              android:minHeight="100dp" />
 
     <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/dayText"
-        android:paddingTop="20dp"
+        android:gravity="center"
         android:id="@+id/noEventsText"
-        android:text="@string/no_events"
-        android:gravity="center"/>
-
+        android:layout_below="@id/dayText"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:paddingTop="20dp"
+        android:text="@string/no_events"/>
 
 </RelativeLayout>

@@ -10,32 +10,32 @@
         android:background="@color/ucla_blue"
         android:gravity="center_horizontal"
         android:layout_height="150dp"
-        android:paddingTop="15dp"
         android:layout_margin="15dp"
         android:layout_width="fill_parent"
+        android:paddingTop="15dp"
         android:text="@string/points_title"
         android:textColor="@color/caldroid_white"
         android:textSize="40sp"
         android:textStyle="bold"/>
     <TextView
-        android:background="@color/ucla_gold"
-        android:layout_gravity="center"
+        android:background="@color/caldroid_gray"
         android:gravity="center"
+        android:id="@+id/numPoints"
+        android:layout_gravity="center"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:layout_marginTop="-100dp"
         android:layout_width="300dp"
         android:padding="10dp"
-        android:id="@+id/numPoints"
         android:text="@string/points_preview"
         android:textSize="75sp"/>
 
     <Space
-        android:layout_width="fill_parent"
+        android:background="@color/caldroid_black"
         android:layout_height="10dp"
-        android:background="@color/caldroid_black"/>
+        android:layout_width="fill_parent"/>
     <TextView
-        android:background="@color/caldroid_gray"
+        android:background="@color/ucla_blue"
         android:id="@+id/textView3"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
@@ -43,7 +43,7 @@
         android:paddingLeft="10dp"
         android:paddingTop="5dp"
         android:text="@string/news_feed"
-        android:textColor="@color/caldroid_black"
+        android:textColor="@color/caldroid_white"
         android:textSize="20sp"
         android:textStyle="bold"
         android:typeface="normal"/>

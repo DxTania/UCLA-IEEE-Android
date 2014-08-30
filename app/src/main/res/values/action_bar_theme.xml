@@ -8,12 +8,12 @@
     </style>
 
     <style name="CustomActionBarTheme.ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
-        <item name="android:background">@color/caldroid_gray</item>
+        <item name="android:background">@color/ucla_blue</item>
         <item name="android:titleTextStyle">@style/CustomActionBarTheme.ActionBar.Text</item>
     </style>
 
     <style name="CustomActionBarTheme.ActionBar.Text" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/caldroid_black</item>
+        <item name="android:textColor">@color/caldroid_white</item>
         <item name="android:textStyle">bold</item>
     </style>
 </resources>

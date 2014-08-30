@@ -55,8 +55,13 @@
             android:parentActivityName="com.ucla_ieee.app.MainActivity" >
         </activity>
         <activity
+            android:name="com.ucla_ieee.app.calendar.EventActivity"
+            android:label="@string/title_activity_event"
+            android:parentActivityName="com.ucla_ieee.app.MainActivity" >
+        </activity>
+        <activity
             android:name="com.ucla_ieee.app.MainActivity"
-            android:label="@string/title_activity_main_activity2" >
+            android:label="@string/title_activity_main" >
         </activity>
     </application>
 

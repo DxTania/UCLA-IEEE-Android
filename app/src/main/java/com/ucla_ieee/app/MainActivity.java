@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import com.ucla_ieee.app.calendar.CalendarActivity;
 import com.ucla_ieee.app.calendar.CalendarTask;
+import com.ucla_ieee.app.content.AnnouncementsActivity;
 import com.ucla_ieee.app.signin.LoginActivity;
 import com.ucla_ieee.app.signin.ProfileActivity;
 import com.ucla_ieee.app.signin.SessionManager;
@@ -21,6 +22,7 @@ public class MainActivity extends FragmentActivity
     public static final String CAL_TAG = "calendar";
     public static final String PROFILE_TAG = "profile";
     public static final String MAIN_TAG = "main";
+    public static final String ANNOUNCEMENTS_TAG = "announcements";
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -87,6 +89,8 @@ public class MainActivity extends FragmentActivity
                 fragment = new CalendarActivity();
             } else if (tag.equals(PROFILE_TAG)) {
                 fragment = new ProfileActivity();
+            } else if (tag.equals(ANNOUNCEMENTS_TAG)) {
+                fragment = new AnnouncementsActivity();
             } else {
                 fragment = new MainPageFragment();
             }

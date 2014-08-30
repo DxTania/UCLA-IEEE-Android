@@ -1,6 +1,5 @@
 package com.ucla_ieee.app.content;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 import com.google.gson.JsonArray;
@@ -18,9 +17,9 @@ public class AnnouncementsTask extends AsyncTask<Void, Void, String> {
     private SessionManager mSessionManager;
     private JsonServerUtil mUtil;
 
-    public AnnouncementsTask(Context context) {
-        mParent = (AnnouncementsActivity) context;
-        mSessionManager = new SessionManager(mParent);
+    public AnnouncementsTask(AnnouncementsActivity context) {
+        mParent = context;
+        mSessionManager = new SessionManager(mParent.getActivity());
         mUtil = new JsonServerUtil();
     }
 
@@ -41,16 +40,14 @@ public class AnnouncementsTask extends AsyncTask<Void, Void, String> {
     protected void onPostExecute(String response) {
         JsonArray announcements = mUtil.getJsonArrayFromString(response);
         if (announcements == null) {
-            Toast.makeText(mParent, "Something went wrong", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mParent.getActivity(), "Couldn't load announcements", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        JsonArray prevItems = mSessionManager.getAnnouncements();
-        if (prevItems == null) {
-            mSessionManager.setAnnouncements(announcements.toString());
-        } else if (announcements.size() > 0) {
+        // We only care about the latest 10 or so, don't bother
+        if (announcements.size() > 0) {
             mSessionManager.setAnnouncements(announcements.toString());
             mParent.updateAnnouncements(announcements);
-        } // Else no new announcements, leave stored req alone
+        }
     }
 }

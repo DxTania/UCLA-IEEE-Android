@@ -26,6 +26,7 @@ import com.ucla_ieee.app.signin.SessionManager;
  * design guidelines</a> for a complete explanation of the behaviors implemented here.
  */
 public class NavigationDrawerFragment extends Fragment {
+    public static final int SCAN = 0;
 
     /**
      * Remember the position of the selected item.
@@ -63,7 +64,9 @@ public class NavigationDrawerFragment extends Fragment {
         FRONT_PAGE,
         CALENDAR,
         MEMBERSHIP,
-        ACHIEVEMENTS
+        ANNOUNCEMENTS,
+        ACHIEVEMENTS,
+        CHECK_IN
     }
 
     public NavigationDrawerFragment() {
@@ -114,7 +117,9 @@ public class NavigationDrawerFragment extends Fragment {
                         "Front Page",
                         "Calendar",
                         "My Membership",
+                        "Announcements",
                         "Achievements",
+                        "Check In",
                         "Logout"
                 }));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
@@ -135,7 +140,17 @@ public class NavigationDrawerFragment extends Fragment {
                 activity.setFragmentTitle("Membership");
                 activity.doFragment(MainActivity.PROFILE_TAG);
                 break;
+            case 3:
+                activity.setFragmentTitle("Announcements");
+                activity.doFragment(MainActivity.ANNOUNCEMENTS_TAG);
+                break;
             case 4:
+                // Check In
+                Intent scanIntent = new Intent("com.google.zxing.client.android.SCAN");
+                scanIntent.putExtra("SCAN_MODE", "QR_CODE_MODE");
+                startActivityForResult(scanIntent, SCAN);
+                break;
+            case 5:
                 // Logout
                 SessionManager sessionManager = new SessionManager(getActivity());
                 sessionManager.logoutUser();
@@ -147,6 +162,16 @@ public class NavigationDrawerFragment extends Fragment {
                 getActivity().finish();
                 break;
             default:
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // TODO: Make sure this is called and actually make call to server to check in
+        if (requestCode == SCAN && resultCode == Activity.RESULT_OK) {
+            // check in here
+            Toast.makeText(getActivity(), "Thanks for checking in!", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -29,4 +29,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:19.+'
     compile 'com.google.code.gson:gson:2.2.+'
     compile 'com.google.zxing:core:2.2@jar'
+    // oh
+    compile 'com.google.apis:google-api-services-calendar:v3-rev90-1.19.0'
 }
