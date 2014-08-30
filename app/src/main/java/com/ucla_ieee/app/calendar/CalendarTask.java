@@ -39,13 +39,9 @@ public class CalendarTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected String doInBackground(Void... params) {
-        if (!mSessionManager.isLoggedIn()) {
-            return null;
-        } else {
-//            Toast.makeText(mParent.getApplicationContext(), "Loading new events...", Toast.LENGTH_SHORT).show();
-        }
-
-        HttpClient httpClient = new DefaultHttpClient();
+//        if (!mSessionManager.isLoggedIn()) {
+//            return null;
+//        }
 
         List<NameValuePair> calendarParams = new ArrayList<NameValuePair>();
         calendarParams.add(new BasicNameValuePair("key", API_KEY));
@@ -58,7 +54,7 @@ public class CalendarTask extends AsyncTask<Void, Void, String> {
         HttpGet httpGet = new HttpGet("https://www.googleapis.com/calendar/v3/calendars/"
                 + CAL_ID + "/events?" + paramString);
 
-        // Read and parse HTTP response
+        HttpClient httpClient = new DefaultHttpClient();
         try {
             HttpResponse response = httpClient.execute(httpGet);
             return mUtil.getStringFromServerResponse(response.getEntity());
@@ -72,7 +68,7 @@ public class CalendarTask extends AsyncTask<Void, Void, String> {
         mParent.setCalendarTaskNull();
         JsonObject json = mUtil.getJsonObjectFromString(response);
         if (json == null) {
-            Toast.makeText(mParent, "Couldn't load events :(", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mParent, "Couldn't load new events :(", Toast.LENGTH_SHORT).show();
             return; // error
         }
 

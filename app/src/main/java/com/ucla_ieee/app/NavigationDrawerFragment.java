@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+import com.ucla_ieee.app.scan.CheckInTask;
 import com.ucla_ieee.app.signin.LoginActivity;
 import com.ucla_ieee.app.signin.SessionManager;
 
@@ -66,7 +67,8 @@ public class NavigationDrawerFragment extends Fragment {
         MEMBERSHIP,
         ANNOUNCEMENTS,
         ACHIEVEMENTS,
-        CHECK_IN
+        CHECK_IN,
+        LOGOUT
     }
 
     public NavigationDrawerFragment() {
@@ -127,30 +129,34 @@ public class NavigationDrawerFragment extends Fragment {
     }
 
     public void switchFragments(int position) {
-        switch(position) {
-            case 0:
+        Navigation selected = Navigation.values()[position];
+        switch(selected) {
+            case FRONT_PAGE:
                 activity.setFragmentTitle("UCLA IEEE");
                 activity.doFragment(MainActivity.MAIN_TAG);
                 break;
-            case 1:
+            case CALENDAR:
                 activity.setFragmentTitle("Calendar");
                 activity.doFragment(MainActivity.CAL_TAG);
                 break;
-            case 2:
+            case MEMBERSHIP:
                 activity.setFragmentTitle("Membership");
                 activity.doFragment(MainActivity.PROFILE_TAG);
                 break;
-            case 3:
+            case ANNOUNCEMENTS:
                 activity.setFragmentTitle("Announcements");
                 activity.doFragment(MainActivity.ANNOUNCEMENTS_TAG);
                 break;
-            case 5:
+            case CHECK_IN:
                 // Check In
-                Intent scanIntent = new Intent("com.google.zxing.client.android.SCAN");
-                scanIntent.putExtra("SCAN_MODE", "QR_CODE_MODE");
-                startActivityForResult(scanIntent, SCAN);
+                CheckInTask checkInTask = new CheckInTask(this.getActivity().getApplicationContext(),
+                        "obrgnrgjml3urolv43h8qpnihc");//data.getStringExtra("SCAN_RESULT"));
+                checkInTask.execute((Void) null);
+//                Intent scanIntent = new Intent("com.google.zxing.client.android.SCAN");
+//                scanIntent.putExtra("SCAN_MODE", "QR_CODE_MODE");
+//                startActivityForResult(scanIntent, SCAN);
                 break;
-            case 6:
+            case LOGOUT:
                 // Logout
                 SessionManager sessionManager = new SessionManager(getActivity());
                 sessionManager.logoutUser();
@@ -171,7 +177,10 @@ public class NavigationDrawerFragment extends Fragment {
         // TODO: Make sure this is called and actually make call to server to check in
         if (requestCode == SCAN && resultCode == Activity.RESULT_OK) {
             // check in here
-            Toast.makeText(getActivity(), "Thanks for checking in!", Toast.LENGTH_SHORT).show();
+            CheckInTask checkInTask = new CheckInTask(this.getActivity().getApplicationContext(),
+                    "obrgnrgjml3urolv43h8qpnihc");//data.getStringExtra("SCAN_RESULT"));
+            checkInTask.execute((Void) null);
+            Toast.makeText(getActivity(), data.getStringExtra("SCAN_RESULT"), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -258,7 +267,8 @@ public class NavigationDrawerFragment extends Fragment {
 
     public void selectItem(int position) {
         mCurrentSelectedPosition = position;
-        if (mDrawerListView != null) {
+        Navigation selected = Navigation.values()[position];
+        if (mDrawerListView != null && selected != Navigation.CHECK_IN) {
             mDrawerListView.setItemChecked(position, true);
         }
         if (mDrawerLayout != null) {

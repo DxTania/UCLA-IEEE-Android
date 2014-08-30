@@ -57,10 +57,9 @@ public class EventListAdapter extends ArrayAdapter<Event> {
             time = "All Day";
         }
 
-        // TODO: Update this as time goes on
         Date now = new Date();
         if (event.getStartDate() != null && event.getEndDate() != null) {
-            // TODO: Show symbol if user has attended that event, separate place to check in
+            // TODO: Show symbol if user has attended that event
             if (event.getStartDate().compareTo(now) <= 0 && event.getEndDate().compareTo(now) > 0) {
                 viewHolder.checkIn.setVisibility(View.VISIBLE);
             } else {
@@ -74,14 +73,6 @@ public class EventListAdapter extends ArrayAdapter<Event> {
                 viewHolder.checkIn.setVisibility(View.INVISIBLE);
 //            }
         }
-//        viewHolder.checkIn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent("com.google.zxing.client.android.SCAN");
-//                intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
-//                ((CalendarActivity) context).startActivityForResult(intent, 0);
-//            }
-//        });
 
         viewHolder.summary.setText(event.getSummary());
         viewHolder.location.setText(time + loc + " ");

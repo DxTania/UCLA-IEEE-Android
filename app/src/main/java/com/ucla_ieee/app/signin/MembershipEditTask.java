@@ -15,7 +15,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,18 +56,11 @@ public class MembershipEditTask extends AsyncTask<List<BasicNameValuePair>, Void
 
         try {
             httpPost.setEntity(new UrlEncodedFormEntity(editParams));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        try {
             HttpResponse response = httpClient.execute(httpPost);
             return mUtil.getStringFromServerResponse(response.getEntity());
         } catch (IOException e) {
-            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     @Override
@@ -87,13 +79,18 @@ public class MembershipEditTask extends AsyncTask<List<BasicNameValuePair>, Void
             id = json.get("ieee_id").getAsString();
 
             mTextView.setText("");
-
             mSessionManager.updateSession(email, name, id);
+
             Toast.makeText(mContext.getActivity(), "Changes saved successfully", Toast.LENGTH_SHORT).show();
         } else {
             // TODO: dissect more errors
             if (json.get("error_code") != null && json.get("error_code").getAsInt() == 0) {
                 Toast.makeText(mContext.getActivity(), "Incorrect password", Toast.LENGTH_SHORT).show();
+            } else if (json.get("error_message") != null) {
+                Toast.makeText(mContext.getActivity(), json.get("error_message").getAsString(),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(mContext.getActivity(), "Something when really wrong", Toast.LENGTH_SHORT).show();
             }
         }
     }
