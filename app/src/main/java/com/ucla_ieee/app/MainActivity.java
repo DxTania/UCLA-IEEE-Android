@@ -173,6 +173,7 @@ public class MainActivity extends FragmentActivity
     public CalendarActivity getCalendar() {
         return mCalendarActivity;
     }
+
     public void stopCalendarTask() {
         if (mCalendarTask != null) {
             mCalendarTask.cancel(true);

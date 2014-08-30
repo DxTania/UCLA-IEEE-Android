@@ -39,32 +39,35 @@ public class AnnouncementsActivity extends Fragment {
 
     public void updateAnnouncements(JsonArray announcements) {
         if (announcements != null) {
-            // TODO: test that updated announcements work (if one of the last 10 or so updated)
             List<Announcement> announcementList = new ArrayList<Announcement>();
             for (JsonElement announcement : announcements) {
                 String content = announcement.getAsJsonObject().get("content").getAsString();
                 String date = announcement.getAsJsonObject().get("datePosted").getAsString();
-                int id = announcement.getAsJsonObject().get("id").getAsInt(); // TODO: null pointer exception?
-                if (didUpdate(new Announcement(content, date, id))) {
-                    continue;
+                int id = announcement.getAsJsonObject().get("id").getAsInt();
+                if (isNew(new Announcement(content, date, id))) {
+                    announcementList.add(new Announcement(content, date, id));
+                } else {
+                    // move updated announcements to top
+                    // make sure announcements are sorted
                 }
-                announcementList.add(new Announcement(content, date, id));
             }
             mListAdapter.addAll(announcementList);
             mListAdapter.notifyDataSetChanged();
         }
     }
 
-    private boolean didUpdate(Announcement announcement) {
+    private boolean isNew(Announcement announcement) {
         for (int i = 0; i < mListAdapter.getCount(); i++) {
             Announcement stored = mListAdapter.getItem(i);
-            if (stored.getId() == announcement.getId()) {// && !stored.getContent().equals(announcement.getContent())) {
-                stored.setContent(announcement.getContent());
-//                stored.setDate("Updated!" + stored.getDate());
-                return true;
+            if (stored.getId() == announcement.getId()) {
+                if (!stored.getContent().equals(announcement.getContent())) {
+                    stored.setContent(announcement.getContent());
+                    stored.setDate("Updated! " + stored.getDate());
+                }
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     @Override

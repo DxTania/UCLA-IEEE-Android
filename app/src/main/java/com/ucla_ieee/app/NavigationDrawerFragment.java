@@ -144,13 +144,13 @@ public class NavigationDrawerFragment extends Fragment {
                 activity.setFragmentTitle("Announcements");
                 activity.doFragment(MainActivity.ANNOUNCEMENTS_TAG);
                 break;
-            case 4:
+            case 5:
                 // Check In
                 Intent scanIntent = new Intent("com.google.zxing.client.android.SCAN");
                 scanIntent.putExtra("SCAN_MODE", "QR_CODE_MODE");
                 startActivityForResult(scanIntent, SCAN);
                 break;
-            case 5:
+            case 6:
                 // Logout
                 SessionManager sessionManager = new SessionManager(getActivity());
                 sessionManager.logoutUser();
