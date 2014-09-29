@@ -10,12 +10,14 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import com.ucla_ieee.app.calendar.CalendarActivity;
 import com.ucla_ieee.app.calendar.CalendarTask;
 import com.ucla_ieee.app.content.AnnouncementsActivity;
 import com.ucla_ieee.app.signin.LoginActivity;
 import com.ucla_ieee.app.signin.ProfileActivity;
 import com.ucla_ieee.app.signin.SessionManager;
+import com.ucla_ieee.app.signin.UpdateTask;
 
 public class MainActivity extends FragmentActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -37,6 +39,7 @@ public class MainActivity extends FragmentActivity
     private DrawerLayout mDrawerLayout;
     private int mPosition;
     private CalendarTask mCalendarTask;
+    private UpdateTask mUpdateTask;
     private CalendarActivity mCalendarActivity;
 
     @Override
@@ -156,13 +159,20 @@ public class MainActivity extends FragmentActivity
     }
 
     // Calendar Functions
-    public void startAsyncCall(CalendarActivity activity) {
+    public void startCalendarAsyncCall(CalendarActivity activity) {
         if (mCalendarActivity == null) {
             mCalendarActivity = activity;
         }
         if (mCalendarTask == null) {
             mCalendarTask = new CalendarTask(this);
             mCalendarTask.execute((Void) null);
+        }
+    }
+
+    public void startUserAsyncCall(TextView pointsView) {
+        if (mUpdateTask == null) {
+            mUpdateTask = new UpdateTask(this, pointsView);
+            mUpdateTask.execute((Void) null);
         }
     }
 
@@ -174,13 +184,20 @@ public class MainActivity extends FragmentActivity
         return mCalendarActivity;
     }
 
-    public void stopCalendarTask() {
+    public void stopAsyncTasks() {
         if (mCalendarTask != null) {
             mCalendarTask.cancel(true);
+        }
+        if (mUpdateTask != null) {
+            mUpdateTask.cancel(true);
         }
     }
 
     public void setCalendarTaskNull() {
         mCalendarTask = null;
+    }
+
+    public void setUpdateUserTaskNull() {
+        mUpdateTask = null;
     }
 }

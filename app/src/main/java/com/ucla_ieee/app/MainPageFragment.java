@@ -20,10 +20,12 @@ public class MainPageFragment extends Fragment {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        MainActivity mainActivity = (MainActivity) getActivity();
-        mainActivity.startAsyncCall(null);
-
         mPointsView = (TextView) rootView.findViewById(R.id.numPoints);
+
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.startCalendarAsyncCall(null);
+        mainActivity.startUserAsyncCall(mPointsView);
+
         sessionManager = new SessionManager(getActivity());
         int points = sessionManager.getPoints();
         mPointsView.setText(String.valueOf(points) + ".");

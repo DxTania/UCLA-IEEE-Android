@@ -114,10 +114,11 @@ public class SessionManager {
         mEditor.commit();
     }
 
-    public void updateSession(String email, String name, String id) {
+    public void updateSession(String email, String name, String id, int points) {
         mEditor.putString(Keys.EMAIL.s(), email);
         mEditor.putString(Keys.NAME.s(), name);
         mEditor.putString(Keys.IEEE_ID.s(), id);
+        mEditor.putInt(Keys.POINTS.s(), points);
         mEditor.commit();
     }
 

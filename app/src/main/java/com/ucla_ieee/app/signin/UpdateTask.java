@@ -1,10 +1,11 @@
 package com.ucla_ieee.app.signin;
 
+import android.content.Context;
 import android.os.AsyncTask;
-import android.support.v4.app.Fragment;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.gson.JsonObject;
+import com.ucla_ieee.app.MainActivity;
 import com.ucla_ieee.app.util.JsonServerUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -21,41 +22,32 @@ import java.util.List;
 /**
  * Sends a request to server to authorize and change member stats
  */
-public class MembershipEditTask extends AsyncTask<List<BasicNameValuePair>, Void, String> {
+public class UpdateTask extends AsyncTask<Void, Void, String> {
 
-    private final String mEmail;
-    private final String mCookie;
-    private final ProfileActivity mContext;
+    private final MainActivity mContext;
     private SessionManager mSessionManager;
-    private TextView mTextView;
     private JsonServerUtil mUtil;
+    private TextView mPointsView;
 
-    MembershipEditTask(Fragment context, TextView passwordText) {
-        mContext = (ProfileActivity) context;
-        mSessionManager = new SessionManager(mContext.getActivity());
-        mEmail = mSessionManager.getEmail();
-        mCookie = mSessionManager.getCookie();
-        mTextView = passwordText;
+    public UpdateTask(Context context, TextView pointsView) {
+        mContext = (MainActivity) context;
+        mSessionManager = new SessionManager(mContext);
         mUtil = new JsonServerUtil();
+        mPointsView = pointsView;
     }
 
     @Override
-    protected String doInBackground(List<BasicNameValuePair>... params) {
+    protected String doInBackground(Void... params) {
 
         HttpClient httpClient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost("http://ieeebruins.org/membership_serve/users.php");
 
-        List<NameValuePair> editParams = new ArrayList<NameValuePair>();
-        editParams.add(new BasicNameValuePair("service", "edit_member"));
-        editParams.add(new BasicNameValuePair("email", mEmail));
-        editParams.add(new BasicNameValuePair("cookie", mCookie));
-
-        // Add everything we are changing
-        List<BasicNameValuePair> pairs = params[0];
-        editParams.addAll(pairs);
+        List<NameValuePair> getParams = new ArrayList<NameValuePair>();
+        getParams.add(new BasicNameValuePair("service", "get_user"));
+        getParams.add(new BasicNameValuePair("email", mSessionManager.getEmail()));
 
         try {
-            httpPost.setEntity(new UrlEncodedFormEntity(editParams));
+            httpPost.setEntity(new UrlEncodedFormEntity(getParams));
             HttpResponse response = httpClient.execute(httpPost);
             return mUtil.getStringFromServerResponse(response.getEntity());
         } catch (IOException e) {
@@ -67,7 +59,7 @@ public class MembershipEditTask extends AsyncTask<List<BasicNameValuePair>, Void
     protected void onPostExecute(String response) {
         JsonObject json = mUtil.getJsonObjectFromString(response);
         if (json == null) {
-            Toast.makeText(mContext.getActivity(), "Something went wrong", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -75,25 +67,25 @@ public class MembershipEditTask extends AsyncTask<List<BasicNameValuePair>, Void
 
             JsonObject user = json.getAsJsonObject("user");
             String email, name, id;
+            int points;
             email = user.get("email").getAsString();
             name = user.get("name").getAsString();
             id = user.get("ieee_id").getAsString();
-            int points = user.get("points").getAsInt();
+            points = user.get("points").getAsInt();
 
-            mTextView.setText("");
             mSessionManager.updateSession(email, name, id, points);
+            mPointsView.setText(String.valueOf(points));
 
-            Toast.makeText(mContext.getActivity(), "Changes saved successfully", Toast.LENGTH_SHORT).show();
         } else {
             // TODO: dissect more errors
-            if (json.get("error_code") != null && json.get("error_code").getAsInt() == 0) {
-                Toast.makeText(mContext.getActivity(), "Incorrect password", Toast.LENGTH_SHORT).show();
-            } else if (json.get("error_message") != null) {
-                Toast.makeText(mContext.getActivity(), json.get("error_message").getAsString(),
+            if (json.get("error_message") != null) {
+                Toast.makeText(mContext, json.get("error_message").getAsString(),
                         Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(mContext.getActivity(), "Something when really wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Something when really wrong", Toast.LENGTH_SHORT).show();
             }
         }
+
+        mContext.setUpdateUserTaskNull();
     }
 }

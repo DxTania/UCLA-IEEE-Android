@@ -37,6 +37,8 @@ public class ProfileActivity extends Fragment {
         setUpImageButtons();
         setUpSaveChanges();
 
+        // TODO: have a refresh button to get updated details
+
         // TODO: Populate events list, get events since day of most recent event they attended
         // TODO: QR Codes should be the id of the calendar event. SHould we verify checking in with GPS?
         ListView attendedEvents = (ListView) rootView.findViewById(R.id.attendedEventList);

@@ -90,7 +90,7 @@ public class CalendarActivity extends Fragment {
 
         // Start async task to check if new events have been added
         mActivity = (MainActivity) getActivity();
-        mActivity.startAsyncCall(this);
+        mActivity.startCalendarAsyncCall(this);
 
         return rootView;
     }
@@ -162,7 +162,7 @@ public class CalendarActivity extends Fragment {
         if (id == R.id.action_settings) {
             return true;
         } else if (id == R.id.action_refresh) {
-            mActivity.startAsyncCall(this);
+            mActivity.startCalendarAsyncCall(this);
             Toast.makeText(getActivity(), "Loading new events...", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);

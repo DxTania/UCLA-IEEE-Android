@@ -40,7 +40,7 @@ public class JsonServerUtil {
     }
 
     public JsonArray getJsonArrayFromString(String string) {
-        if (TextUtils.isEmpty(string)) {
+        if (TextUtils.isEmpty(string) || string == null) {
             return null;
         }
         try {
@@ -52,7 +52,7 @@ public class JsonServerUtil {
     }
 
     public JsonObject getJsonObjectFromString(String string) {
-        if (TextUtils.isEmpty(string)) {
+        if (TextUtils.isEmpty(string) || string == null) {
             return null;
         }
         try {

@@ -161,7 +161,7 @@ public class NavigationDrawerFragment extends Fragment {
                 SessionManager sessionManager = new SessionManager(getActivity());
                 sessionManager.logoutUser();
                 // TODO: Stop *any* async tasks
-                activity.stopCalendarTask();
+                activity.stopAsyncTasks();
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 // Back to sign in page
                 startActivity(intent);
