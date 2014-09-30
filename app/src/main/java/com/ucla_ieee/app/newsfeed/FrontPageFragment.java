@@ -19,7 +19,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class MainPageFragment extends Fragment {
+public class FrontPageFragment extends Fragment {
 
     private SessionManager mSessionManager;
     private View rootView;
@@ -40,20 +40,6 @@ public class MainPageFragment extends Fragment {
         List<News> newsFeed = new ArrayList<News>();
         newsFeed.addAll(getRecentAnnouncements());
         newsFeed.addAll(getUpcomingEvents());
-        Collections.sort(newsFeed, new Comparator<News>() {
-            @Override
-            public int compare(News lhs, News rhs) {
-                Calendar date = new GregorianCalendar();
-                date.set(Calendar.HOUR_OF_DAY, 0);
-                date.set(Calendar.MINUTE, 0);
-                date.set(Calendar.SECOND, 0);
-                date.set(Calendar.MILLISECOND, 0);
-                long msToday = date.getTimeInMillis();
-                long leftDistance = Math.abs(lhs.getRealDate().getTime() - msToday);
-                long rightDistance = Math.abs(rhs.getRealDate().getTime() - msToday);
-                return leftDistance > rightDistance ? 1 : -1; // sort by closest to today
-            }
-        });
 
         mNewsFeedListAdapter = new NewsFeedListAdapter(getActivity(), newsFeed);
         mNewsFeedListView = (ListView) rootView.findViewById(R.id.newsFeed);
@@ -82,7 +68,7 @@ public class MainPageFragment extends Fragment {
                 SimpleDateFormat newsFormat = new SimpleDateFormat("MMM dd");
                 String newsDate = newsFormat.format(date);
                 recentAnnouncements.add(new News(announcement.get("content").getAsString(),
-                        newsDate, "announcement", date));
+                        newsDate, "", "announcement", date));
             }
         }
         return recentAnnouncements;
@@ -110,7 +96,7 @@ public class MainPageFragment extends Fragment {
                 upcomingEvents.add(
                     new News(
                         event.getSummary(),
-                        EventManager.getDate(event) + " " + EventManager.getLocationTime(event),
+                        event.getDateString(), event.getLocationTime(),
                         "calendar", event.getStartDate())
                 );
             }

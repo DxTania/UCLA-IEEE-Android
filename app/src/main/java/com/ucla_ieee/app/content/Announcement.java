@@ -1,24 +1,37 @@
 package com.ucla_ieee.app.content;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
- * Class that represents a single announcement
+ * Represents a single announcement
  */
 public class Announcement {
     private String content;
-    private String date;
+    private Date date;
     private int id;
 
     public Announcement(String content, String date, int id) {
         this.content = content;
-        this.date = date;
+        try {
+            this.date = (new SimpleDateFormat("yyyy-MM-dd")).parse(date);
+        } catch (ParseException e) {
+            this.date = new Date();
+        }
         this.id = id;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public String getDateString() {
+        SimpleDateFormat format = new SimpleDateFormat("MMM dd");
+        return format.format(date);
+    }
+
+    public void setDate(Date date) {
         this.date = date;
     }
 

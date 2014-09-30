@@ -154,31 +154,4 @@ public class EventManager {
             }
         }
     }
-
-    /**
-     * @param event to get date for
-     * @return Date in MMM dd format
-     */
-    public static String getDate(Event event) {
-        SimpleDateFormat format = new SimpleDateFormat("MMM dd");
-        return format.format(event.getStartDate());
-    }
-
-    /**
-     * @param event to get location time
-     * @return "Time at Location" or "All Day at Location"
-     */
-    public static String getLocationTime(Event event) {
-        String time = "";
-        String loc = event.getLocation() == null ? "" : " at " + event.getLocation();
-
-        if (event.getStartDate() != null && !event.getAllDay()) {
-            SimpleDateFormat format = new SimpleDateFormat("hh:mma");
-            time = format.format(event.getStartDate());
-        } else if (event.getAllDay()) {
-            time = "All Day";
-        }
-
-        return time + loc;
-    }
 }

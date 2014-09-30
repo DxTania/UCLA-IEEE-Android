@@ -17,7 +17,7 @@ import org.apache.http.message.BasicNameValuePair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProfileFragment extends Fragment {
+public class MembershipFragment extends Fragment {
     private MembershipEditTask mAuthTask = null;
 
     private EditText email, name, memberId;
@@ -55,7 +55,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // send post request
-                mAuthTask = new MembershipEditTask(ProfileFragment.this, passwordText);
+                mAuthTask = new MembershipEditTask(MembershipFragment.this, passwordText);
 
                 String newEmail, newName, newId, newPassword;
                 newEmail = email.getText().toString();

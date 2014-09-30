@@ -25,13 +25,13 @@ public class MembershipEditTask extends AsyncTask<List<BasicNameValuePair>, Void
 
     private final String mEmail;
     private final String mCookie;
-    private final ProfileFragment mContext;
+    private final MembershipFragment mContext;
     private SessionManager mSessionManager;
     private TextView mTextView;
     private JsonServerUtil mUtil;
 
     public MembershipEditTask(Fragment context, TextView passwordText) {
-        mContext = (ProfileFragment) context;
+        mContext = (MembershipFragment) context;
         mSessionManager = new SessionManager(mContext.getActivity());
         mEmail = mSessionManager.getEmail();
         mCookie = mSessionManager.getCookie();

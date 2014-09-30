@@ -8,6 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.ucla_ieee.app.R;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class AnnouncementsListAdapter extends ArrayAdapter<Announcement> {
@@ -18,6 +20,22 @@ public class AnnouncementsListAdapter extends ArrayAdapter<Announcement> {
         super(context, R.layout.snippet_event, announcements);
         this.context = context;
         this.announcements = announcements;
+        sort();
+    }
+
+    public void sort() {
+        Collections.sort(announcements, new Comparator<Announcement>() {
+            @Override
+            public int compare(Announcement lhs, Announcement rhs) {
+                return rhs.getDate().compareTo(lhs.getDate());
+            }
+        });
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        sort();
+        super.notifyDataSetChanged();
     }
 
     @Override
@@ -43,7 +61,7 @@ public class AnnouncementsListAdapter extends ArrayAdapter<Announcement> {
         Announcement announcement = announcements.get(position);
 
         viewHolder.content.setText(announcement.getContent()); // getContent
-        viewHolder.date.setText(announcement.getDate());
+        viewHolder.date.setText(announcement.getDateString());
 
         return convertView;
     }
@@ -51,6 +69,5 @@ public class AnnouncementsListAdapter extends ArrayAdapter<Announcement> {
     static class ViewHolder {
         TextView content;
         TextView date;
-
     }
 } 

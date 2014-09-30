@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.ucla_ieee.app.R;
 
-import java.util.List;
+import java.util.*;
 
 public class NewsFeedListAdapter extends ArrayAdapter<News> {
     private final Context context;
@@ -19,6 +19,30 @@ public class NewsFeedListAdapter extends ArrayAdapter<News> {
         super(context, R.layout.snippet_news, news);
         this.context = context;
         this.news = news;
+        sort();
+    }
+
+    public void sort() {
+        Collections.sort(news, new Comparator<News>() {
+            @Override
+            public int compare(News lhs, News rhs) {
+                Calendar date = new GregorianCalendar();
+                date.set(Calendar.HOUR_OF_DAY, 0);
+                date.set(Calendar.MINUTE, 0);
+                date.set(Calendar.SECOND, 0);
+                date.set(Calendar.MILLISECOND, 0);
+                long msToday = date.getTimeInMillis();
+                long leftDistance = Math.abs(lhs.getRealDate().getTime() - msToday);
+                long rightDistance = Math.abs(rhs.getRealDate().getTime() - msToday);
+                return leftDistance > rightDistance ? 1 : -1; // sort by closest to today
+            }
+        });
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        sort();
+        super.notifyDataSetChanged();
     }
 
     @Override
@@ -34,7 +58,8 @@ public class NewsFeedListAdapter extends ArrayAdapter<News> {
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.snippet_news, parent, false);
-            viewHolder.location = (TextView) convertView.findViewById(R.id.locationText);
+            viewHolder.locationTime = (TextView) convertView.findViewById(R.id.locationText);
+            viewHolder.dateText = (TextView) convertView.findViewById(R.id.dateText);
             viewHolder.summary = (TextView) convertView.findViewById(R.id.summaryText);
             viewHolder.type = (ImageView) convertView.findViewById(R.id.type);
             convertView.setTag(viewHolder);
@@ -43,7 +68,8 @@ public class NewsFeedListAdapter extends ArrayAdapter<News> {
         }
 
         News newsSnippet = news.get(position);
-        viewHolder.location.setText(newsSnippet.getDate());
+        viewHolder.locationTime.setText(newsSnippet.getLocationTime());
+        viewHolder.dateText.setText(newsSnippet.getDateText());
         viewHolder.summary.setText(newsSnippet.getContent());
 
         if (newsSnippet.getType().equals("calendar")) {
@@ -57,7 +83,8 @@ public class NewsFeedListAdapter extends ArrayAdapter<News> {
 
     static class ViewHolder {
         TextView summary;
-        TextView location;
+        TextView locationTime;
+        TextView dateText;
         ImageView type;
     }
 } 

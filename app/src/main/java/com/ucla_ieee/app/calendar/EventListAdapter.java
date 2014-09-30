@@ -45,7 +45,7 @@ public class EventListAdapter extends ArrayAdapter<Event> {
         Event event = events.get(position);
         // TODO: Show symbol if user has attended that event (viewHolder.checkIn)
         viewHolder.summary.setText(event.getSummary());
-        viewHolder.location.setText(EventManager.getLocationTime(event));
+        viewHolder.location.setText(event.getLocationTime());
 
         return convertView;
     }

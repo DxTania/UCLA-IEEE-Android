@@ -15,10 +15,10 @@ import com.ucla_ieee.app.calendar.CalendarFragment;
 import com.ucla_ieee.app.calendar.CalendarTask;
 import com.ucla_ieee.app.content.AnnouncementsFragment;
 import com.ucla_ieee.app.content.AnnouncementsTask;
-import com.ucla_ieee.app.newsfeed.MainPageFragment;
+import com.ucla_ieee.app.newsfeed.FrontPageFragment;
 import com.ucla_ieee.app.scan.CheckInScanTask;
 import com.ucla_ieee.app.signin.LoginActivity;
-import com.ucla_ieee.app.user.ProfileFragment;
+import com.ucla_ieee.app.user.MembershipFragment;
 import com.ucla_ieee.app.user.SessionManager;
 import com.ucla_ieee.app.user.UpdateTask;
 
@@ -109,11 +109,11 @@ public class MainActivity extends FragmentActivity
             if (tag.equals(CAL_TAG)) {
                 fragment = new CalendarFragment();
             } else if (tag.equals(PROFILE_TAG)) {
-                fragment = new ProfileFragment();
+                fragment = new MembershipFragment();
             } else if (tag.equals(ANNOUNCEMENTS_TAG)) {
                 fragment = new AnnouncementsFragment();
             } else {
-                fragment = new MainPageFragment();
+                fragment = new FrontPageFragment();
             }
         }
         if (!fragment.isVisible()) {

@@ -3,6 +3,7 @@ package com.ucla_ieee.app.calendar;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -109,6 +110,31 @@ public class Event implements Parcelable {
 
     public void setCreatorName(String creatorName) {
         this.creatorName = creatorName;
+    }
+
+    /**
+     * @return Date in MMM dd format
+     */
+    public String getDateString() {
+        SimpleDateFormat format = new SimpleDateFormat("MMM dd");
+        return format.format(getStartDate());
+    }
+
+    /**
+     * @return "Time at Location" or "All Day at Location"
+     */
+    public String getLocationTime() {
+        String time = "";
+        String loc = getLocation() == null ? "" : " at " + getLocation();
+
+        if (getStartDate() != null && !getAllDay()) {
+            SimpleDateFormat format = new SimpleDateFormat("hh:mma");
+            time = format.format(getStartDate());
+        } else if (getAllDay()) {
+            time = "All Day";
+        }
+
+        return time + loc;
     }
 
     @Override
