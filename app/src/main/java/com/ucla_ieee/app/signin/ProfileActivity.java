@@ -20,7 +20,8 @@ public class ProfileActivity extends Fragment {
     private MembershipEditTask mAuthTask = null;
 
     private EditText email, name, memberId;
-    private TextView emailText, nameText, memberIdText, passwordText;
+    private TextView emailText, nameText, memberIdText, passwordText, numPoints;
+    private ImageButton passwordEditPencil;
     private Boolean alertReady = false;
     private String cachePassword = "";
     private SessionManager sessionManager;
@@ -84,7 +85,22 @@ public class ProfileActivity extends Fragment {
                 }
 
                 mAuthTask.execute(valuePairs);
-                toggleOffEdits();
+                toggleEdits(true);
+            }
+        });
+
+        Button revertChanges = (Button) rootView.findViewById(R.id.revertChanges);
+        revertChanges.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleEdits(true);
+                emailText.setText(sessionManager.getEmail());
+                email.setText(sessionManager.getEmail());
+                nameText.setText(sessionManager.getName());
+                name.setText(sessionManager.getName());
+                memberIdText.setText(sessionManager.getIEEEId());
+                memberIdText.setText(sessionManager.getIEEEId());
+                passwordText.setText("");
             }
         });
     }
@@ -97,33 +113,6 @@ public class ProfileActivity extends Fragment {
             public void onClick(View v) {
                 LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.nextRewardHint);
                 ll.setVisibility(ll.getVisibility() == View.VISIBLE? View.GONE : View.VISIBLE);
-            }
-        });
-
-        ImageButton changeEmail = (ImageButton) rootView.findViewById(R.id.editEmail);
-        changeEmail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleVisibility(email, emailText, false);
-                email.requestFocus();
-            }
-        });
-
-        ImageButton changeName = (ImageButton) rootView.findViewById(R.id.editName);
-        changeName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleVisibility(name, nameText, false);
-                name.requestFocus();
-            }
-        });
-
-        ImageButton changeId = (ImageButton) rootView.findViewById(R.id.editMembershipId);
-        changeId.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleVisibility(memberId, memberIdText, false);
-                memberId.requestFocus();
             }
         });
 
@@ -144,7 +133,7 @@ public class ProfileActivity extends Fragment {
         final EditText passwordView = (EditText) ll.findViewById(R.id.curPassword);
 
         final AlertDialog alert = new AlertDialog.Builder(getActivity())
-                .setTitle("Update Password")
+                .setTitle("Change Password")
                 .setMessage("Please fill in the following fields")
                 .setView(ll)
                 .setPositiveButton("Ok", null)
@@ -200,24 +189,40 @@ public class ProfileActivity extends Fragment {
         memberId.setText(sessionManager.getIEEEId());
         memberIdText.setText(sessionManager.getIEEEId());
 
+        numPoints = (TextView) rootView.findViewById(R.id.numPoints);
+        numPoints.setText(String.valueOf(sessionManager.getPoints()));
+
         passwordText = (TextView) rootView.findViewById(R.id.passwordText);
+        passwordEditPencil = (ImageButton) rootView.findViewById(R.id.changePassword);
     }
 
-    private void toggleOffEdits() {
-        toggleVisibility(email, emailText, true);
-        toggleVisibility(name, nameText, true);
-        toggleVisibility(memberId, memberIdText, true);
+    /**
+     *
+     * @param override Will force edit text's off
+     */
+    private void toggleEdits(boolean override) {
+        toggleVisibility(email, emailText, override);
+        toggleVisibility(name, nameText, override);
+        toggleVisibility(memberId, memberIdText, override);
     }
 
     private void toggleVisibility(EditText editText, TextView textView, boolean forceText) {
         if (editText.getVisibility() == View.VISIBLE || forceText) {
             editText.setVisibility(View.GONE);
             textView.setVisibility(View.VISIBLE);
+            passwordEditPencil.setVisibility(View.GONE);
             textView.setText(editText.getText());
         } else {
             editText.setVisibility(View.VISIBLE);
             textView.setVisibility(View.GONE);
+            passwordEditPencil.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -226,7 +231,11 @@ public class ProfileActivity extends Fragment {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_toggle_edit) {
+            toggleEdits(false);
+            return true;
+        } else if (id == R.id.action_settings) {
+            Toast.makeText(getActivity(), "Settings", Toast.LENGTH_SHORT).show();
             return true;
         }
         return super.onOptionsItemSelected(item);

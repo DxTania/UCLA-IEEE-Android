@@ -30,6 +30,11 @@ public class EventListAdapter extends ArrayAdapter<Event> {
     }
 
     @Override
+    public boolean isEnabled(int position) {
+        return false;
+    }
+
+    @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder = new ViewHolder();
 
@@ -76,6 +81,7 @@ public class EventListAdapter extends ArrayAdapter<Event> {
 
         viewHolder.summary.setText(event.getSummary());
         viewHolder.location.setText(time + loc + " ");
+
         return convertView;
     }
 } 

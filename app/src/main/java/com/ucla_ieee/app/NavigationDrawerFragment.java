@@ -12,12 +12,12 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.*;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-import com.ucla_ieee.app.scan.CheckInTask;
 import com.ucla_ieee.app.signin.LoginActivity;
 import com.ucla_ieee.app.signin.SessionManager;
 
@@ -59,14 +59,14 @@ public class NavigationDrawerFragment extends Fragment {
     private boolean mUserLearnedDrawer;
 
     private MainActivity activity;
-    private int mPosition = 0;
+    private int mPosition = 0, mLastPosition;
 
     public enum Navigation {
         FRONT_PAGE,
         CALENDAR,
         MEMBERSHIP,
         ANNOUNCEMENTS,
-        ACHIEVEMENTS,
+//        ACHIEVEMENTS,
         CHECK_IN,
         LOGOUT
     }
@@ -107,8 +107,9 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                selectItem(position);
+                mLastPosition = mPosition;
                 mPosition = position;
+                selectItem(position);
             }
         });
         mDrawerListView.setAdapter(new ArrayAdapter<String>(
@@ -120,7 +121,7 @@ public class NavigationDrawerFragment extends Fragment {
                         "Calendar",
                         "My Membership",
                         "Announcements",
-                        "Achievements",
+                        // "Achievements",
                         "Check In",
                         "Logout"
                 }));
@@ -128,42 +129,39 @@ public class NavigationDrawerFragment extends Fragment {
         return mDrawerListView;
     }
 
-    public void switchFragments(int position) {
+    public void switchFragments(int position, boolean renew) {
         Navigation selected = Navigation.values()[position];
         switch(selected) {
             case FRONT_PAGE:
                 activity.setFragmentTitle("UCLA IEEE");
-                activity.doFragment(MainActivity.MAIN_TAG);
+                activity.doFragment(MainActivity.MAIN_TAG, renew);
                 break;
             case CALENDAR:
                 activity.setFragmentTitle("Calendar");
-                activity.doFragment(MainActivity.CAL_TAG);
+                activity.doFragment(MainActivity.CAL_TAG, renew);
                 break;
             case MEMBERSHIP:
+                Log.d("DEBUGZ", "Switch frags to membership");
                 activity.setFragmentTitle("Membership");
-                activity.doFragment(MainActivity.PROFILE_TAG);
+                activity.doFragment(MainActivity.PROFILE_TAG, renew);
                 break;
             case ANNOUNCEMENTS:
                 activity.setFragmentTitle("Announcements");
-                activity.doFragment(MainActivity.ANNOUNCEMENTS_TAG);
+                activity.doFragment(MainActivity.ANNOUNCEMENTS_TAG, renew);
                 break;
             case CHECK_IN:
                 // Check In
-                CheckInTask checkInTask = new CheckInTask(this.getActivity().getApplicationContext(),
-                        "obrgnrgjml3urolv43h8qpnihc");//data.getStringExtra("SCAN_RESULT"));
-                checkInTask.execute((Void) null);
-//                Intent scanIntent = new Intent("com.google.zxing.client.android.SCAN");
-//                scanIntent.putExtra("SCAN_MODE", "QR_CODE_MODE");
-//                startActivityForResult(scanIntent, SCAN);
+                Intent scanIntent = new Intent("com.google.zxing.client.android.SCAN");
+                scanIntent.putExtra("SCAN_MODE", "QR_CODE_MODE");
+                startActivityForResult(scanIntent, SCAN);
                 break;
             case LOGOUT:
                 // Logout
                 SessionManager sessionManager = new SessionManager(getActivity());
                 sessionManager.logoutUser();
-                // TODO: Stop *any* async tasks
                 activity.stopAsyncTasks();
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
                 // Back to sign in page
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
                 getActivity().finish();
                 break;
@@ -174,13 +172,10 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // TODO: Make sure this is called and actually make call to server to check in
         if (requestCode == SCAN && resultCode == Activity.RESULT_OK) {
             // check in here
-            CheckInTask checkInTask = new CheckInTask(this.getActivity().getApplicationContext(),
-                    "obrgnrgjml3urolv43h8qpnihc");//data.getStringExtra("SCAN_RESULT"));
-            checkInTask.execute((Void) null);
-            Toast.makeText(getActivity(), data.getStringExtra("SCAN_RESULT"), Toast.LENGTH_SHORT).show();
+            activity.startCheckInAsyncCall(data.getStringExtra("SCAN_RESULT"));
+            selectItem(mLastPosition);
         }
     }
 
@@ -223,7 +218,7 @@ public class NavigationDrawerFragment extends Fragment {
                     return;
                 }
 
-                switchFragments(mPosition);
+                switchFragments(mPosition, false);
 
                 getActivity().invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
             }
@@ -267,8 +262,7 @@ public class NavigationDrawerFragment extends Fragment {
 
     public void selectItem(int position) {
         mCurrentSelectedPosition = position;
-        Navigation selected = Navigation.values()[position];
-        if (mDrawerListView != null && selected != Navigation.CHECK_IN) {
+        if (mDrawerListView != null) {
             mDrawerListView.setItemChecked(position, true);
         }
         if (mDrawerLayout != null) {

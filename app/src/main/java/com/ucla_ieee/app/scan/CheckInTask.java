@@ -1,9 +1,9 @@
 package com.ucla_ieee.app.scan;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 import com.google.gson.JsonObject;
+import com.ucla_ieee.app.MainActivity;
 import com.ucla_ieee.app.signin.SessionManager;
 import com.ucla_ieee.app.util.JsonServerUtil;
 import org.apache.http.HttpResponse;
@@ -19,15 +19,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Checks in user to event indicated by id in QR code (eventId)
  */
 public class CheckInTask extends AsyncTask<Void, Void, String> {
 
     private final SessionManager mSessionManager;
-    private final Context mContext;
+    private final MainActivity mContext;
     private final JsonServerUtil mUtil;
     private final String mEventId;
 
-    public CheckInTask(Context context, String eventId) {
+    public CheckInTask(MainActivity context, String eventId) {
         mSessionManager = new SessionManager(context);
         mContext = context;
         mUtil = new JsonServerUtil();
@@ -67,8 +68,26 @@ public class CheckInTask extends AsyncTask<Void, Void, String> {
         if (json.get("success").getAsInt() == 1) {
             // TODO: update attended events list (in session manager?)
             Toast.makeText(mContext, "Thanks for checking in!", Toast.LENGTH_SHORT).show();
+            JsonObject user = json.get("user").getAsJsonObject();
+
+            String email, name, id;
+            int points;
+
+            email = user.get("email").getAsString();
+            name = user.get("name").getAsString();
+            id = user.get("ieee_id").getAsString();
+            points = user.get("points").getAsInt();
+
+            mSessionManager.updateSession(email, name, id, points);
+
         } else {
             Toast.makeText(mContext, json.get("error_message").getAsString(), Toast.LENGTH_SHORT).show();
+        }
+
+        mContext.setCheckInTaskNull();
+
+        if (mContext.currentTag.equals(MainActivity.MAIN_TAG) || mContext.currentTag.equals(MainActivity.PROFILE_TAG)) {
+            mContext.doFragment(mContext.currentTag, true);
         }
     }
 }

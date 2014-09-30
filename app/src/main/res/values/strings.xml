@@ -8,7 +8,7 @@
     <string name="title_activity_sign_in">SignIn</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">UCLA IEEE</string>
     <string name="title_activity_calendar">CalendarActivity</string>
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="title_activity_register">RegisterActivity</string>
@@ -42,13 +42,14 @@
     <string name="test_id">12938vdkja2189</string>
     <string name="email">Email</string>
     <string name="name">Name</string>
-    <string name="save">Save Changes</string>
+    <string name="save">Save</string>
     <string name="no_attended_events">Sorry, you haven\'t checked into any events!</string>
     <string name="password">Password</string>
     <string name="error_incorrect_email">Email does not exist</string>
     <string name="new_password">New Password</string>
     <string name="cur_password">Current Password</string>
     <string name="retype_password">Re-Type Password</string>
+    <string name="retype_new_password">Re-Type New Password</string>
     <string name="register">Register</string>
     <string name="ieee_logo">IEEE Logo</string>
     <string name="edit">edit</string>

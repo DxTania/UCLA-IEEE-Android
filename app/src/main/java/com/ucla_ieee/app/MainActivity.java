@@ -8,12 +8,15 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import com.ucla_ieee.app.calendar.CalendarActivity;
 import com.ucla_ieee.app.calendar.CalendarTask;
 import com.ucla_ieee.app.content.AnnouncementsActivity;
+import com.ucla_ieee.app.content.AnnouncementsTask;
+import com.ucla_ieee.app.scan.CheckInTask;
 import com.ucla_ieee.app.signin.LoginActivity;
 import com.ucla_ieee.app.signin.ProfileActivity;
 import com.ucla_ieee.app.signin.SessionManager;
@@ -25,6 +28,8 @@ public class MainActivity extends FragmentActivity
     public static final String PROFILE_TAG = "profile";
     public static final String MAIN_TAG = "main";
     public static final String ANNOUNCEMENTS_TAG = "announcements";
+
+    public String currentTag;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -39,8 +44,12 @@ public class MainActivity extends FragmentActivity
     private DrawerLayout mDrawerLayout;
     private int mPosition;
     private CalendarTask mCalendarTask;
+    private AnnouncementsTask mAnnouncementsAsyncTask;
+    private CheckInTask mCheckInTask;
     private UpdateTask mUpdateTask;
     private CalendarActivity mCalendarActivity;
+    private MainPageFragment mMainPageFragment;
+    private AnnouncementsActivity mAnnouncementsActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +69,7 @@ public class MainActivity extends FragmentActivity
                 this);
 
         mNavigationDrawerFragment.selectItem(0);
-        mNavigationDrawerFragment.switchFragments(0);
+        mNavigationDrawerFragment.switchFragments(0, false);
     }
 
     @Override
@@ -84,13 +93,15 @@ public class MainActivity extends FragmentActivity
         invalidateOptionsMenu();
     }
 
-    public void doFragment(String tag) {
+    public void doFragment(String tag, boolean renew) {
+        currentTag = tag;
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentByTag(tag);
-        if (fragment == null) {
+        if (fragment == null || renew) {
             if (tag.equals(CAL_TAG)) {
                 fragment = new CalendarActivity();
             } else if (tag.equals(PROFILE_TAG)) {
+                Log.d("DEBUGZ", "New profile activity");
                 fragment = new ProfileActivity();
             } else if (tag.equals(ANNOUNCEMENTS_TAG)) {
                 fragment = new AnnouncementsActivity();
@@ -122,13 +133,16 @@ public class MainActivity extends FragmentActivity
             // decide what to show in the action bar.
             switch (mPosition) {
                 case 0:
-                    getMenuInflater().inflate(R.menu.main_activity2, menu);
-                    break;
+                    getMenuInflater().inflate(R.menu.main_settings, menu);
+                    return false;
                 case 1:
                     getMenuInflater().inflate(R.menu.calendar, menu);
-                    break;
+                    return false;
+                case 2:
+                    getMenuInflater().inflate(R.menu.edit_member, menu);
+                    return false;
                 default:
-                    getMenuInflater().inflate(R.menu.main_activity2, menu);
+                    getMenuInflater().inflate(R.menu.main_settings, menu);
             }
             restoreActionBar();
             return true;
@@ -156,6 +170,7 @@ public class MainActivity extends FragmentActivity
 
     public void setFragmentTitle(String title) {
         mTitle = title;
+        restoreActionBar();
     }
 
     // Calendar Functions
@@ -176,12 +191,37 @@ public class MainActivity extends FragmentActivity
         }
     }
 
+    public void startAnnouncementsAsyncCall(AnnouncementsActivity activity) {
+        if (mAnnouncementsActivity == null) {
+            mAnnouncementsActivity = activity;
+        }
+        if (mAnnouncementsAsyncTask == null) {
+            mAnnouncementsAsyncTask = new AnnouncementsTask(this);
+            mAnnouncementsAsyncTask.execute((Void) null);
+        }
+    }
+
+    public void startCheckInAsyncCall(String qrCode) {
+        if (mCheckInTask == null) {
+            mCheckInTask = new CheckInTask(this, qrCode);
+            mCheckInTask.execute((Void) null);
+        }
+    }
+
     public void setCalendar(CalendarActivity activity) {
         mCalendarActivity = activity;
     }
 
     public CalendarActivity getCalendar() {
         return mCalendarActivity;
+    }
+
+    public AnnouncementsActivity getAnnouncementsActivity() {
+        return mAnnouncementsActivity;
+    }
+
+    public void setAnnouncementsAsyncTaskNull() {
+        mAnnouncementsAsyncTask = null;
     }
 
     public void stopAsyncTasks() {
@@ -191,6 +231,14 @@ public class MainActivity extends FragmentActivity
         if (mUpdateTask != null) {
             mUpdateTask.cancel(true);
         }
+
+        if (mAnnouncementsAsyncTask != null) {
+            mAnnouncementsAsyncTask.cancel(true);
+        }
+
+        if (mCheckInTask != null) {
+            mCheckInTask.cancel(true);
+        }
     }
 
     public void setCalendarTaskNull() {
@@ -199,5 +247,9 @@ public class MainActivity extends FragmentActivity
 
     public void setUpdateUserTaskNull() {
         mUpdateTask = null;
+    }
+
+    public void setCheckInTaskNull() {
+        mCheckInTask = null;
     }
 }

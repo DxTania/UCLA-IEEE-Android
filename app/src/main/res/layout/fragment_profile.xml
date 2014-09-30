@@ -1,5 +1,5 @@
 <ScrollView
-    android:layout_width="wrap_content"
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="@color/caldroid_white"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
-            android:showDividers="beginning|middle|end"
+            android:showDividers="beginning|middle"
             android:divider="?android:attr/dividerVertical">
 
             <LinearLayout
@@ -65,16 +65,6 @@
                     android:textSize="14sp"
                     android:layout_marginRight="10dp"
                     android:id="@+id/memberEmailText"/>
-
-                <ImageButton
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.1"
-                    android:src="@android:drawable/ic_menu_edit"
-                    android:layout_gravity="center_vertical"
-                    android:id="@+id/editEmail"
-                    android:contentDescription="@string/edit"
-                    android:background="@android:color/transparent"/>
             </LinearLayout>
 
             <LinearLayout
@@ -112,6 +102,7 @@
                     android:layout_gravity="center_vertical"
                     android:id="@+id/changePassword"
                     android:contentDescription="@string/edit"
+                    android:visibility="gone"
                     android:background="@android:color/transparent"/>
             </LinearLayout>
 
@@ -151,16 +142,6 @@
                     android:inputType="textPersonName"
                     android:visibility="gone"
                     android:id="@+id/memberName"/>
-
-                <ImageButton
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.1"
-                    android:src="@android:drawable/ic_menu_edit"
-                    android:layout_gravity="center_vertical"
-                    android:id="@+id/editName"
-                    android:contentDescription="@string/edit"
-                    android:background="@android:color/transparent"/>
             </LinearLayout>
 
             <LinearLayout
@@ -199,16 +180,6 @@
                     android:inputType="textEmailAddress"
                     android:visibility="gone"
                     android:id="@+id/memberId"/>
-
-                <ImageButton
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.1"
-                    android:src="@android:drawable/ic_menu_edit"
-                    android:layout_gravity="center_vertical"
-                    android:id="@+id/editMembershipId"
-                    android:contentDescription="@string/edit"
-                    android:background="@android:color/transparent"/>
             </LinearLayout>
 
             <LinearLayout
@@ -306,16 +277,39 @@
             </LinearLayout>
         </LinearLayout>
 
-        <Button
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/save"
-            android:textSize="18sp"
-            android:background="@drawable/gradient_button"
-            android:layout_margin="5dp"
-            android:textColor="@color/caldroid_black"
-            android:textStyle="bold"
-            android:id="@+id/saveChanges"/>
+            android:orientation="horizontal">
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="0.5"
+                android:text="Undo Changes"
+                android:textSize="18sp"
+                android:layout_margin="5dp"
+                android:background="@drawable/gradient_button"
+                android:textColor="@color/caldroid_black"
+                android:textStyle="bold"
+                android:id="@+id/revertChanges"/>
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="0.5"
+                android:text="@string/save"
+                android:textSize="18sp"
+                android:layout_margin="5dp"
+
+                android:background="@drawable/gradient_button"
+                android:textColor="@color/caldroid_black"
+                android:textStyle="bold"
+
+                android:id="@+id/saveChanges"/>
+
+
+        </LinearLayout>
+
 
         <TextView
             android:background="@color/ucla_blue"
@@ -342,7 +336,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="20dp"
             android:id="@+id/noEventsText"
-            android:text="@string/no_attended_events"
+            android:text="Coming soon..."
             android:gravity="center"/>
     </LinearLayout>
 </ScrollView>

@@ -1,13 +1,11 @@
 package com.ucla_ieee.app.calendar;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -78,14 +76,14 @@ public class CalendarActivity extends Fragment {
 
         // Set event list adapter
         ListView eventListView = (ListView) rootView.findViewById(R.id.eventList);
-        eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent eventIntent = new Intent(getActivity(), EventActivity.class);
-                eventIntent.putExtra("Event", mSelectedEvents.get(position));
-                startActivity(eventIntent);
-            }
-        });
+//        eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Intent eventIntent = new Intent(getActivity(), EventActivity.class);
+//                eventIntent.putExtra("Event", mSelectedEvents.get(position));
+//                startActivity(eventIntent);
+//            }
+//        });
         eventListView.setAdapter(mEventListAdapter);
 
         // Start async task to check if new events have been added
