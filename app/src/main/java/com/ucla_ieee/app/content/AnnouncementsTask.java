@@ -6,7 +6,7 @@ import android.widget.Toast;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.ucla_ieee.app.MainActivity;
-import com.ucla_ieee.app.signin.SessionManager;
+import com.ucla_ieee.app.user.SessionManager;
 import com.ucla_ieee.app.util.JsonServerUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -16,13 +16,13 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.IOException;
 
 public class AnnouncementsTask extends AsyncTask<Void, Void, String> {
-    private MainActivity mParent;
+    private MainActivity mContext;
     private SessionManager mSessionManager;
     private JsonServerUtil mUtil;
 
     public AnnouncementsTask(Context context) {
-        mParent = (MainActivity) context;
-        mSessionManager = new SessionManager(mParent);
+        mContext = (MainActivity) context;
+        mSessionManager = new SessionManager(mContext);
         mUtil = new JsonServerUtil();
     }
 
@@ -43,7 +43,7 @@ public class AnnouncementsTask extends AsyncTask<Void, Void, String> {
     protected void onPostExecute(String response) {
         JsonArray announcements = mUtil.getJsonArrayFromString(response);
         if (announcements == null) {
-            Toast.makeText(mParent, "Couldn't load announcements", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Couldn't load announcements", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -64,11 +64,11 @@ public class AnnouncementsTask extends AsyncTask<Void, Void, String> {
             }
 
             mSessionManager.setAnnouncements(announcements.toString());
-            if (mParent.getAnnouncementsActivity() != null) {
-                mParent.getAnnouncementsActivity().updateAnnouncements(announcements);
+            if (mContext.getAnnouncementsActivity() != null) {
+                mContext.getAnnouncementsActivity().updateAnnouncements(announcements);
             }
         }
 
-        mParent.setAnnouncementsAsyncTaskNull();
+        mContext.finishAnnouncementsTask();
     }
 }

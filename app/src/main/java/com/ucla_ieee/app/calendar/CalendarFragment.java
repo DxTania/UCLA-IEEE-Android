@@ -14,13 +14,13 @@ import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
 import com.ucla_ieee.app.MainActivity;
 import com.ucla_ieee.app.R;
-import com.ucla_ieee.app.signin.SessionManager;
+import com.ucla_ieee.app.user.SessionManager;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 
-public class CalendarActivity extends Fragment {
+public class CalendarFragment extends Fragment {
 
     private CaldroidFragment mCaldroidFragment;
     private TextView mDayTextView;
@@ -152,7 +152,12 @@ public class CalendarActivity extends Fragment {
         EventManager.removeStaleEvents(newEvents, mEvents, false);
         EventManager.removeStaleEvents(newEvents, mSelectedEvents, false);
         mEvents.addAll(newEvents);
-        Collections.sort(mEvents, new DateComp());
+        Collections.sort(mEvents, new Comparator<Event>() {
+            @Override
+            public int compare(Event lhs, Event rhs) {
+                return lhs.getStartDate().compareTo(rhs.getStartDate());
+            }
+        });
 
         // Remove colored date from calendar
         for (Event event : cancelled) {

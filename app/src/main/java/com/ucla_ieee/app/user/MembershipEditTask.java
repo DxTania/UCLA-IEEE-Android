@@ -1,4 +1,4 @@
-package com.ucla_ieee.app.signin;
+package com.ucla_ieee.app.user;
 
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
@@ -25,13 +25,13 @@ public class MembershipEditTask extends AsyncTask<List<BasicNameValuePair>, Void
 
     private final String mEmail;
     private final String mCookie;
-    private final ProfileActivity mContext;
+    private final ProfileFragment mContext;
     private SessionManager mSessionManager;
     private TextView mTextView;
     private JsonServerUtil mUtil;
 
-    MembershipEditTask(Fragment context, TextView passwordText) {
-        mContext = (ProfileActivity) context;
+    public MembershipEditTask(Fragment context, TextView passwordText) {
+        mContext = (ProfileFragment) context;
         mSessionManager = new SessionManager(mContext.getActivity());
         mEmail = mSessionManager.getEmail();
         mCookie = mSessionManager.getCookie();

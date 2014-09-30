@@ -6,7 +6,7 @@ import android.widget.Toast;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.ucla_ieee.app.MainActivity;
-import com.ucla_ieee.app.signin.SessionManager;
+import com.ucla_ieee.app.user.SessionManager;
 import com.ucla_ieee.app.util.JsonServerUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -28,12 +28,12 @@ public class CalendarTask extends AsyncTask<Void, Void, String> {
     private static final String API_KEY = "AIzaSyAgLz-5vEBqTeJtCv_eiW0zQjKMlJqcztI";
 
     SessionManager mSessionManager;
-    MainActivity mParent;
+    MainActivity mContext;
     JsonServerUtil mUtil;
 
     public CalendarTask(MainActivity parent) {
         mSessionManager = new SessionManager(parent);
-        mParent = parent;
+        mContext = parent;
         mUtil = new JsonServerUtil();
     }
 
@@ -65,10 +65,9 @@ public class CalendarTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected void onPostExecute(String response) {
-        mParent.setCalendarTaskNull();
         JsonObject json = mUtil.getJsonObjectFromString(response);
         if (json == null) {
-            Toast.makeText(mParent, "Couldn't load new events :(", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Couldn't load new events :(", Toast.LENGTH_SHORT).show();
             return; // error
         }
 
@@ -89,12 +88,14 @@ public class CalendarTask extends AsyncTask<Void, Void, String> {
 
         // Add to calendar if possible
         if (newItems.size() > 0) {
-            Toast.makeText(mParent, "New events were loaded!", Toast.LENGTH_SHORT).show();
-            if (mParent.getCalendar() != null) {
-                mParent.getCalendar().addEvents(newItems);
+            Toast.makeText(mContext, "New events were loaded!", Toast.LENGTH_SHORT).show();
+            if (mContext.getCalendar() != null) {
+                mContext.getCalendar().addEvents(newItems);
             }
         }
 
         // TODO: Deal with 410 GONE response
+
+        mContext.finishCalendarTask();
     }
 }

@@ -17,7 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import com.ucla_ieee.app.signin.LoginActivity;
-import com.ucla_ieee.app.signin.SessionManager;
+import com.ucla_ieee.app.user.SessionManager;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.

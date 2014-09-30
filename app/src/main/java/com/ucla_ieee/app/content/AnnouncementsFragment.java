@@ -11,13 +11,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.ucla_ieee.app.MainActivity;
 import com.ucla_ieee.app.R;
-import com.ucla_ieee.app.signin.SessionManager;
+import com.ucla_ieee.app.user.SessionManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class AnnouncementsActivity extends Fragment {
+public class AnnouncementsFragment extends Fragment {
     AnnouncementsListAdapter mListAdapter;
     MainActivity mainActivity;
 
@@ -56,7 +56,7 @@ public class AnnouncementsActivity extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        mainActivity.setAnnouncementsAsyncTaskNull();
+        mainActivity.finishAnnouncementsTask();
     }
 
     @Override

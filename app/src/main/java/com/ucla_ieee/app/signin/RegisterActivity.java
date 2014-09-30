@@ -4,31 +4,14 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
-import android.widget.*;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
-import com.ucla_ieee.app.MainActivity;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import com.ucla_ieee.app.R;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class RegisterActivity extends Activity {
@@ -78,7 +61,7 @@ public class RegisterActivity extends Activity {
                 }
 
                 showProgress(true);
-                mAuthTask = new RegisterTask(email, password, firstname, lastname);
+                mAuthTask = new RegisterTask(RegisterActivity.this, email, password, firstname, lastname);
                 mAuthTask.execute((Void) null);
             }
         });
@@ -120,115 +103,9 @@ public class RegisterActivity extends Activity {
         }
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class RegisterTask extends AsyncTask<Void, Void, String> {
-
-        private final String mEmail;
-        private final String mPassword;
-        private final String mFirstName;
-        private final String mLastName;
-
-        RegisterTask(String email, String password, String firstname, String lastname) {
-            mEmail = email;
-            mPassword = password;
-            mFirstName = firstname;
-            mLastName = lastname;
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost("http://ieeebruins.org/membership_serve/users.php");
-
-            List<NameValuePair> loginParams = new ArrayList<NameValuePair>();
-            loginParams.add(new BasicNameValuePair("service", "register"));
-            loginParams.add(new BasicNameValuePair("email", mEmail));
-            loginParams.add(new BasicNameValuePair("password", mPassword));
-            loginParams.add(new BasicNameValuePair("firstname", mFirstName));
-            loginParams.add(new BasicNameValuePair("lastname", mLastName));
-
-            try {
-                httpPost.setEntity(new UrlEncodedFormEntity(loginParams));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                HttpResponse response = httpClient.execute(httpPost);
-                HttpEntity entity = response.getEntity();
-
-                if (entity != null) {
-                    InputStream instream = entity.getContent();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(instream));
-                    StringBuilder builder = new StringBuilder();
-
-                    String st;
-                    while ((st = reader.readLine()) != null) {
-                        builder.append(st).append("\n");
-                    }
-
-                    instream.close();
-                    return builder.toString();
-                }
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String response) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (TextUtils.isEmpty(response)) {
-                Toast.makeText(RegisterActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                finish();
-                return;
-            }
-
-            JsonObject json;
-            try {
-                JsonParser parser = new JsonParser();
-                json = (JsonObject) parser.parse(response);
-            } catch (JsonSyntaxException e) {
-                e.printStackTrace();
-                Toast.makeText(RegisterActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (json.get("success") != null && json.get("success").getAsInt() == 1) {
-                // Welcome user
-                String firstName = json.get("user").getAsJsonObject().get("name").getAsString();
-                Toast.makeText(RegisterActivity.this, "Welcome to IEEE, " + firstName + "!", Toast.LENGTH_SHORT).show();
-
-                // Log in user
-                SessionManager sessionManager = new SessionManager(getApplicationContext());
-                sessionManager.loginUser(json.get("user").getAsJsonObject(), json.get("cookie").getAsString());
-
-                // Start main IEEE activity, clearing logout activity
-                Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
-            } else {
-                Toast.makeText(RegisterActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
+    public void cancelRegister() {
+        mAuthTask = null;
+        showProgress(false);
     }
+
 }

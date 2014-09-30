@@ -1,8 +1,7 @@
-package com.ucla_ieee.app.signin;
+package com.ucla_ieee.app.user;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 import com.google.gson.JsonObject;
 import com.ucla_ieee.app.MainActivity;
@@ -36,9 +35,6 @@ public class UpdateTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected String doInBackground(Void... params) {
-
-        Log.d("DEBUGZ", "Starting async task");
-
         HttpClient httpClient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost("http://ieeebruins.org/membership_serve/users.php");
 
@@ -57,7 +53,6 @@ public class UpdateTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected void onPostExecute(String response) {
-        Log.d("DEBUGZ", "Finishing async task");
         JsonObject json = mUtil.getJsonObjectFromString(response);
         if (json == null) {
             Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_SHORT).show();
@@ -65,7 +60,6 @@ public class UpdateTask extends AsyncTask<Void, Void, String> {
         }
 
         if (json.get("success") != null && json.get("success").getAsInt() == 1) {
-
             JsonObject user = json.getAsJsonObject("user");
             String email, name, id;
             int points;
@@ -82,14 +76,10 @@ public class UpdateTask extends AsyncTask<Void, Void, String> {
                 Toast.makeText(mContext, json.get("error_message").getAsString(),
                         Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(mContext, "Something when really wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Something went really wrong", Toast.LENGTH_SHORT).show();
             }
         }
 
-        mContext.setUpdateUserTaskNull();
-
-        if (mContext.currentTag.equals(MainActivity.MAIN_TAG) || mContext.currentTag.equals(MainActivity.PROFILE_TAG)) {
-            mContext.doFragment(mContext.currentTag, true);
-        }
+        mContext.finishUpdateUserTask();
     }
 }

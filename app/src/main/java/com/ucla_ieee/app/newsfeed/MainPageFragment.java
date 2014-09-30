@@ -1,4 +1,4 @@
-package com.ucla_ieee.app;
+package com.ucla_ieee.app.newsfeed;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,9 +10,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.ucla_ieee.app.R;
 import com.ucla_ieee.app.calendar.Event;
 import com.ucla_ieee.app.calendar.EventManager;
-import com.ucla_ieee.app.signin.SessionManager;
+import com.ucla_ieee.app.user.SessionManager;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,11 +35,6 @@ public class MainPageFragment extends Fragment {
         mPointsView = (TextView) rootView.findViewById(R.id.numPoints);
         mSessionManager = new SessionManager(getActivity());
         mPointsView.setText(String.valueOf(mSessionManager.getPoints()));
-
-        // TODO: Do this less often??
-        MainActivity mainActivity = (MainActivity) getActivity();
-        mainActivity.startCalendarAsyncCall(null);
-        mainActivity.startAnnouncementsAsyncCall(null);
 
         // News Feed
         List<News> newsFeed = new ArrayList<News>();
@@ -72,20 +68,22 @@ public class MainPageFragment extends Fragment {
     public List<News> getRecentAnnouncements() {
         List<News> recentAnnouncements = new ArrayList<News>();
         JsonArray announcements = mSessionManager.getAnnouncements();
-        for (int i = 0; i < announcements.size() && i < 10; i++) {
-            JsonObject announcement = announcements.get(i).getAsJsonObject();
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            Date date;
-            try {
-                date = format.parse(announcement.get("datePosted").getAsString());
-            } catch (ParseException e) {
-                e.printStackTrace();
-                continue;
+        if (announcements != null) {
+            for (int i = 0; i < announcements.size() && i < 10; i++) {
+                JsonObject announcement = announcements.get(i).getAsJsonObject();
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                Date date;
+                try {
+                    date = format.parse(announcement.get("datePosted").getAsString());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    continue;
+                }
+                SimpleDateFormat newsFormat = new SimpleDateFormat("MMM dd");
+                String newsDate = newsFormat.format(date);
+                recentAnnouncements.add(new News(announcement.get("content").getAsString(),
+                        newsDate, "announcement", date));
             }
-            SimpleDateFormat newsFormat = new SimpleDateFormat("MMM dd");
-            String newsDate = newsFormat.format(date);
-            recentAnnouncements.add(new News(announcement.get("content").getAsString(),
-                    newsDate, "announcement", date));
         }
         return recentAnnouncements;
     }

@@ -1,4 +1,4 @@
-package com.ucla_ieee.app.signin;
+package com.ucla_ieee.app.user;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -17,7 +17,7 @@ import org.apache.http.message.BasicNameValuePair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProfileActivity extends Fragment {
+public class ProfileFragment extends Fragment {
     private MembershipEditTask mAuthTask = null;
 
     private EditText email, name, memberId;
@@ -55,7 +55,7 @@ public class ProfileActivity extends Fragment {
             @Override
             public void onClick(View v) {
                 // send post request
-                mAuthTask = new MembershipEditTask(ProfileActivity.this, passwordText);
+                mAuthTask = new MembershipEditTask(ProfileFragment.this, passwordText);
 
                 String newEmail, newName, newId, newPassword;
                 newEmail = email.getText().toString();

@@ -19,56 +19,58 @@ public class EventManager {
 
     public static ArrayList<Event> createEvents(JsonArray events, List<Event> cancelled) {
         ArrayList<Event> allEvents = new ArrayList<Event>();
-        for (JsonElement jEvent : events) {
-            Event event = new Event();
-            JsonObject eventObj = jEvent.getAsJsonObject();
+        if (events != null) {
+            for (JsonElement jEvent : events) {
+                Event event = new Event();
+                JsonObject eventObj = jEvent.getAsJsonObject();
 
-            JsonPrimitive id = eventObj.getAsJsonPrimitive("id");
-            if (id != null) {
-                event.setId(id.getAsString());
-            }
-
-            JsonObject startObj = eventObj.getAsJsonObject("start");
-            if (startObj == null) {
-                startObj = eventObj.getAsJsonObject("originalStartTime");
-            }
-            if (startObj != null) {
-                event.setStartDate(getDate(startObj));
-
-                JsonPrimitive allDay = startObj.getAsJsonPrimitive("date");
-                if (allDay != null) {
-                    event.setAllDay(true);
+                JsonPrimitive id = eventObj.getAsJsonPrimitive("id");
+                if (id != null) {
+                    event.setId(id.getAsString());
                 }
-            }
 
-            JsonObject endObj = eventObj.getAsJsonObject("end");
-            if (endObj != null) {
-                event.setEndDate(getDate(endObj));
-            }
+                JsonObject startObj = eventObj.getAsJsonObject("start");
+                if (startObj == null) {
+                    startObj = eventObj.getAsJsonObject("originalStartTime");
+                }
+                if (startObj != null) {
+                    event.setStartDate(getDate(startObj));
 
-            JsonPrimitive status = eventObj.getAsJsonPrimitive("status");
-            if (status != null && status.getAsString().equals("cancelled")) {
-                cancelled.add(event);
-                continue;
-            }
+                    JsonPrimitive allDay = startObj.getAsJsonPrimitive("date");
+                    if (allDay != null) {
+                        event.setAllDay(true);
+                    }
+                }
 
-            JsonPrimitive summary = eventObj.getAsJsonPrimitive("summary");
-            if (summary != null) {
-                event.setSummary(summary.getAsString());
-            }
+                JsonObject endObj = eventObj.getAsJsonObject("end");
+                if (endObj != null) {
+                    event.setEndDate(getDate(endObj));
+                }
 
-            JsonPrimitive location = eventObj.getAsJsonPrimitive("location");
-            if (location != null) {
-                event.setLocation(location.getAsString());
-            }
+                JsonPrimitive status = eventObj.getAsJsonPrimitive("status");
+                if (status != null && status.getAsString().equals("cancelled")) {
+                    cancelled.add(event);
+                    continue;
+                }
 
-            JsonObject creator = eventObj.getAsJsonObject("creator");
-            if (creator != null) {
-                event.setCreatorEmail(getCreatorEmail(creator));
-                event.setCreatorName(getCreatorName(creator));
-            }
+                JsonPrimitive summary = eventObj.getAsJsonPrimitive("summary");
+                if (summary != null) {
+                    event.setSummary(summary.getAsString());
+                }
 
-            allEvents.add(event);
+                JsonPrimitive location = eventObj.getAsJsonPrimitive("location");
+                if (location != null) {
+                    event.setLocation(location.getAsString());
+                }
+
+                JsonObject creator = eventObj.getAsJsonObject("creator");
+                if (creator != null) {
+                    event.setCreatorEmail(getCreatorEmail(creator));
+                    event.setCreatorName(getCreatorName(creator));
+                }
+
+                allEvents.add(event);
+            }
         }
         return allEvents;
     }

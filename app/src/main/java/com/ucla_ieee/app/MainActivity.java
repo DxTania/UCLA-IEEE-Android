@@ -11,15 +11,16 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-import com.ucla_ieee.app.calendar.CalendarActivity;
+import com.ucla_ieee.app.calendar.CalendarFragment;
 import com.ucla_ieee.app.calendar.CalendarTask;
-import com.ucla_ieee.app.content.AnnouncementsActivity;
+import com.ucla_ieee.app.content.AnnouncementsFragment;
 import com.ucla_ieee.app.content.AnnouncementsTask;
-import com.ucla_ieee.app.scan.CheckInTask;
+import com.ucla_ieee.app.newsfeed.MainPageFragment;
+import com.ucla_ieee.app.scan.CheckInScanTask;
 import com.ucla_ieee.app.signin.LoginActivity;
-import com.ucla_ieee.app.signin.ProfileActivity;
-import com.ucla_ieee.app.signin.SessionManager;
-import com.ucla_ieee.app.signin.UpdateTask;
+import com.ucla_ieee.app.user.ProfileFragment;
+import com.ucla_ieee.app.user.SessionManager;
+import com.ucla_ieee.app.user.UpdateTask;
 
 public class MainActivity extends FragmentActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -44,10 +45,10 @@ public class MainActivity extends FragmentActivity
     private int mPosition;
     private CalendarTask mCalendarTask;
     private AnnouncementsTask mAnnouncementsAsyncTask;
-    private CheckInTask mCheckInTask;
+    private CheckInScanTask mCheckInScanTask;
     private UpdateTask mUpdateTask;
-    private CalendarActivity mCalendarActivity;
-    private AnnouncementsActivity mAnnouncementsActivity;
+    private CalendarFragment mCalendarFragment;
+    private AnnouncementsFragment mAnnouncementsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +71,8 @@ public class MainActivity extends FragmentActivity
         mNavigationDrawerFragment.switchFragments(0, false);
 
         startUserAsyncCall();
+        startCalendarAsyncCall(null);
+        startAnnouncementsAsyncCall(null);
     }
 
     @Override
@@ -93,17 +96,22 @@ public class MainActivity extends FragmentActivity
         invalidateOptionsMenu();
     }
 
+    /**
+     * Switches out current fragment
+     * @param tag of fragment to switch to
+     * @param renew will refresh fragment even if tag is same as current fragment
+     */
     public void doFragment(String tag, boolean renew) {
         currentTag = tag;
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentByTag(tag);
         if (fragment == null || renew) {
             if (tag.equals(CAL_TAG)) {
-                fragment = new CalendarActivity();
+                fragment = new CalendarFragment();
             } else if (tag.equals(PROFILE_TAG)) {
-                fragment = new ProfileActivity();
+                fragment = new ProfileFragment();
             } else if (tag.equals(ANNOUNCEMENTS_TAG)) {
-                fragment = new AnnouncementsActivity();
+                fragment = new AnnouncementsFragment();
             } else {
                 fragment = new MainPageFragment();
             }
@@ -173,9 +181,9 @@ public class MainActivity extends FragmentActivity
     }
 
     // Calendar Functions
-    public void startCalendarAsyncCall(CalendarActivity activity) {
-        if (mCalendarActivity == null) {
-            mCalendarActivity = activity;
+    public void startCalendarAsyncCall(CalendarFragment activity) {
+        if (mCalendarFragment == null) {
+            mCalendarFragment = activity;
         }
         if (mCalendarTask == null) {
             mCalendarTask = new CalendarTask(this);
@@ -190,9 +198,9 @@ public class MainActivity extends FragmentActivity
         }
     }
 
-    public void startAnnouncementsAsyncCall(AnnouncementsActivity activity) {
-        if (mAnnouncementsActivity == null) {
-            mAnnouncementsActivity = activity;
+    public void startAnnouncementsAsyncCall(AnnouncementsFragment activity) {
+        if (mAnnouncementsFragment == null) {
+            mAnnouncementsFragment = activity;
         }
         if (mAnnouncementsAsyncTask == null) {
             mAnnouncementsAsyncTask = new AnnouncementsTask(this);
@@ -201,26 +209,22 @@ public class MainActivity extends FragmentActivity
     }
 
     public void startCheckInAsyncCall(String qrCode) {
-        if (mCheckInTask == null) {
-            mCheckInTask = new CheckInTask(this, qrCode);
-            mCheckInTask.execute((Void) null);
+        if (mCheckInScanTask == null) {
+            mCheckInScanTask = new CheckInScanTask(this, qrCode);
+            mCheckInScanTask.execute((Void) null);
         }
     }
 
-    public CalendarActivity getCalendar() {
-        return mCalendarActivity;
+    public CalendarFragment getCalendar() {
+        return mCalendarFragment;
     }
 
-    public void setCalendar(CalendarActivity activity) {
-        mCalendarActivity = activity;
+    public void setCalendar(CalendarFragment activity) {
+        mCalendarFragment = activity;
     }
 
-    public AnnouncementsActivity getAnnouncementsActivity() {
-        return mAnnouncementsActivity;
-    }
-
-    public void setAnnouncementsAsyncTaskNull() {
-        mAnnouncementsAsyncTask = null;
+    public AnnouncementsFragment getAnnouncementsActivity() {
+        return mAnnouncementsFragment;
     }
 
     public void stopAsyncTasks() {
@@ -235,20 +239,36 @@ public class MainActivity extends FragmentActivity
             mAnnouncementsAsyncTask.cancel(true);
         }
 
-        if (mCheckInTask != null) {
-            mCheckInTask.cancel(true);
+        if (mCheckInScanTask != null) {
+            mCheckInScanTask.cancel(true);
         }
     }
 
-    public void setCalendarTaskNull() {
+    public void finishAnnouncementsTask() {
+        mAnnouncementsAsyncTask = null;
+        if (currentTag.equals(MAIN_TAG)) {
+            doFragment(currentTag, true);
+        }
+    }
+
+    public void finishCalendarTask() {
         mCalendarTask = null;
+        if (currentTag.equals(MAIN_TAG)) {
+            doFragment(currentTag, true);
+        }
     }
 
-    public void setUpdateUserTaskNull() {
+    public void finishUpdateUserTask() {
         mUpdateTask = null;
+        if (currentTag.equals(MAIN_TAG) || currentTag.equals(PROFILE_TAG)) {
+            doFragment(currentTag, true);
+        }
     }
 
-    public void setCheckInTaskNull() {
-        mCheckInTask = null;
+    public void finishCheckInTask() {
+        mCheckInScanTask = null;
+        if (currentTag.equals(MAIN_TAG) || currentTag.equals(PROFILE_TAG)) {
+            doFragment(currentTag, true);
+        }
     }
 }

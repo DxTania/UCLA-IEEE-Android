@@ -1,4 +1,4 @@
-package com.ucla_ieee.app.signin;
+package com.ucla_ieee.app.user;
 
 import android.content.Context;
 import android.content.SharedPreferences;

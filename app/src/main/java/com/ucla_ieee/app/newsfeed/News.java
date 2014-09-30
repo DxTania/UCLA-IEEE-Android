@@ -1,4 +1,4 @@
-package com.ucla_ieee.app;
+package com.ucla_ieee.app.newsfeed;
 
 import java.util.Date;
 

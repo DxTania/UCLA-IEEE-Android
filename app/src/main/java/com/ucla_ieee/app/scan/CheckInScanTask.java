@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 import com.google.gson.JsonObject;
 import com.ucla_ieee.app.MainActivity;
-import com.ucla_ieee.app.signin.SessionManager;
+import com.ucla_ieee.app.user.SessionManager;
 import com.ucla_ieee.app.util.JsonServerUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -21,14 +21,14 @@ import java.util.List;
 /**
  * Checks in user to event indicated by id in QR code (eventId)
  */
-public class CheckInTask extends AsyncTask<Void, Void, String> {
+public class CheckInScanTask extends AsyncTask<Void, Void, String> {
 
     private final SessionManager mSessionManager;
     private final MainActivity mContext;
     private final JsonServerUtil mUtil;
     private final String mEventId;
 
-    public CheckInTask(MainActivity context, String eventId) {
+    public CheckInScanTask(MainActivity context, String eventId) {
         mSessionManager = new SessionManager(context);
         mContext = context;
         mUtil = new JsonServerUtil();
@@ -84,10 +84,6 @@ public class CheckInTask extends AsyncTask<Void, Void, String> {
             Toast.makeText(mContext, json.get("error_message").getAsString(), Toast.LENGTH_SHORT).show();
         }
 
-        mContext.setCheckInTaskNull();
-
-        if (mContext.currentTag.equals(MainActivity.MAIN_TAG) || mContext.currentTag.equals(MainActivity.PROFILE_TAG)) {
-            mContext.doFragment(mContext.currentTag, true);
-        }
+        mContext.finishCheckInTask();
     }
 }
