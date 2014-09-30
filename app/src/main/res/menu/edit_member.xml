@@ -1,6 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="com.ucla_ieee.app.calendar.CalendarActivity" >
+    <item android:id="@+id/action_refresh"
+          android:title="Refresh"
+          android:orderInCategory="100"
+          android:showAsAction="never" />
     <item android:id="@+id/action_toggle_edit"
           android:title="Toggle Editor"
           android:orderInCategory="100"

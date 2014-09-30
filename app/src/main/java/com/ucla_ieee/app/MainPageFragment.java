@@ -39,7 +39,6 @@ public class MainPageFragment extends Fragment {
         MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.startCalendarAsyncCall(null);
         mainActivity.startAnnouncementsAsyncCall(null);
-        mainActivity.startUserAsyncCall(mPointsView);
 
         // News Feed
         List<News> newsFeed = new ArrayList<News>();
@@ -126,10 +125,6 @@ public class MainPageFragment extends Fragment {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 }

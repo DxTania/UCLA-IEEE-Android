@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import com.ucla_ieee.app.MainActivity;
 import com.ucla_ieee.app.R;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -37,8 +38,6 @@ public class ProfileActivity extends Fragment {
         setUpViews();
         setUpImageButtons();
         setUpSaveChanges();
-
-        // TODO: have a refresh button to get updated details
 
         // TODO: Populate events list, get events since day of most recent event they attended
         // TODO: QR Codes should be the id of the calendar event. SHould we verify checking in with GPS?
@@ -231,11 +230,10 @@ public class ProfileActivity extends Fragment {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_toggle_edit) {
+        if (id == R.id.action_refresh) {
+            ((MainActivity) getActivity()).startUserAsyncCall();
+        } else if (id == R.id.action_toggle_edit) {
             toggleEdits(false);
-            return true;
-        } else if (id == R.id.action_settings) {
-            Toast.makeText(getActivity(), "Settings", Toast.LENGTH_SHORT).show();
             return true;
         }
         return super.onOptionsItemSelected(item);

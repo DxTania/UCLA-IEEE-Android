@@ -10,7 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.widget.Toast;
 import com.ucla_ieee.app.calendar.CalendarActivity;
 import com.ucla_ieee.app.calendar.CalendarTask;
 import com.ucla_ieee.app.content.AnnouncementsActivity;
@@ -47,7 +47,6 @@ public class MainActivity extends FragmentActivity
     private CheckInTask mCheckInTask;
     private UpdateTask mUpdateTask;
     private CalendarActivity mCalendarActivity;
-    private MainPageFragment mMainPageFragment;
     private AnnouncementsActivity mAnnouncementsActivity;
 
     @Override
@@ -69,6 +68,8 @@ public class MainActivity extends FragmentActivity
 
         mNavigationDrawerFragment.selectItem(0);
         mNavigationDrawerFragment.switchFragments(0, false);
+
+        startUserAsyncCall();
     }
 
     @Override
@@ -155,7 +156,7 @@ public class MainActivity extends FragmentActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            return true;
+            Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -182,9 +183,9 @@ public class MainActivity extends FragmentActivity
         }
     }
 
-    public void startUserAsyncCall(TextView pointsView) {
+    public void startUserAsyncCall() {
         if (mUpdateTask == null) {
-            mUpdateTask = new UpdateTask(this, pointsView);
+            mUpdateTask = new UpdateTask(this);
             mUpdateTask.execute((Void) null);
         }
     }

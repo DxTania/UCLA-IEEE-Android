@@ -2,7 +2,7 @@ package com.ucla_ieee.app.signin;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.TextView;
+import android.util.Log;
 import android.widget.Toast;
 import com.google.gson.JsonObject;
 import com.ucla_ieee.app.MainActivity;
@@ -27,17 +27,17 @@ public class UpdateTask extends AsyncTask<Void, Void, String> {
     private final MainActivity mContext;
     private SessionManager mSessionManager;
     private JsonServerUtil mUtil;
-    private TextView mPointsView;
 
-    public UpdateTask(Context context, TextView pointsView) {
+    public UpdateTask(Context context) {
         mContext = (MainActivity) context;
         mSessionManager = new SessionManager(mContext);
         mUtil = new JsonServerUtil();
-        mPointsView = pointsView;
     }
 
     @Override
     protected String doInBackground(Void... params) {
+
+        Log.d("DEBUGZ", "Starting async task");
 
         HttpClient httpClient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost("http://ieeebruins.org/membership_serve/users.php");
@@ -57,6 +57,7 @@ public class UpdateTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected void onPostExecute(String response) {
+        Log.d("DEBUGZ", "Finishing async task");
         JsonObject json = mUtil.getJsonObjectFromString(response);
         if (json == null) {
             Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_SHORT).show();
@@ -74,7 +75,6 @@ public class UpdateTask extends AsyncTask<Void, Void, String> {
             points = user.get("points").getAsInt();
 
             mSessionManager.updateSession(email, name, id, points);
-            mPointsView.setText(String.valueOf(points));
 
         } else {
             // TODO: dissect more errors
@@ -87,5 +87,9 @@ public class UpdateTask extends AsyncTask<Void, Void, String> {
         }
 
         mContext.setUpdateUserTaskNull();
+
+        if (mContext.currentTag.equals(MainActivity.MAIN_TAG) || mContext.currentTag.equals(MainActivity.PROFILE_TAG)) {
+            mContext.doFragment(mContext.currentTag, true);
+        }
     }
 }
