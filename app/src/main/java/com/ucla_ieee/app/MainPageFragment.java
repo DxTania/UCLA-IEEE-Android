@@ -76,14 +76,17 @@ public class MainPageFragment extends Fragment {
         for (int i = 0; i < announcements.size() && i < 10; i++) {
             JsonObject announcement = announcements.get(i).getAsJsonObject();
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = null;
+            Date date;
             try {
                 date = format.parse(announcement.get("datePosted").getAsString());
             } catch (ParseException e) {
                 e.printStackTrace();
+                continue;
             }
+            SimpleDateFormat newsFormat = new SimpleDateFormat("MMM dd");
+            String newsDate = newsFormat.format(date);
             recentAnnouncements.add(new News(announcement.get("content").getAsString(),
-                    announcement.get("datePosted").getAsString(), "announcement", date));
+                    newsDate, "announcement", date));
         }
         return recentAnnouncements;
     }
@@ -96,16 +99,23 @@ public class MainPageFragment extends Fragment {
         JsonArray jsonEvents = mSessionManager.getCalReq();
         List<Event> cancelled = new ArrayList<Event>();
         List<Event> events = EventManager.createEvents(jsonEvents, cancelled);
+
         Collections.sort(events, new Comparator<Event>() {
             @Override
             public int compare(Event lhs, Event rhs) {
                 return lhs.getStartDate().compareTo(rhs.getStartDate());
             }
         });
+
         for (int i = 0; i < events.size() && upcomingEvents.size() < 5; i++) {
-            if (events.get(i).getStartDate().compareTo(new Date()) > 0) {
-                upcomingEvents.add(new News(events.get(i).getSummary(), events.get(i).getStartDate().toString(),
-                        "calendar", events.get(i).getStartDate()));
+            Event event = events.get(i);
+            if (event.getStartDate().compareTo(new Date()) > 0) {
+                upcomingEvents.add(
+                    new News(
+                        event.getSummary(),
+                        EventManager.getDate(event) + " " + EventManager.getLocationTime(event),
+                        "calendar", event.getStartDate())
+                );
             }
         }
         return upcomingEvents;

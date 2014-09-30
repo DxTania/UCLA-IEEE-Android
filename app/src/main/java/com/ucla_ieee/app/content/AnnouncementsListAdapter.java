@@ -32,7 +32,7 @@ public class AnnouncementsListAdapter extends ArrayAdapter<Announcement> {
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.announcement_snippet, parent, false);
+            convertView = inflater.inflate(R.layout.snippet_announcement, parent, false);
             viewHolder.content = (TextView) convertView.findViewById(R.id.contentText);
             viewHolder.date = (TextView) convertView.findViewById(R.id.datePosted);
             convertView.setTag(viewHolder);

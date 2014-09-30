@@ -9,8 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.ucla_ieee.app.R;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class EventListAdapter extends ArrayAdapter<Event> {
@@ -45,36 +43,9 @@ public class EventListAdapter extends ArrayAdapter<Event> {
         }
 
         Event event = events.get(position);
-
-        String time = "";
-        String loc = event.getLocation() == null ? "" : " at " + event.getLocation();
-
-        if (event.getStartDate() != null && !event.getAllDay()) {
-            SimpleDateFormat format = new SimpleDateFormat("hh:mma");
-            time = format.format(event.getStartDate());
-        } else if (event.getAllDay()) {
-            time = "All Day";
-        }
-
-        Date now = new Date();
-        if (event.getStartDate() != null && event.getEndDate() != null) {
-            // TODO: Show symbol if user has attended that event
-            if (event.getStartDate().compareTo(now) <= 0 && event.getEndDate().compareTo(now) > 0) {
-                viewHolder.checkIn.setVisibility(View.VISIBLE);
-            } else {
-                viewHolder.checkIn.setVisibility(View.INVISIBLE);
-            }
-        } else if (event.getStartDate() != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-//            if (sdf.format(event.getStartDate()).equals(sdf.format(now))) {
-//                viewHolder.checkIn.setVisibility(View.VISIBLE);
-//            } else {
-            viewHolder.checkIn.setVisibility(View.INVISIBLE);
-//            }
-        }
-
+        // TODO: Show symbol if user has attended that event (viewHolder.checkIn)
         viewHolder.summary.setText(event.getSummary());
-        viewHolder.location.setText(time + loc + " ");
+        viewHolder.location.setText(EventManager.getLocationTime(event));
 
         return convertView;
     }

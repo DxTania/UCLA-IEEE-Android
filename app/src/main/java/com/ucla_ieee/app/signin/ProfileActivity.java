@@ -127,7 +127,7 @@ public class ProfileActivity extends Fragment {
 
     // Password change alert dialog TODO: Can't change password twice in a row and can't undo
     private void setUpAlertDialog() {
-        View ll = LayoutInflater.from(getActivity()).inflate(R.layout.password_snippet, null);
+        View ll = LayoutInflater.from(getActivity()).inflate(R.layout.snippet_password_popup, null);
         final EditText newPasswordView = (EditText) ll.findViewById(R.id.newPassword);
         final EditText retypedPasswordView = (EditText) ll.findViewById(R.id.retypedPassword);
         final EditText passwordView = (EditText) ll.findViewById(R.id.curPassword);
