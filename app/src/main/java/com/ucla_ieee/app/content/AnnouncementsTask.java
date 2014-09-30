@@ -47,21 +47,19 @@ public class AnnouncementsTask extends AsyncTask<Void, Void, String> {
             return;
         }
 
-        // We only care about the latest 10 or so, don't bother
+        // TODO: change color of new announcements
         if (announcements.size() > 0) {
             JsonArray oldAnnouncements = mSessionManager.getAnnouncements();
-            for (int j = 0; j < announcements.size(); j++) {
-                JsonObject announcement = announcements.get(j).getAsJsonObject();
-                for (int i = 0; i < oldAnnouncements.size(); i++) {
-                    JsonObject oldAnnouncement = oldAnnouncements.get(i).getAsJsonObject();
-                    if (!announcement.get("content").getAsString().equals(oldAnnouncement.get("content").getAsString())
-                            && announcement.get("id").getAsInt() == oldAnnouncement.get("id").getAsInt()) {
-                        announcement.addProperty("content", announcement.get("content").getAsString());
-                        announcement.addProperty("datePosted", "UPDATED! " + announcement.get("datePosted").getAsString
-                                ());
-                        Toast.makeText(mParent, "New Announcements!", Toast.LENGTH_SHORT).show();
+            if (oldAnnouncements != null) {
+                for (int j = 0; j < announcements.size(); j++) {
+                    JsonObject announcement = announcements.get(j).getAsJsonObject();
+                    for (int i = 0; i < oldAnnouncements.size(); i++) {
+                        JsonObject oldAnnouncement = oldAnnouncements.get(i).getAsJsonObject();
+                        if (!announcement.get("content").getAsString().equals(oldAnnouncement.get("content").getAsString())
+                                && announcement.get("id").getAsInt() == oldAnnouncement.get("id").getAsInt()) {
+                            // Updated announcement override (mark as unread)
+                        }
                     }
-
                 }
             }
 

@@ -5,9 +5,9 @@ import android.view.MenuItem;
 
 public abstract class FadeFragmentActivity extends FragmentActivity {
     @Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item){
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
         int itemId = item.getItemId();
-        switch(itemId){
+        switch (itemId) {
             case android.R.id.home:
                 super.onMenuItemSelected(featureId, item);
                 finish();

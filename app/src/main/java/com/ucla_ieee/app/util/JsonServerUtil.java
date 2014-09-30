@@ -25,7 +25,7 @@ public class JsonServerUtil {
                 StringBuilder builder = new StringBuilder();
 
                 String st;
-                while((st = reader.readLine()) != null) {
+                while ((st = reader.readLine()) != null) {
                     builder.append(st).append("\n");
                 }
 

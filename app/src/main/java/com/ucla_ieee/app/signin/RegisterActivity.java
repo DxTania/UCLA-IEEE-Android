@@ -9,9 +9,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import com.google.gson.JsonObject;
@@ -85,25 +82,6 @@ public class RegisterActivity extends Activity {
                 mAuthTask.execute((Void) null);
             }
         });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.register, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -189,7 +167,7 @@ public class RegisterActivity extends Activity {
                     StringBuilder builder = new StringBuilder();
 
                     String st;
-                    while((st = reader.readLine()) != null) {
+                    while ((st = reader.readLine()) != null) {
                         builder.append(st).append("\n");
                     }
 
@@ -211,12 +189,10 @@ public class RegisterActivity extends Activity {
             showProgress(false);
 
             if (TextUtils.isEmpty(response)) {
-               Toast.makeText(RegisterActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-               finish();
-               return;
+                Toast.makeText(RegisterActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
             }
-
-            Log.d("BUGS", response);
 
             JsonObject json;
             try {
@@ -239,7 +215,7 @@ public class RegisterActivity extends Activity {
 
                 // Start main IEEE activity, clearing logout activity
                 Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
             } else {

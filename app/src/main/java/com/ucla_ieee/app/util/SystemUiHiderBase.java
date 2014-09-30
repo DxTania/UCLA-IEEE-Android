@@ -30,7 +30,8 @@ public class SystemUiHiderBase extends SystemUiHider {
                     WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                             | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                     WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                            | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+                            | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+            );
         }
     }
 

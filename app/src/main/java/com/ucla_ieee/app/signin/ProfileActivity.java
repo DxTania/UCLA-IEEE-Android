@@ -112,7 +112,7 @@ public class ProfileActivity extends Fragment {
             @Override
             public void onClick(View v) {
                 LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.nextRewardHint);
-                ll.setVisibility(ll.getVisibility() == View.VISIBLE? View.GONE : View.VISIBLE);
+                ll.setVisibility(ll.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
             }
         });
 
@@ -139,7 +139,8 @@ public class ProfileActivity extends Fragment {
                 .setPositiveButton("Ok", null)
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int whichButton) {}
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
                 }).create();
 
         if (!alertReady) {
@@ -197,7 +198,6 @@ public class ProfileActivity extends Fragment {
     }
 
     /**
-     *
      * @param override Will force edit text's off
      */
     private void toggleEdits(boolean override) {

@@ -17,12 +17,6 @@ public class EventListAdapter extends ArrayAdapter<Event> {
     private final Context context;
     private final List<Event> events;
 
-    static class ViewHolder {
-        TextView summary;
-        TextView location;
-        ImageView checkIn;
-    }
-
     public EventListAdapter(Context context, List<Event> events) {
         super(context, R.layout.snippet_event, events);
         this.context = context;
@@ -53,7 +47,7 @@ public class EventListAdapter extends ArrayAdapter<Event> {
         Event event = events.get(position);
 
         String time = "";
-        String loc = event.getLocation() == null? "" : " at " + event.getLocation();
+        String loc = event.getLocation() == null ? "" : " at " + event.getLocation();
 
         if (event.getStartDate() != null && !event.getAllDay()) {
             SimpleDateFormat format = new SimpleDateFormat("hh:mma");
@@ -75,7 +69,7 @@ public class EventListAdapter extends ArrayAdapter<Event> {
 //            if (sdf.format(event.getStartDate()).equals(sdf.format(now))) {
 //                viewHolder.checkIn.setVisibility(View.VISIBLE);
 //            } else {
-                viewHolder.checkIn.setVisibility(View.INVISIBLE);
+            viewHolder.checkIn.setVisibility(View.INVISIBLE);
 //            }
         }
 
@@ -83,5 +77,11 @@ public class EventListAdapter extends ArrayAdapter<Event> {
         viewHolder.location.setText(time + loc + " ");
 
         return convertView;
+    }
+
+    static class ViewHolder {
+        TextView summary;
+        TextView location;
+        ImageView checkIn;
     }
 } 

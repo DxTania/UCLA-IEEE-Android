@@ -55,6 +55,14 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     private View mEmailLoginFormView;
     private View mLoginFormView;
 
+    public static boolean isEmailValid(String email) {
+        return email.contains("@") && email.contains(".");
+    }
+
+    public static boolean isPasswordValid(String password) {
+        return password.length() >= 6;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,7 +122,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
                 // Show primary email addresses first. Note that there won't be
                 // a primary email address if the user hasn't specified one.
-                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
+                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC"
+        );
     }
 
     @Override
@@ -134,17 +143,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
     }
 
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
-    }
-
-
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
@@ -153,7 +151,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
         mEmailView.setAdapter(adapter);
     }
-
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -194,7 +191,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             cancel = true;
         }
 
-        if(TextUtils.isEmpty(password) && !TextUtils.isEmpty(email)) {
+        if (TextUtils.isEmpty(password) && !TextUtils.isEmpty(email)) {
             Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
             registerIntent.putExtra("email", email);
             startActivity(registerIntent);
@@ -211,14 +208,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
         }
-    }
-
-    public static boolean isEmailValid(String email) {
-        return email.contains("@") && email.contains(".");
-    }
-
-    public static boolean isPasswordValid(String password) {
-        return password.length() >= 6;
     }
 
     /**
@@ -255,6 +244,16 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
+    }
+
+    private interface ProfileQuery {
+        String[] PROJECTION = {
+                ContactsContract.CommonDataKinds.Email.ADDRESS,
+                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
+        };
+
+        int ADDRESS = 0;
+        int IS_PRIMARY = 1;
     }
 
     /**
@@ -299,7 +298,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                     StringBuilder builder = new StringBuilder();
 
                     String st;
-                    while((st = reader.readLine()) != null) {
+                    while ((st = reader.readLine()) != null) {
                         builder.append(st).append("\n");
                     }
 

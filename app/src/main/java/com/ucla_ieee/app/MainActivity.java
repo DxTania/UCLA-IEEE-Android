@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -101,7 +100,6 @@ public class MainActivity extends FragmentActivity
             if (tag.equals(CAL_TAG)) {
                 fragment = new CalendarActivity();
             } else if (tag.equals(PROFILE_TAG)) {
-                Log.d("DEBUGZ", "New profile activity");
                 fragment = new ProfileActivity();
             } else if (tag.equals(ANNOUNCEMENTS_TAG)) {
                 fragment = new AnnouncementsActivity();
@@ -208,12 +206,12 @@ public class MainActivity extends FragmentActivity
         }
     }
 
-    public void setCalendar(CalendarActivity activity) {
-        mCalendarActivity = activity;
-    }
-
     public CalendarActivity getCalendar() {
         return mCalendarActivity;
+    }
+
+    public void setCalendar(CalendarActivity activity) {
+        mCalendarActivity = activity;
     }
 
     public AnnouncementsActivity getAnnouncementsActivity() {

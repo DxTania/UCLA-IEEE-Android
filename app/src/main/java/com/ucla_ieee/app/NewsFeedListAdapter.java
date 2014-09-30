@@ -14,12 +14,6 @@ public class NewsFeedListAdapter extends ArrayAdapter<News> {
     private final Context context;
     private final List<News> news;
 
-    static class ViewHolder {
-        TextView summary;
-        TextView location;
-        ImageView type;
-    }
-
     public NewsFeedListAdapter(Context context, List<News> news) {
         super(context, R.layout.snippet_news, news);
         this.context = context;
@@ -58,5 +52,11 @@ public class NewsFeedListAdapter extends ArrayAdapter<News> {
         }
 
         return convertView;
+    }
+
+    static class ViewHolder {
+        TextView summary;
+        TextView location;
+        ImageView type;
     }
 } 

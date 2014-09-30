@@ -114,7 +114,7 @@ public class EventManager {
     // that do not match any ids in the new items
     public static String reviseJson(JsonArray newItems, JsonArray prevItems) {
         JsonArray items = new JsonArray();
-        for(JsonElement pItem : prevItems) {
+        for (JsonElement pItem : prevItems) {
             boolean match = false;
             for (JsonElement item : newItems) {
                 String newId = item.getAsJsonObject().getAsJsonPrimitive("id").getAsString();
@@ -140,9 +140,9 @@ public class EventManager {
 
     // Removes events from prevEvents with matching id in newEvents
     public static void removeStaleEvents(List<Event> newEvents, List<Event> prevEvents, boolean cancelled) {
-        for(Iterator<Event> it = prevEvents.iterator(); it.hasNext();) {
+        for (Iterator<Event> it = prevEvents.iterator(); it.hasNext(); ) {
             Event event = it.next();
-            for(Event nEvent : newEvents) {
+            for (Event nEvent : newEvents) {
                 if (event.getId().equals(nEvent.getId())) {
                     if (cancelled) {
                         nEvent.setStartDate(event.getStartDate()); // what??

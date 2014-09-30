@@ -14,11 +14,6 @@ public class AnnouncementsListAdapter extends ArrayAdapter<Announcement> {
     private final Context context;
     private final List<Announcement> announcements;
 
-    static class ViewHolder {
-        TextView content;
-        TextView date;
-    }
-
     public AnnouncementsListAdapter(Context context, List<Announcement> announcements) {
         super(context, R.layout.snippet_event, announcements);
         this.context = context;
@@ -47,9 +42,15 @@ public class AnnouncementsListAdapter extends ArrayAdapter<Announcement> {
 
         Announcement announcement = announcements.get(position);
 
-        viewHolder.content.setText(announcement.getContent());
+        viewHolder.content.setText(announcement.getContent()); // getContent
         viewHolder.date.setText(announcement.getDate());
 
         return convertView;
+    }
+
+    static class ViewHolder {
+        TextView content;
+        TextView date;
+
     }
 } 

@@ -9,6 +9,24 @@ import java.util.Date;
  * Event class for calendar events
  */
 public class Event implements Parcelable {
+    public static final Creator<Event> CREATOR = new Creator<Event>() {
+        public Event createFromParcel(Parcel source) {
+            Event mEvent = new Event();
+            mEvent.setSummary(source.readString());
+            mEvent.setLocation(source.readString());
+            mEvent.setCreatorEmail(source.readString());
+            mEvent.setCreatorName(source.readString());
+            mEvent.setAllDay(source.readInt() != 0);
+            mEvent.setStartDate(new Date(source.readLong()));
+            mEvent.setEndDate(new Date(source.readLong()));
+            return mEvent;
+        }
+
+        @Override
+        public Event[] newArray(int size) {
+            return new Event[0];
+        }
+    };
     private Date startDate;
     private Date endDate;
     private String summary;
@@ -29,16 +47,20 @@ public class Event implements Parcelable {
         id = null;
     }
 
-    public void setId(String id) { this.id = id; }
+    public String getId() {
+        return id;
+    }
 
-    public String getId() { return id; }
-
-    public void setAllDay(boolean allDay) {
-        this.allDay = allDay;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public boolean getAllDay() {
         return allDay;
+    }
+
+    public void setAllDay(boolean allDay) {
+        this.allDay = allDay;
     }
 
     public Date getStartDate() {
@@ -100,28 +122,8 @@ public class Event implements Parcelable {
         dest.writeString(location);
         dest.writeString(creatorEmail);
         dest.writeString(creatorName);
-        dest.writeInt(allDay? 1 : 0);
+        dest.writeInt(allDay ? 1 : 0);
         dest.writeLong(startDate.getTime());
         dest.writeLong(endDate.getTime());
     }
-
-    public static final Creator<Event> CREATOR = new Creator<Event>() {
-        public Event createFromParcel(Parcel source) {
-            Event mEvent = new Event();
-            mEvent.setSummary(source.readString());
-            mEvent.setLocation(source.readString());
-            mEvent.setCreatorEmail(source.readString());
-            mEvent.setCreatorName(source.readString());
-            mEvent.setAllDay(source.readInt() != 0);
-            mEvent.setStartDate(new Date(source.readLong()));
-            mEvent.setEndDate(new Date(source.readLong()));
-            return mEvent;
-        }
-
-        @Override
-        public Event[] newArray(int size) {
-            return new Event[0];
-        }
-    };
-
 }

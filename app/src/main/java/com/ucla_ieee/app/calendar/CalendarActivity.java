@@ -29,6 +29,37 @@ public class CalendarActivity extends Fragment {
     private SimpleDateFormat mHumanDate;
     private Date mSelectedDate;
     private Date mPreviousSelection;
+    final CaldroidListener listener = new CaldroidListener() {
+
+        @Override
+        public void onSelectDate(Date date, View view) {
+            boolean color = false;
+            mSelectedDate = date;
+            ArrayList<Event> newSelectedEvents = new ArrayList<Event>();
+            for (Event e : mEvents) {
+                if (mDateComp.format(e.getStartDate()).equals(mDateComp.format(date))) {
+                    newSelectedEvents.add(e);
+                    color = true;
+                }
+            }
+            if (color) {
+                mSelectedEvents.clear();
+                mSelectedEvents.addAll(newSelectedEvents);
+                mDayTextView.setText("Events for " + mHumanDate.format(date));
+                mCaldroidFragment.setSelectedDates(date, date);
+                mCaldroidFragment.setBackgroundResourceForDate(R.color.caldroid_sky_blue, date);
+                if (mPreviousSelection != null &&
+                        !mDateComp.format(mPreviousSelection).equals(mDateComp.format(date))) {
+                    mCaldroidFragment.setBackgroundResourceForDate(
+                            R.color.caldroid_lime_green, mPreviousSelection);
+                }
+                mPreviousSelection = date;
+                mCaldroidFragment.refreshView();
+                mEventListAdapter.notifyDataSetChanged();
+                mNoEventsView.setVisibility(View.GONE);
+            }
+        }
+    };
     private EventListAdapter mEventListAdapter;
     private TextView mNoEventsView;
     private MainActivity mActivity;
@@ -124,7 +155,7 @@ public class CalendarActivity extends Fragment {
         Collections.sort(mEvents, new DateComp());
 
         // Remove colored date from calendar
-        for(Event event : cancelled) {
+        for (Event event : cancelled) {
             Date start = event.getStartDate();
             if (start != null) {
                 mCaldroidFragment.setBackgroundResourceForDate(R.color.caldroid_white, start);
@@ -165,36 +196,4 @@ public class CalendarActivity extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    final CaldroidListener listener = new CaldroidListener() {
-
-        @Override
-        public void onSelectDate(Date date, View view) {
-            boolean color = false;
-            mSelectedDate = date;
-            ArrayList<Event> newSelectedEvents = new ArrayList<Event>();
-            for (Event e : mEvents) {
-                if (mDateComp.format(e.getStartDate()).equals(mDateComp.format(date))) {
-                    newSelectedEvents.add(e);
-                    color = true;
-                }
-            }
-            if (color) {
-                mSelectedEvents.clear();
-                mSelectedEvents.addAll(newSelectedEvents);
-                mDayTextView.setText("Events for " + mHumanDate.format(date));
-                mCaldroidFragment.setSelectedDates(date, date);
-                mCaldroidFragment.setBackgroundResourceForDate(R.color.caldroid_sky_blue, date);
-                if (mPreviousSelection != null &&
-                        !mDateComp.format(mPreviousSelection).equals(mDateComp.format(date))) {
-                    mCaldroidFragment.setBackgroundResourceForDate(
-                            R.color.caldroid_lime_green, mPreviousSelection);
-                }
-                mPreviousSelection = date;
-                mCaldroidFragment.refreshView();
-                mEventListAdapter.notifyDataSetChanged();
-                mNoEventsView.setVisibility(View.GONE);
-            }
-        }
-    };
 }

@@ -12,7 +12,6 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.*;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -61,16 +60,6 @@ public class NavigationDrawerFragment extends Fragment {
     private MainActivity activity;
     private int mPosition = 0, mLastPosition;
 
-    public enum Navigation {
-        FRONT_PAGE,
-        CALENDAR,
-        MEMBERSHIP,
-        ANNOUNCEMENTS,
-//        ACHIEVEMENTS,
-        CHECK_IN,
-        LOGOUT
-    }
-
     public NavigationDrawerFragment() {
     }
 
@@ -93,7 +82,7 @@ public class NavigationDrawerFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated (Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // Indicate that this fragment would like to influence the set of actions in the action bar.
         setHasOptionsMenu(true);
@@ -101,7 +90,7 @@ public class NavigationDrawerFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         mDrawerListView = (ListView) inflater.inflate(
                 R.layout.fragment_navigation_drawer, container, false);
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -124,14 +113,15 @@ public class NavigationDrawerFragment extends Fragment {
                         // "Achievements",
                         "Check In",
                         "Logout"
-                }));
+                }
+        ));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
     }
 
     public void switchFragments(int position, boolean renew) {
         Navigation selected = Navigation.values()[position];
-        switch(selected) {
+        switch (selected) {
             case FRONT_PAGE:
                 activity.setFragmentTitle("UCLA IEEE");
                 activity.doFragment(MainActivity.MAIN_TAG, renew);
@@ -141,7 +131,6 @@ public class NavigationDrawerFragment extends Fragment {
                 activity.doFragment(MainActivity.CAL_TAG, renew);
                 break;
             case MEMBERSHIP:
-                Log.d("DEBUGZ", "Switch frags to membership");
                 activity.setFragmentTitle("Membership");
                 activity.doFragment(MainActivity.PROFILE_TAG, renew);
                 break;
@@ -342,6 +331,20 @@ public class NavigationDrawerFragment extends Fragment {
         return getActivity().getActionBar();
     }
 
+    public View getDrawerFragmentView() {
+        return mFragmentContainerView;
+    }
+
+    public enum Navigation {
+        FRONT_PAGE,
+        CALENDAR,
+        MEMBERSHIP,
+        ANNOUNCEMENTS,
+        //        ACHIEVEMENTS,
+        CHECK_IN,
+        LOGOUT
+    }
+
     /**
      * Callbacks interface that all activities using this fragment must implement.
      */
@@ -350,9 +353,5 @@ public class NavigationDrawerFragment extends Fragment {
          * Called when an item in the navigation drawer is selected.
          */
         void onNavigationDrawerItemSelected(int position);
-    }
-
-    public View getDrawerFragmentView() {
-        return mFragmentContainerView;
     }
 }
