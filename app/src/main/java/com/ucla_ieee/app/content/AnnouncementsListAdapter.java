@@ -60,8 +60,14 @@ public class AnnouncementsListAdapter extends ArrayAdapter<Announcement> {
 
         Announcement announcement = announcements.get(position);
 
-        viewHolder.content.setText(announcement.getContent()); // getContent
+        viewHolder.content.setText(announcement.getContent());
         viewHolder.date.setText(announcement.getDateString());
+
+        if (announcement.getUnread()) {
+            convertView.setBackgroundResource(R.drawable.unread_border);
+        } else {
+            convertView.setBackgroundColor(context.getResources().getColor(R.color.caldroid_transparent));
+        }
 
         return convertView;
     }

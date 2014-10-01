@@ -101,6 +101,10 @@ public class SessionManager {
         return mSharedPrefs.getString(Keys.COOKIE.s(), null);
     }
 
+    public JsonArray getAttendedEvents() {
+        return mUtil.getJsonArrayFromString(mSharedPrefs.getString(Keys.ATTENDED_EVENTS.s(), null));
+    }
+
     public JsonArray getAnnouncements() {
         return mUtil.getJsonArrayFromString(mSharedPrefs.getString(Keys.ANNOUNCEMENTS.s(), null));
     }
@@ -118,9 +122,16 @@ public class SessionManager {
         mEditor.commit();
     }
 
+    public void updateAttendedEvents(String events) {
+        mEditor = mSharedPrefs.edit();
+        mEditor.putString(Keys.ATTENDED_EVENTS.s(), events);
+        mEditor.commit();
+    }
+
     public enum Keys {
         LOGGED_IN("IsLoggedIn"), EMAIL("email"), TOKEN("syncToken"), JSON("json"), COOKIE("cookie"),
-        NAME("name"), IEEE_ID("ieee_id"), ANNOUNCEMENTS("announcements"), POINTS("points");
+        NAME("name"), IEEE_ID("ieee_id"), ANNOUNCEMENTS("announcements"), POINTS("points"),
+        ATTENDED_EVENTS("attended_events");
 
         private final String text;
 

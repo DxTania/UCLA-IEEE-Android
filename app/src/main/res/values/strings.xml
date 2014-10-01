@@ -18,10 +18,10 @@
     <string name="sample_date_loc">X:XXpm in Boelter Hall 2444</string>
     <string name="sample_day_text">Events for XXX</string>
     <string name="next_reward">Next Reward</string>
-    <string name="sample_points">700 points</string>
+    <string name="sample_points">500 points</string>
     <string name="events_attended">Events Attended</string>
     <string name="membership_details">Membership Details</string>
-    <string name="sample_next_reward">You\'re next reward will be..</string>
+    <string name="sample_next_reward">You\'re next reward will be.. a surprise!</string>
     <string name="question_description">What is this?</string>
     <string name="no_events">Sorry, nothing\'s going on today!</string>
     <string name="sample_announcement">Lab cleanup Thursday at 7:00pm, pizza may or may not be involved. Lab cleanup
@@ -70,5 +70,7 @@
     <string name="news_feed">NEWS FEED</string>
     <string name="points_preview">76.</string>
     <string name="title_activity_main_page">MainPage</string>
+    <string name="refresh_button">Refresh button</string>
+    <string name="undo_changes">Undo Changes</string>
 
 </resources>

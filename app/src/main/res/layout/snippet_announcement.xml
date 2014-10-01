@@ -4,8 +4,6 @@
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="70dp"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="15dp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
         android:layout_marginTop="5dp">
@@ -13,6 +11,8 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="40dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:text="@string/long_sample_text"
             android:id="@+id/contentText"
             android:gravity="center_vertical"
@@ -25,10 +25,11 @@
         android:layout_width="fill_parent"
         android:layout_height="20dp"
         android:text="@string/sample_date_loc"
-        android:textStyle="italic"
+        android:textStyle="bold"
         android:gravity="right"
         android:id="@+id/datePosted"
         android:singleLine="true"
         android:ellipsize="end"
+        android:layout_marginRight="7dp"
         android:layout_gravity="center_horizontal"/>
 </LinearLayout>

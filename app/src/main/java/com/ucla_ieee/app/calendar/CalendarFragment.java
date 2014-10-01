@@ -17,7 +17,10 @@ import com.ucla_ieee.app.R;
 import com.ucla_ieee.app.user.SessionManager;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 
 public class CalendarFragment extends Fragment {
@@ -76,6 +79,7 @@ public class CalendarFragment extends Fragment {
         mSelectedEvents = new ArrayList<Event>();
         mEventListAdapter = new EventListAdapter(getActivity(), mSelectedEvents);
         mSelectedDate = new Date();
+        mActivity = (MainActivity) getActivity();
 
         // Create calendar
         mCaldroidFragment = new CaldroidFragment();
@@ -117,10 +121,6 @@ public class CalendarFragment extends Fragment {
 //        });
         eventListView.setAdapter(mEventListAdapter);
 
-        // Start async task to check if new events have been added
-        mActivity = (MainActivity) getActivity();
-        mActivity.startCalendarAsyncCall(this);
-
         return rootView;
     }
 
@@ -152,12 +152,6 @@ public class CalendarFragment extends Fragment {
         EventManager.removeStaleEvents(newEvents, mEvents, false);
         EventManager.removeStaleEvents(newEvents, mSelectedEvents, false);
         mEvents.addAll(newEvents);
-        Collections.sort(mEvents, new Comparator<Event>() {
-            @Override
-            public int compare(Event lhs, Event rhs) {
-                return lhs.getStartDate().compareTo(rhs.getStartDate());
-            }
-        });
 
         // Remove colored date from calendar
         for (Event event : cancelled) {
@@ -201,7 +195,7 @@ public class CalendarFragment extends Fragment {
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
             mActivity.startCalendarAsyncCall(this);
-            Toast.makeText(getActivity(), "Loading new events...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Updating events...", Toast.LENGTH_SHORT).show();
             return true;
         }
         return super.onOptionsItemSelected(item);

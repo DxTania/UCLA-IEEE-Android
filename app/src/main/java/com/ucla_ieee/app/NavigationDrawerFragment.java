@@ -118,24 +118,24 @@ public class NavigationDrawerFragment extends Fragment {
         return mDrawerListView;
     }
 
-    public void switchFragments(int position, boolean renew) {
+    public void switchFragments(int position) {
         Navigation selected = Navigation.values()[position];
         switch (selected) {
             case FRONT_PAGE:
                 activity.setFragmentTitle("UCLA IEEE");
-                activity.doFragment(MainActivity.MAIN_TAG, renew);
+                activity.doFragment(MainActivity.MAIN_TAG);
                 break;
             case CALENDAR:
                 activity.setFragmentTitle("Calendar");
-                activity.doFragment(MainActivity.CAL_TAG, renew);
+                activity.doFragment(MainActivity.CAL_TAG);
                 break;
             case MEMBERSHIP:
                 activity.setFragmentTitle("Membership");
-                activity.doFragment(MainActivity.PROFILE_TAG, renew);
+                activity.doFragment(MainActivity.PROFILE_TAG);
                 break;
             case ANNOUNCEMENTS:
                 activity.setFragmentTitle("Announcements");
-                activity.doFragment(MainActivity.ANNOUNCEMENTS_TAG, renew);
+                activity.doFragment(MainActivity.ANNOUNCEMENTS_TAG);
                 break;
             case CHECK_IN:
                 // Check In
@@ -164,6 +164,7 @@ public class NavigationDrawerFragment extends Fragment {
             // check in here
             activity.startCheckInAsyncCall(data.getStringExtra("SCAN_RESULT"));
             selectItem(mLastPosition);
+            mPosition = mLastPosition;
         }
     }
 
@@ -206,7 +207,7 @@ public class NavigationDrawerFragment extends Fragment {
                     return;
                 }
 
-                switchFragments(mPosition, false);
+                switchFragments(mPosition);
 
                 getActivity().invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
             }

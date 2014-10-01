@@ -11,8 +11,10 @@ public class Announcement {
     private String content;
     private Date date;
     private int id;
+    private boolean unread;
 
-    public Announcement(String content, String date, int id) {
+    public Announcement(Boolean unread, String content, String date, int id) {
+        this.unread = unread;
         this.content = content;
         try {
             this.date = (new SimpleDateFormat("yyyy-MM-dd")).parse(date);
@@ -45,5 +47,9 @@ public class Announcement {
 
     public int getId() {
         return id;
+    }
+
+    public boolean getUnread() {
+        return unread;
     }
 }

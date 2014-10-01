@@ -78,6 +78,8 @@ public class NewsFeedListAdapter extends ArrayAdapter<News> {
             viewHolder.type.setImageResource(R.drawable.bullhorn);
         }
 
+        // TODO: Have unread markers for these too
+
         return convertView;
     }
 

@@ -56,6 +56,7 @@ public class UpdateTask extends AsyncTask<Void, Void, String> {
         JsonObject json = mUtil.getJsonObjectFromString(response);
         if (json == null) {
             Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_SHORT).show();
+            mContext.finishUpdateUserTask();
             return;
         }
 
@@ -71,7 +72,6 @@ public class UpdateTask extends AsyncTask<Void, Void, String> {
             mSessionManager.updateSession(email, name, id, points);
 
         } else {
-            // TODO: dissect more errors
             if (json.get("error_message") != null) {
                 Toast.makeText(mContext, json.get("error_message").getAsString(),
                         Toast.LENGTH_SHORT).show();

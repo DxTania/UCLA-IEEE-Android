@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.ucla_ieee.app.R;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class EventListAdapter extends ArrayAdapter<Event> {
@@ -19,6 +21,22 @@ public class EventListAdapter extends ArrayAdapter<Event> {
         super(context, R.layout.snippet_event, events);
         this.context = context;
         this.events = events;
+        sort();
+    }
+
+    public void sort() {
+        Collections.sort(events, new Comparator<Event>() {
+            @Override
+            public int compare(Event lhs, Event rhs) {
+                return lhs.getStartDate().compareTo(rhs.getStartDate());
+            }
+        });
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        sort();
+        super.notifyDataSetChanged();
     }
 
     @Override

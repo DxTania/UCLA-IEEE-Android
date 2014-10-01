@@ -34,19 +34,45 @@
         android:background="@color/caldroid_black"
         android:layout_height="10dp"
         android:layout_width="fill_parent"/>
-    <TextView
-        android:background="@color/ucla_blue"
-        android:id="@+id/textView3"
-        android:layout_height="wrap_content"
+    <RelativeLayout
         android:layout_width="fill_parent"
-        android:paddingBottom="5dp"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"
-        android:text="@string/news_feed"
-        android:textColor="@color/caldroid_white"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:typeface="normal"/>
+        android:layout_height="35dp"
+        android:background="@color/ucla_blue">
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_height="fill_parent"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="10sp"
+            android:text="@string/news_feed"
+            android:textColor="@color/caldroid_white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_gravity="center_vertical"
+            android:typeface="normal"/>
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center_vertical"
+            android:scaleType="centerInside"
+            android:id="@+id/refresh_button"
+            android:background="@color/caldroid_transparent"
+            android:contentDescription="@string/refresh_button"
+            android:src="@drawable/ic_action_refresh"/>
+        </RelativeLayout>
+
+
+
+    <ProgressBar
+        android:id="@+id/refresh_process"
+        style="?android:attr/progressBarStyle"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"/>
 
     <ListView
         android:id="@+id/newsFeed"

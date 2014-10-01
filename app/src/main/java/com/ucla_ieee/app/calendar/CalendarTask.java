@@ -68,6 +68,7 @@ public class CalendarTask extends AsyncTask<Void, Void, String> {
         JsonObject json = mUtil.getJsonObjectFromString(response);
         if (json == null) {
             Toast.makeText(mContext, "Couldn't load new events :(", Toast.LENGTH_SHORT).show();
+            mContext.finishCalendarTask();
             return; // error
         }
 

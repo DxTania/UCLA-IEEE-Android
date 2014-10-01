@@ -18,6 +18,7 @@ import com.ucla_ieee.app.content.AnnouncementsTask;
 import com.ucla_ieee.app.newsfeed.FrontPageFragment;
 import com.ucla_ieee.app.scan.CheckInScanTask;
 import com.ucla_ieee.app.signin.LoginActivity;
+import com.ucla_ieee.app.user.AttendedEventsTask;
 import com.ucla_ieee.app.user.MembershipFragment;
 import com.ucla_ieee.app.user.SessionManager;
 import com.ucla_ieee.app.user.UpdateTask;
@@ -30,6 +31,7 @@ public class MainActivity extends FragmentActivity
     public static final String ANNOUNCEMENTS_TAG = "announcements";
 
     public String currentTag;
+    public boolean loading;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -44,9 +46,10 @@ public class MainActivity extends FragmentActivity
     private DrawerLayout mDrawerLayout;
     private int mPosition;
     private CalendarTask mCalendarTask;
-    private AnnouncementsTask mAnnouncementsAsyncTask;
+    private AnnouncementsTask mAnnouncementsTask;
     private CheckInScanTask mCheckInScanTask;
     private UpdateTask mUpdateTask;
+    private AttendedEventsTask mAttendedEventsTask;
     private CalendarFragment mCalendarFragment;
     private AnnouncementsFragment mAnnouncementsFragment;
 
@@ -61,6 +64,11 @@ public class MainActivity extends FragmentActivity
         mSessionManager = new SessionManager(this);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
+        startUserAsyncCall(true);
+        startCalendarAsyncCall(null);
+        startAnnouncementsAsyncCall(null);
+        startAttendedEventsAsyncCall();
+
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
@@ -68,11 +76,7 @@ public class MainActivity extends FragmentActivity
                 this);
 
         mNavigationDrawerFragment.selectItem(0);
-        mNavigationDrawerFragment.switchFragments(0, false);
-
-        startUserAsyncCall();
-        startCalendarAsyncCall(null);
-        startAnnouncementsAsyncCall(null);
+        mNavigationDrawerFragment.switchFragments(0);
     }
 
     @Override
@@ -99,13 +103,12 @@ public class MainActivity extends FragmentActivity
     /**
      * Switches out current fragment
      * @param tag of fragment to switch to
-     * @param renew will refresh fragment even if tag is same as current fragment
      */
-    public void doFragment(String tag, boolean renew) {
+    public void doFragment(String tag) {
         currentTag = tag;
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentByTag(tag);
-        if (fragment == null || renew) {
+        if (fragment == null) {
             if (tag.equals(CAL_TAG)) {
                 fragment = new CalendarFragment();
             } else if (tag.equals(PROFILE_TAG)) {
@@ -143,10 +146,13 @@ public class MainActivity extends FragmentActivity
                     getMenuInflater().inflate(R.menu.main_settings, menu);
                     return false;
                 case 1:
-                    getMenuInflater().inflate(R.menu.calendar, menu);
+                    getMenuInflater().inflate(R.menu.refresh_settings, menu);
                     return false;
                 case 2:
                     getMenuInflater().inflate(R.menu.edit_member, menu);
+                    return false;
+                case 3:
+                    getMenuInflater().inflate(R.menu.refresh_settings, menu);
                     return false;
                 default:
                     getMenuInflater().inflate(R.menu.main_settings, menu);
@@ -180,19 +186,31 @@ public class MainActivity extends FragmentActivity
         restoreActionBar();
     }
 
+    public void startAttendedEventsAsyncCall() {
+        if (mAttendedEventsTask == null) {
+            mAttendedEventsTask = new AttendedEventsTask(this);
+            mAttendedEventsTask.execute((Void) null);
+        }
+    }
+
     // Calendar Functions
     public void startCalendarAsyncCall(CalendarFragment activity) {
         if (mCalendarFragment == null) {
             mCalendarFragment = activity;
         }
         if (mCalendarTask == null) {
+            if (activity == null) {
+                loading = true;
+            }
             mCalendarTask = new CalendarTask(this);
             mCalendarTask.execute((Void) null);
         }
     }
 
-    public void startUserAsyncCall() {
+    public void startUserAsyncCall(boolean frontPage) {
         if (mUpdateTask == null) {
+            // only loading is true if started from main page fragment
+            loading = frontPage;
             mUpdateTask = new UpdateTask(this);
             mUpdateTask.execute((Void) null);
         }
@@ -202,9 +220,12 @@ public class MainActivity extends FragmentActivity
         if (mAnnouncementsFragment == null) {
             mAnnouncementsFragment = activity;
         }
-        if (mAnnouncementsAsyncTask == null) {
-            mAnnouncementsAsyncTask = new AnnouncementsTask(this);
-            mAnnouncementsAsyncTask.execute((Void) null);
+        if (mAnnouncementsTask == null) {
+            if (activity == null) {
+                loading = true;
+            }
+            mAnnouncementsTask = new AnnouncementsTask(this);
+            mAnnouncementsTask.execute((Void) null);
         }
     }
 
@@ -235,8 +256,12 @@ public class MainActivity extends FragmentActivity
             mUpdateTask.cancel(true);
         }
 
-        if (mAnnouncementsAsyncTask != null) {
-            mAnnouncementsAsyncTask.cancel(true);
+        if (mAnnouncementsTask != null) {
+            mAnnouncementsTask.cancel(true);
+        }
+
+        if (mAttendedEventsTask != null) {
+            mAttendedEventsTask.cancel(true);
         }
 
         if (mCheckInScanTask != null) {
@@ -244,31 +269,82 @@ public class MainActivity extends FragmentActivity
         }
     }
 
+    private void updateFrontPage(FrontPageFragment frontPage) {
+        if (frontPage != null && frontPage.isVisible()) {
+            frontPage.updateNews();
+            frontPage.updatePoints();
+            frontPage.showProgress(false);
+        }
+    }
+
+    private void updateProfile(MembershipFragment membershipFragment) {
+        if (membershipFragment != null && membershipFragment.isVisible()) {
+            membershipFragment.update();
+        }
+    }
+
+    private void updateAttendedEvents(MembershipFragment membershipFragment) {
+        if (membershipFragment != null && membershipFragment.isVisible()) {
+            membershipFragment.updateAttendedEvents();
+        }
+    }
+
     public void finishAnnouncementsTask() {
-        mAnnouncementsAsyncTask = null;
+        mAnnouncementsTask = null;
         if (currentTag.equals(MAIN_TAG)) {
-            doFragment(currentTag, true);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            if (mCalendarTask == null && mUpdateTask == null) {
+                FrontPageFragment frontPage = (FrontPageFragment) fragmentManager.findFragmentByTag(MAIN_TAG);
+                updateFrontPage(frontPage);
+                loading = false;
+            }
         }
     }
 
     public void finishCalendarTask() {
         mCalendarTask = null;
         if (currentTag.equals(MAIN_TAG)) {
-            doFragment(currentTag, true);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            if (mAnnouncementsTask == null && mUpdateTask == null) {
+                FrontPageFragment frontPage = (FrontPageFragment) fragmentManager.findFragmentByTag(MAIN_TAG);
+                updateFrontPage(frontPage);
+                loading = false;
+            }
         }
     }
 
     public void finishUpdateUserTask() {
         mUpdateTask = null;
-        if (currentTag.equals(MAIN_TAG) || currentTag.equals(PROFILE_TAG)) {
-            doFragment(currentTag, true);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if (currentTag.equals(MAIN_TAG) && mAnnouncementsTask == null && mCalendarTask == null) {
+            FrontPageFragment frontPage = (FrontPageFragment) fragmentManager.findFragmentByTag(MAIN_TAG);
+            updateFrontPage(frontPage);
+            loading = false;
+        } else if (currentTag.equals(PROFILE_TAG)) {
+            MembershipFragment membershipFragment = (MembershipFragment) fragmentManager.findFragmentByTag(PROFILE_TAG);
+            updateProfile(membershipFragment);
+            loading = false;
+        }
+    }
+
+    public void finishGetAttendedEventsTask() {
+        mAttendedEventsTask = null;
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if (currentTag.equals(PROFILE_TAG)) {
+            MembershipFragment membershipFragment = (MembershipFragment) fragmentManager.findFragmentByTag(PROFILE_TAG);
+            updateAttendedEvents(membershipFragment);
         }
     }
 
     public void finishCheckInTask() {
         mCheckInScanTask = null;
-        if (currentTag.equals(MAIN_TAG) || currentTag.equals(PROFILE_TAG)) {
-            doFragment(currentTag, true);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if (currentTag.equals(MAIN_TAG)) {
+            FrontPageFragment frontPage = (FrontPageFragment) fragmentManager.findFragmentByTag(MAIN_TAG);
+            updateFrontPage(frontPage);
+        } else if (currentTag.equals(PROFILE_TAG)) {
+            MembershipFragment membershipFragment = (MembershipFragment) fragmentManager.findFragmentByTag(PROFILE_TAG);
+            updateProfile(membershipFragment);
         }
     }
 }

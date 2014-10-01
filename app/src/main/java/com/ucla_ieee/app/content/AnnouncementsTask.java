@@ -44,22 +44,36 @@ public class AnnouncementsTask extends AsyncTask<Void, Void, String> {
         JsonArray announcements = mUtil.getJsonArrayFromString(response);
         if (announcements == null) {
             Toast.makeText(mContext, "Couldn't load announcements", Toast.LENGTH_SHORT).show();
+            mContext.finishAnnouncementsTask();
             return;
         }
 
-        // TODO: change color of new announcements
         if (announcements.size() > 0) {
             JsonArray oldAnnouncements = mSessionManager.getAnnouncements();
-            if (oldAnnouncements != null) {
-                for (int j = 0; j < announcements.size(); j++) {
-                    JsonObject announcement = announcements.get(j).getAsJsonObject();
-                    for (int i = 0; i < oldAnnouncements.size(); i++) {
-                        JsonObject oldAnnouncement = oldAnnouncements.get(i).getAsJsonObject();
-                        if (!announcement.get("content").getAsString().equals(oldAnnouncement.get("content").getAsString())
-                                && announcement.get("id").getAsInt() == oldAnnouncement.get("id").getAsInt()) {
-                            // Updated announcement override (mark as unread)
-                        }
+            int lastId = 0; // so we can still mark things as unread, give old announcements length of 0
+            if (oldAnnouncements == null) {
+                oldAnnouncements = new JsonArray();
+            }
+            for (int i = 0; i < oldAnnouncements.size(); i++) {
+                JsonObject oldAnnouncement = oldAnnouncements.get(i).getAsJsonObject();
+                if (oldAnnouncement.get("id").getAsInt() > lastId) {
+                    lastId = oldAnnouncement.get("id").getAsInt();
+                }
+            }
+            for (int j = 0; j < announcements.size(); j++) {
+                JsonObject announcement = announcements.get(j).getAsJsonObject();
+                announcement.addProperty("unread", false);
+                for (int k = 0; k < oldAnnouncements.size(); k++) {
+                    JsonObject oldAnnouncement = oldAnnouncements.get(k).getAsJsonObject();
+                    if (!announcement.get("content").getAsString().equals(oldAnnouncement.get("content").getAsString())
+                            && announcement.get("id").getAsInt() == oldAnnouncement.get("id").getAsInt()) {
+                        // Updated announcement override (mark as unread)
+                        announcement.addProperty("unread", true);
                     }
+                }
+                if (announcement.get("id").getAsInt() > lastId) {
+                    // mark as unread
+                    announcement.addProperty("unread", true);
                 }
             }
 

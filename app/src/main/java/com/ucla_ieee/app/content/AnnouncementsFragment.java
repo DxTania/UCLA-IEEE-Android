@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.ucla_ieee.app.MainActivity;
@@ -26,12 +27,10 @@ public class AnnouncementsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_announcements, container, false);
 
-        mainActivity = (MainActivity) getActivity();
-        mainActivity.startAnnouncementsAsyncCall(this);
-
         ListView announcements = (ListView) rootView.findViewById(R.id.announcementsList);
         SessionManager sessionManager = new SessionManager(this.getActivity());
 
+        mainActivity = (MainActivity) getActivity();
         mListAdapter = new AnnouncementsListAdapter(this.getActivity(), new ArrayList<Announcement>());
         updateAnnouncements(sessionManager.getAnnouncements());
         announcements.setAdapter(mListAdapter);
@@ -44,12 +43,14 @@ public class AnnouncementsFragment extends Fragment {
             List<Announcement> announcementList = new ArrayList<Announcement>();
             for (int i = 0; i < announcements.size(); i++) {
                 JsonObject announcement = announcements.get(i).getAsJsonObject();
-                announcementList.add(new Announcement(announcement.get("content").getAsString(),
+                announcementList.add(new Announcement(announcement.get("unread").getAsBoolean(),
+                        announcement.get("content").getAsString(),
                         announcement.get("datePosted").getAsString(), announcement.get("id").getAsInt()));
             }
             mListAdapter.clear();
             mListAdapter.addAll(announcementList);
             mListAdapter.notifyDataSetChanged();
+
         }
     }
 
@@ -60,10 +61,22 @@ public class AnnouncementsFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.action_refresh) {
+            mainActivity.startAnnouncementsAsyncCall(this);
+            Toast.makeText(getActivity(), "Updating announcements...", Toast.LENGTH_SHORT).show();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 }

@@ -1,15 +1,21 @@
 package com.ucla_ieee.app.newsfeed;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.ucla_ieee.app.MainActivity;
 import com.ucla_ieee.app.R;
 import com.ucla_ieee.app.calendar.Event;
 import com.ucla_ieee.app.calendar.EventManager;
@@ -22,19 +28,35 @@ import java.util.*;
 public class FrontPageFragment extends Fragment {
 
     private SessionManager mSessionManager;
-    private View rootView;
     private TextView mPointsView;
     private NewsFeedListAdapter mNewsFeedListAdapter;
     private ListView mNewsFeedListView;
+    private View mProgressView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_front_page, container, false);
 
         mPointsView = (TextView) rootView.findViewById(R.id.numPoints);
         mSessionManager = new SessionManager(getActivity());
         mPointsView.setText(String.valueOf(mSessionManager.getPoints()));
+        mProgressView = rootView.findViewById(R.id.refresh_process);
+
+        final MainActivity mainActivity = (MainActivity) getActivity();
+
+        // Refresh button
+        ImageButton refreshButton = (ImageButton) rootView.findViewById(R.id.refresh_button);
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mNewsFeedListView.smoothScrollToPosition(0);
+                showProgress(true);
+                mainActivity.startAnnouncementsAsyncCall(null);
+                mainActivity.startCalendarAsyncCall(null);
+                mainActivity.startUserAsyncCall(true);
+            }
+        });
 
         // News Feed
         List<News> newsFeed = new ArrayList<News>();
@@ -45,13 +67,28 @@ public class FrontPageFragment extends Fragment {
         mNewsFeedListView = (ListView) rootView.findViewById(R.id.newsFeed);
         mNewsFeedListView.setAdapter(mNewsFeedListAdapter);
 
+        if (mainActivity.loading) {
+            showProgress(true);
+        }
+
         return rootView;
+    }
+
+    public void updatePoints() {
+        mPointsView.setText(String.valueOf(mSessionManager.getPoints()));
+    }
+
+    public void updateNews() {
+        mNewsFeedListAdapter.clear();
+        List<News> news = getRecentAnnouncements();
+        news.addAll(getUpcomingEvents());
+        mNewsFeedListAdapter.addAll(news);
     }
 
     /**
      * Return the 5 most recent announcements
      */
-    public List<News> getRecentAnnouncements() {
+    private List<News> getRecentAnnouncements() {
         List<News> recentAnnouncements = new ArrayList<News>();
         JsonArray announcements = mSessionManager.getAnnouncements();
         if (announcements != null) {
@@ -77,7 +114,7 @@ public class FrontPageFragment extends Fragment {
     /**
      * Starting from now, return the 5 closest upcoming events
      */
-    public List<News> getUpcomingEvents() {
+    private List<News> getUpcomingEvents() {
         List<News> upcomingEvents = new ArrayList<News>();
         JsonArray jsonEvents = mSessionManager.getCalReq();
         List<Event> cancelled = new ArrayList<Event>();
@@ -93,12 +130,7 @@ public class FrontPageFragment extends Fragment {
         for (int i = 0; i < events.size() && upcomingEvents.size() < 5; i++) {
             Event event = events.get(i);
             if (event.getStartDate().compareTo(new Date()) > 0) {
-                upcomingEvents.add(
-                    new News(
-                        event.getSummary(),
-                        event.getDateString(), event.getLocationTime(),
-                        "calendar", event.getStartDate())
-                );
+                upcomingEvents.add(event.getAsNews());
             }
         }
         return upcomingEvents;
@@ -110,5 +142,28 @@ public class FrontPageFragment extends Fragment {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return super.onOptionsItemSelected(item);
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    public void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
     }
 }
