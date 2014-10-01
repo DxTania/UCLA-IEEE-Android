@@ -36,8 +36,8 @@ public class MembershipFragment extends Fragment {
     private View rootView;
     private NewsFeedListAdapter mEventListAdapter;
     private List<News> mAttendedEvents;
-    private ListView attendedEvents;
-    private View header;
+    private ListView mAttendedEventsView;
+    private View mHeader;
 
 
     @Override
@@ -48,14 +48,14 @@ public class MembershipFragment extends Fragment {
         mAttendedEvents = new ArrayList<News>();
         sessionManager = new SessionManager(getActivity());
 
-        header = View.inflate(getActivity(), R.layout.snippet_profile, null);
+        mHeader = View.inflate(getActivity(), R.layout.snippet_profile, null);
         setUpViews();
         setUpImageButtons();
         setUpSaveChanges();
 
         // TODO: QR Codes should be the id of the calendar event. SHould we verify checking in with GPS?
-        attendedEvents = (ListView) rootView.findViewById(R.id.attendedEventList);
-        attendedEvents.addHeaderView(header);
+        mAttendedEventsView = (ListView) rootView.findViewById(R.id.attendedEventList);
+        mAttendedEventsView.addHeaderView(mHeader);
         List<News> news = new ArrayList<News>();
         for (Event event : jsonEventsToEvents(sessionManager.getAttendedEvents())) {
             news.add(event.getAsNews());
@@ -64,17 +64,9 @@ public class MembershipFragment extends Fragment {
             mNoEvents.setVisibility(View.GONE);
         }
         mEventListAdapter = new NewsFeedListAdapter(getActivity(), news);
-        attendedEvents.setAdapter(mEventListAdapter);
+        mAttendedEventsView.setAdapter(mEventListAdapter);
 
         return rootView;
-    }
-
-    @Override
-    public void onPause() {
-        // Just in case...
-        attendedEvents = (ListView) rootView.findViewById(R.id.attendedEventList);
-        attendedEvents.removeHeaderView(header);
-        super.onPause();
     }
 
     public void update() {
@@ -119,7 +111,6 @@ public class MembershipFragment extends Fragment {
     public void updateAttendedEvents() {
         mAttendedEvents.clear();
         mEventListAdapter.clear();
-        // There was a null pointer exception here
         JsonArray jsonEvents = sessionManager.getAttendedEvents();
         if (jsonEvents != null) {
             for (Event event : jsonEventsToEvents(jsonEvents)) {
@@ -138,7 +129,7 @@ public class MembershipFragment extends Fragment {
 
     // Click listener for save changes button
     private void setUpSaveChanges() {
-        Button saveChanges = (Button) header.findViewById(R.id.saveChanges);
+        Button saveChanges = (Button) mHeader.findViewById(R.id.saveChanges);
         saveChanges.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -176,7 +167,7 @@ public class MembershipFragment extends Fragment {
             }
         });
 
-        Button revertChanges = (Button) header.findViewById(R.id.revertChanges);
+        Button revertChanges = (Button) mHeader.findViewById(R.id.revertChanges);
         revertChanges.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -194,16 +185,16 @@ public class MembershipFragment extends Fragment {
 
     // Click listeners for image buttons
     private void setUpImageButtons() {
-        ImageButton aboutNextReward = (ImageButton) header.findViewById(R.id.aboutNextReward);
+        ImageButton aboutNextReward = (ImageButton) mHeader.findViewById(R.id.aboutNextReward);
         aboutNextReward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LinearLayout ll = (LinearLayout) header.findViewById(R.id.nextRewardHint);
+                LinearLayout ll = (LinearLayout) mHeader.findViewById(R.id.nextRewardHint);
                 ll.setVisibility(ll.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
             }
         });
 
-        ImageButton aboutPoints = (ImageButton) header.findViewById(R.id.aboutPoints);
+        ImageButton aboutPoints = (ImageButton) mHeader.findViewById(R.id.aboutPoints);
         aboutPoints.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -215,7 +206,7 @@ public class MembershipFragment extends Fragment {
             }
         });
 
-        ImageButton changePassword = (ImageButton) header.findViewById(R.id.changePassword);
+        ImageButton changePassword = (ImageButton) mHeader.findViewById(R.id.changePassword);
         changePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -274,28 +265,28 @@ public class MembershipFragment extends Fragment {
     }
 
     private void setUpViews() {
-        email = (EditText) header.findViewById(R.id.memberEmail);
-        emailText = (TextView) header.findViewById(R.id.memberEmailText);
+        email = (EditText) mHeader.findViewById(R.id.memberEmail);
+        emailText = (TextView) mHeader.findViewById(R.id.memberEmailText);
         email.setText(sessionManager.getEmail());
         emailText.setText(sessionManager.getEmail());
 
-        name = (EditText) header.findViewById(R.id.memberName);
-        nameText = (TextView) header.findViewById(R.id.memberNameText);
+        name = (EditText) mHeader.findViewById(R.id.memberName);
+        nameText = (TextView) mHeader.findViewById(R.id.memberNameText);
         name.setText(sessionManager.getName());
         nameText.setText(sessionManager.getName());
 
-        memberId = (EditText) header.findViewById(R.id.memberId);
-        memberIdText = (TextView) header.findViewById(R.id.memberIdText);
+        memberId = (EditText) mHeader.findViewById(R.id.memberId);
+        memberIdText = (TextView) mHeader.findViewById(R.id.memberIdText);
         memberId.setText(sessionManager.getIEEEId());
         memberIdText.setText(sessionManager.getIEEEId());
 
-        numPoints = (TextView) header.findViewById(R.id.numPoints);
+        numPoints = (TextView) mHeader.findViewById(R.id.numPoints);
         numPoints.setText(String.valueOf(sessionManager.getPoints()));
 
-        passwordText = (TextView) header.findViewById(R.id.passwordText);
-        passwordEditPencil = (ImageButton) header.findViewById(R.id.changePassword);
+        passwordText = (TextView) mHeader.findViewById(R.id.passwordText);
+        passwordEditPencil = (ImageButton) mHeader.findViewById(R.id.changePassword);
 
-        mNoEvents = (TextView) header.findViewById(R.id.noEventsView);
+        mNoEvents = (TextView) mHeader.findViewById(R.id.noEventsView);
     }
 
     /**
@@ -334,8 +325,8 @@ public class MembershipFragment extends Fragment {
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
             MainActivity mainActivity = (MainActivity) getActivity();
-            mainActivity.startUserAsyncCall(false);
-            mainActivity.startAttendedEventsAsyncCall();
+            mainActivity.getTaskManager().startUserAsyncCall(false);
+            mainActivity.getTaskManager().startAttendedEventsAsyncCall();
         } else if (id == R.id.action_toggle_edit) {
             toggleEdits(false);
             return true;

@@ -44,7 +44,7 @@ public class AnnouncementsTask extends AsyncTask<Void, Void, String> {
         JsonArray announcements = mUtil.getJsonArrayFromString(response);
         if (announcements == null) {
             Toast.makeText(mContext, "Couldn't load announcements", Toast.LENGTH_SHORT).show();
-            mContext.finishAnnouncementsTask();
+            mContext.getTaskManager().finishAnnouncementsTask();
             return;
         }
 
@@ -78,11 +78,11 @@ public class AnnouncementsTask extends AsyncTask<Void, Void, String> {
             }
 
             mSessionManager.storeAnnouncements(announcements.toString());
-            if (mContext.getAnnouncementsActivity() != null) {
-                mContext.getAnnouncementsActivity().updateAnnouncements(announcements);
+            if (mContext.getTaskManager().getAnnouncementsActivity() != null) {
+                mContext.getTaskManager().getAnnouncementsActivity().updateAnnouncements(announcements);
             }
         }
 
-        mContext.finishAnnouncementsTask();
+        mContext.getTaskManager().finishAnnouncementsTask();
     }
 }

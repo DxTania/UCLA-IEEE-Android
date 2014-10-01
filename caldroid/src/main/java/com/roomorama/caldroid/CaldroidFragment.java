@@ -1,20 +1,5 @@
 package com.roomorama.caldroid;
 
-import com.antonyt.infiniteviewpager.InfinitePagerAdapter;
-import com.antonyt.infiniteviewpager.InfiniteViewPager;
-import com.mymodule.app2.mymodule.app2.R;
-import hirondelle.date4j.DateTime;
-
-import java.lang.reflect.Field;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Formatter;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.TimeZone;
-
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.graphics.Color;
@@ -36,6 +21,15 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
+import com.antonyt.infiniteviewpager.InfinitePagerAdapter;
+import com.antonyt.infiniteviewpager.InfiniteViewPager;
+import com.mymodule.app2.mymodule.app2.R;
+import hirondelle.date4j.DateTime;
+
+import java.lang.reflect.Field;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
 /**
@@ -355,6 +349,11 @@ public class CaldroidFragment extends DialogFragment {
 		DateTime dateTime = CalendarHelper.convertDateToDateTime(date);
 		backgroundForDateTimeMap.put(dateTime, Integer.valueOf(backgroundRes));
 	}
+
+    public int getBackgroundResourceForDate(Date date) {
+        DateTime dateTime = CalendarHelper.convertDateToDateTime(date);
+        return backgroundForDateTimeMap.get(dateTime);
+    }
 
 	public void setBackgroundResourceForDateTime(int backgroundRes,
 			DateTime dateTime) {

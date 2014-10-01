@@ -56,7 +56,7 @@ public class UpdateTask extends AsyncTask<Void, Void, String> {
         JsonObject json = mUtil.getJsonObjectFromString(response);
         if (json == null) {
             Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_SHORT).show();
-            mContext.finishUpdateUserTask();
+            mContext.getTaskManager().finishUpdateUserTask();
             return;
         }
 
@@ -80,6 +80,6 @@ public class UpdateTask extends AsyncTask<Void, Void, String> {
             }
         }
 
-        mContext.finishUpdateUserTask();
+        mContext.getTaskManager().finishUpdateUserTask();
     }
 }

@@ -147,7 +147,7 @@ public class NavigationDrawerFragment extends Fragment {
                 // Logout
                 SessionManager sessionManager = new SessionManager(getActivity());
                 sessionManager.logoutUser();
-                activity.stopAsyncTasks();
+                activity.getTaskManager().stopAsyncTasks();
                 // Back to sign in page
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
@@ -162,7 +162,10 @@ public class NavigationDrawerFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SCAN && resultCode == Activity.RESULT_OK) {
             // check in here
-            activity.startCheckInAsyncCall(data.getStringExtra("SCAN_RESULT"));
+            activity.getTaskManager().startCheckInAsyncCall(data.getStringExtra("SCAN_RESULT"));
+            selectItem(mLastPosition);
+            mPosition = mLastPosition;
+        } else if (requestCode == SCAN) {
             selectItem(mLastPosition);
             mPosition = mLastPosition;
         }

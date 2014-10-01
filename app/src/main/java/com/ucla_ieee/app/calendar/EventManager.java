@@ -116,7 +116,8 @@ public class EventManager {
     // that do not match any ids in the new items
     public static String reviseJson(JsonArray newItems, JsonArray prevItems) {
         JsonArray items = new JsonArray();
-        for (JsonElement pItem : prevItems) {
+        for (int i = 0; i < prevItems.size(); i++) {
+            JsonObject pItem = prevItems.get(i).getAsJsonObject();
             boolean match = false;
             for (JsonElement item : newItems) {
                 String newId = item.getAsJsonObject().getAsJsonPrimitive("id").getAsString();
@@ -128,12 +129,15 @@ public class EventManager {
                 }
             }
             if (!match) {
+                pItem.addProperty("unread", false);
                 items.add(pItem);
             }
         }
-        for (JsonElement nItem : newItems) {
-            if (!nItem.getAsJsonObject().getAsJsonPrimitive("status")
+        for (int i = 0; i < newItems.size(); i++) {
+            JsonObject nItem = newItems.get(i).getAsJsonObject();
+            if (!nItem.getAsJsonPrimitive("status")
                     .getAsString().equals("cancelled")) {
+                nItem.addProperty("unread", true);
                 items.add(nItem);
             }
         }

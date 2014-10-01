@@ -59,7 +59,7 @@ public class AttendedEventsTask extends AsyncTask<Void, Void, String> {
         JsonObject json = mUtil.getJsonObjectFromString(response);
         if (json == null) {
             Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_SHORT).show();
-            mContext.finishGetAttendedEventsTask();
+            mContext.getTaskManager().finishGetAttendedEventsTask();
             return;
         }
 
@@ -74,6 +74,6 @@ public class AttendedEventsTask extends AsyncTask<Void, Void, String> {
             }
         }
 
-        mContext.finishGetAttendedEventsTask();
+        mContext.getTaskManager().finishGetAttendedEventsTask();
     }
 }

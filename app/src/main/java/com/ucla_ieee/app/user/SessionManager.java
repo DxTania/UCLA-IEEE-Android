@@ -105,6 +105,12 @@ public class SessionManager {
         return mUtil.getJsonArrayFromString(mSharedPrefs.getString(Keys.ATTENDED_EVENTS.s(), null));
     }
 
+    public void addAttendedEvent(JsonObject event) {
+        JsonArray attendedEvents = getAttendedEvents();
+        attendedEvents.add(event);
+        updateAttendedEvents(attendedEvents.toString());
+    }
+
     public JsonArray getAnnouncements() {
         return mUtil.getJsonArrayFromString(mSharedPrefs.getString(Keys.ANNOUNCEMENTS.s(), null));
     }

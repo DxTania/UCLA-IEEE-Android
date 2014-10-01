@@ -52,9 +52,9 @@ public class FrontPageFragment extends Fragment {
             public void onClick(View v) {
                 mNewsFeedListView.smoothScrollToPosition(0);
                 showProgress(true);
-                mainActivity.startAnnouncementsAsyncCall(null);
-                mainActivity.startCalendarAsyncCall(null);
-                mainActivity.startUserAsyncCall(true);
+                mainActivity.getTaskManager().startAnnouncementsAsyncCall(null);
+                mainActivity.getTaskManager().startCalendarAsyncCall(null);
+                mainActivity.getTaskManager().startUserAsyncCall(true);
             }
         });
 

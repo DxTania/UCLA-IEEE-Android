@@ -22,16 +22,20 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-
+/**
+ * Calendar fragment class that contains a calendar and listview for events
+ * on the currently selected day
+ */
 public class CalendarFragment extends Fragment {
 
     private CaldroidFragment mCaldroidFragment;
-    private TextView mDayTextView;
+    private TextView mDayTextView, mNoEventsView;
     private List<Event> mEvents, mSelectedEvents;
-    private SimpleDateFormat mDateComp;
-    private SimpleDateFormat mHumanDate;
-    private Date mSelectedDate;
-    private Date mPreviousSelection;
+    private SimpleDateFormat mDateComp, mHumanDate;
+    private Date mSelectedDate, mPreviousSelection, mCurrentDate;
+    private EventListAdapter mEventListAdapter;
+    private MainActivity mActivity;
+
     final CaldroidListener listener = new CaldroidListener() {
 
         @Override
@@ -39,9 +43,9 @@ public class CalendarFragment extends Fragment {
             boolean color = false;
             mSelectedDate = date;
             ArrayList<Event> newSelectedEvents = new ArrayList<Event>();
-            for (Event e : mEvents) {
-                if (mDateComp.format(e.getStartDate()).equals(mDateComp.format(date))) {
-                    newSelectedEvents.add(e);
+            for (Event event : mEvents) {
+                if (sameDay(event.getStartDate(), date)) {
+                    newSelectedEvents.add(event);
                     color = true;
                 }
             }
@@ -50,11 +54,19 @@ public class CalendarFragment extends Fragment {
                 mSelectedEvents.addAll(newSelectedEvents);
                 mDayTextView.setText("Events for " + mHumanDate.format(date));
                 mCaldroidFragment.setSelectedDates(date, date);
-                mCaldroidFragment.setBackgroundResourceForDate(R.color.caldroid_sky_blue, date);
-                if (mPreviousSelection != null &&
-                        !mDateComp.format(mPreviousSelection).equals(mDateComp.format(date))) {
-                    mCaldroidFragment.setBackgroundResourceForDate(
-                            R.color.caldroid_lime_green, mPreviousSelection);
+                if (sameDay(date, new Date())) {
+                    mCaldroidFragment.setBackgroundResourceForDate(R.drawable.today_selected, date);
+                } else {
+                    mCaldroidFragment.setBackgroundResourceForDate(R.color.caldroid_sky_blue, date);
+                }
+                if (mPreviousSelection != null && !sameDay(date, mPreviousSelection)) {
+                    if (sameDay(mPreviousSelection, new Date())) {
+                        mCaldroidFragment.setBackgroundResourceForDate(
+                                R.drawable.today_events, mPreviousSelection);
+                    } else {
+                        mCaldroidFragment.setBackgroundResourceForDate(
+                                R.color.caldroid_lime_green, mPreviousSelection);
+                    }
                 }
                 mPreviousSelection = date;
                 mCaldroidFragment.refreshView();
@@ -63,9 +75,6 @@ public class CalendarFragment extends Fragment {
             }
         }
     };
-    private EventListAdapter mEventListAdapter;
-    private TextView mNoEventsView;
-    private MainActivity mActivity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -79,6 +88,8 @@ public class CalendarFragment extends Fragment {
         mSelectedEvents = new ArrayList<Event>();
         mEventListAdapter = new EventListAdapter(getActivity(), mSelectedEvents);
         mSelectedDate = new Date();
+        mPreviousSelection = new Date();
+        mCurrentDate = new Date();
         mActivity = (MainActivity) getActivity();
 
         // Create calendar
@@ -102,6 +113,8 @@ public class CalendarFragment extends Fragment {
         mDayTextView.setText("Events for " + mHumanDate.format(new Date()));
         mNoEventsView = (TextView) rootView.findViewById(R.id.noEventsText);
 
+        mCaldroidFragment.setBackgroundResourceForDate(R.drawable.today_no_events, new Date());
+
         // Show/get cached events
         SessionManager sessionManager = new SessionManager(getActivity());
         JsonArray events = sessionManager.getCalReq();
@@ -124,17 +137,44 @@ public class CalendarFragment extends Fragment {
         return rootView;
     }
 
+    public boolean sameDay(Date date1, Date date2) {
+        return mDateComp.format(date1).equals(mDateComp.format(date2));
+    }
+
     @Override
-    public void onPause() {
-        super.onPause();
-        mActivity.setCalendar(null);
+    public void onResume() {
+        super.onResume();
+        if (mCurrentDate != null) {
+            Date oldDate = mCurrentDate;
+            mCurrentDate = new Date();
+            if (!sameDay(mCurrentDate, oldDate)) {
+                int colorOldToday = mCaldroidFragment.getBackgroundResourceForDate(oldDate);
+                int colorToday = mCaldroidFragment.getBackgroundResourceForDate(mCurrentDate);
+                // Recolor new today
+                if (colorToday == R.color.caldroid_lime_green) {
+                    mCaldroidFragment.setBackgroundResourceForDate(R.drawable.today_events, mCurrentDate);
+                } else if (colorToday == R.color.caldroid_sky_blue) {
+                    mCaldroidFragment.setBackgroundResourceForDate(R.drawable.today_selected, mCurrentDate);
+                } else {
+                    mCaldroidFragment.setBackgroundResourceForDate(R.drawable.today_no_events, mCurrentDate);
+                }
+                // Restore old date
+                if (colorOldToday == R.drawable.today_events) {
+                    mCaldroidFragment.setBackgroundResourceForDate(R.color.caldroid_lime_green, oldDate);
+                } else if (colorOldToday == R.drawable.today_selected) {
+                    mCaldroidFragment.setBackgroundResourceForDate(R.color.caldroid_sky_blue, oldDate);
+                } else {
+                    mCaldroidFragment.setBackgroundResourceForDate(R.color.caldroid_white, oldDate);
+                }
+            }
+        }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        // TODO: figureout saving the month they were looking @
+        // TODO: figure out saving the month they were looking @
         if (mCaldroidFragment != null) {
             mCaldroidFragment.saveStatesToKey(outState, "CALDROID_SAVED_STATE");
         }
@@ -157,18 +197,32 @@ public class CalendarFragment extends Fragment {
         for (Event event : cancelled) {
             Date start = event.getStartDate();
             if (start != null) {
-                mCaldroidFragment.setBackgroundResourceForDate(R.color.caldroid_white, start);
+                if (sameDay(mSelectedDate, new Date())) {
+                    mCaldroidFragment.setBackgroundResourceForDate(
+                            R.drawable.today_no_events, start);
+                } else {
+                    mCaldroidFragment.setBackgroundResourceForDate(
+                            R.color.caldroid_white, start);
+                }
             }
         }
 
         // Add new events to calendar and color the dates
+        // TODO: test that new added events for today get refreshed on refresh
         for (Event event : newEvents) {
             Date start = event.getStartDate();
             if (start != null) {
-                mCaldroidFragment.setBackgroundResourceForDate(R.color.caldroid_lime_green, start);
-            }
-            if (mDateComp.format(start).equals(mDateComp.format(new Date()))) {
-                mSelectedEvents.add(event);
+                if (sameDay(start, new Date())) {
+                    mSelectedEvents.add(event);
+                    mCaldroidFragment.setBackgroundResourceForDate(R.drawable.today_events, start);
+                    if (sameDay(mSelectedDate, new Date())) {
+                        mCaldroidFragment.setBackgroundResourceForDate(
+                                R.drawable.today_selected, start);
+                    }
+                } else {
+                    mCaldroidFragment.setBackgroundResourceForDate(
+                            R.color.caldroid_lime_green, start);
+                }
             }
         }
 
@@ -176,7 +230,6 @@ public class CalendarFragment extends Fragment {
         mEventListAdapter.notifyDataSetChanged();
         if (mSelectedEvents.size() > 0) {
             mNoEventsView.setVisibility(View.GONE);
-            // TODO: color for events for TODAY differently
         }
         mCaldroidFragment.refreshView();
     }
@@ -194,7 +247,7 @@ public class CalendarFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            mActivity.startCalendarAsyncCall(this);
+            mActivity.getTaskManager().startCalendarAsyncCall(this);
             Toast.makeText(getActivity(), "Updating events...", Toast.LENGTH_SHORT).show();
             return true;
         }

@@ -68,7 +68,7 @@ public class CalendarTask extends AsyncTask<Void, Void, String> {
         JsonObject json = mUtil.getJsonObjectFromString(response);
         if (json == null) {
             Toast.makeText(mContext, "Couldn't load new events :(", Toast.LENGTH_SHORT).show();
-            mContext.finishCalendarTask();
+            mContext.getTaskManager().finishCalendarTask();
             return; // error
         }
 
@@ -90,13 +90,13 @@ public class CalendarTask extends AsyncTask<Void, Void, String> {
         // Add to calendar if possible
         if (newItems.size() > 0) {
             Toast.makeText(mContext, "New events were loaded!", Toast.LENGTH_SHORT).show();
-            if (mContext.getCalendar() != null) {
-                mContext.getCalendar().addEvents(newItems);
+            if (mContext.getTaskManager().getCalendar() != null) {
+                mContext.getTaskManager().getCalendar().addEvents(newItems);
             }
         }
 
         // TODO: Deal with 410 GONE response
 
-        mContext.finishCalendarTask();
+        mContext.getTaskManager().finishCalendarTask();
     }
 }

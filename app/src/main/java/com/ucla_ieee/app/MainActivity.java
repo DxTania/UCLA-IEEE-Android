@@ -12,16 +12,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import com.ucla_ieee.app.calendar.CalendarFragment;
-import com.ucla_ieee.app.calendar.CalendarTask;
 import com.ucla_ieee.app.content.AnnouncementsFragment;
-import com.ucla_ieee.app.content.AnnouncementsTask;
 import com.ucla_ieee.app.newsfeed.FrontPageFragment;
-import com.ucla_ieee.app.scan.CheckInScanTask;
 import com.ucla_ieee.app.signin.LoginActivity;
-import com.ucla_ieee.app.user.AttendedEventsTask;
 import com.ucla_ieee.app.user.MembershipFragment;
 import com.ucla_ieee.app.user.SessionManager;
-import com.ucla_ieee.app.user.UpdateTask;
 
 public class MainActivity extends FragmentActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -45,13 +40,7 @@ public class MainActivity extends FragmentActivity
     private SessionManager mSessionManager;
     private DrawerLayout mDrawerLayout;
     private int mPosition;
-    private CalendarTask mCalendarTask;
-    private AnnouncementsTask mAnnouncementsTask;
-    private CheckInScanTask mCheckInScanTask;
-    private UpdateTask mUpdateTask;
-    private AttendedEventsTask mAttendedEventsTask;
-    private CalendarFragment mCalendarFragment;
-    private AnnouncementsFragment mAnnouncementsFragment;
+    private AsyncTaskManager mTaskManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +52,12 @@ public class MainActivity extends FragmentActivity
         mTitle = "UCLA IEEE";
         mSessionManager = new SessionManager(this);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mTaskManager = new AsyncTaskManager(this);
 
-        startUserAsyncCall(true);
-        startCalendarAsyncCall(null);
-        startAnnouncementsAsyncCall(null);
-        startAttendedEventsAsyncCall();
+        mTaskManager.startUserAsyncCall(true);
+        mTaskManager.startCalendarAsyncCall(null);
+        mTaskManager.startAnnouncementsAsyncCall(null);
+        mTaskManager.startAttendedEventsAsyncCall();
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
@@ -77,6 +67,40 @@ public class MainActivity extends FragmentActivity
 
         mNavigationDrawerFragment.selectItem(0);
         mNavigationDrawerFragment.switchFragments(0);
+    }
+
+    private void updateFrontPage(FrontPageFragment frontPage) {
+        if (frontPage != null) {
+            frontPage.updateNews();
+            frontPage.updatePoints();
+            frontPage.showProgress(false);
+        }
+    }
+
+    private void updateProfile(MembershipFragment membershipFragment) {
+        if (membershipFragment != null) {
+            membershipFragment.update();
+            membershipFragment.updateAttendedEvents();
+        }
+    }
+
+    public void updateUI() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if (currentTag.equals(MAIN_TAG)) {
+            FrontPageFragment frontPage = (FrontPageFragment) fragmentManager.findFragmentByTag(MAIN_TAG);
+            updateFrontPage(frontPage);
+            loading = false;
+        } else if (currentTag.equals(PROFILE_TAG)) {
+            MembershipFragment membershipFragment = (MembershipFragment) fragmentManager.findFragmentByTag(PROFILE_TAG);
+            updateProfile(membershipFragment);
+            loading = false;
+        } else if (currentTag.equals(ANNOUNCEMENTS_TAG)) {
+            AnnouncementsFragment announcementsFragment = (AnnouncementsFragment) fragmentManager.findFragmentByTag
+                    (ANNOUNCEMENTS_TAG);
+            if (announcementsFragment != null) {
+                announcementsFragment.showProgress(false);
+            }
+        }
     }
 
     @Override
@@ -108,7 +132,7 @@ public class MainActivity extends FragmentActivity
         currentTag = tag;
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentByTag(tag);
-        if (fragment == null) {
+        if (fragment == null) { // Fragments are only created once
             if (tag.equals(CAL_TAG)) {
                 fragment = new CalendarFragment();
             } else if (tag.equals(PROFILE_TAG)) {
@@ -186,165 +210,7 @@ public class MainActivity extends FragmentActivity
         restoreActionBar();
     }
 
-    public void startAttendedEventsAsyncCall() {
-        if (mAttendedEventsTask == null) {
-            mAttendedEventsTask = new AttendedEventsTask(this);
-            mAttendedEventsTask.execute((Void) null);
-        }
-    }
-
-    // Calendar Functions
-    public void startCalendarAsyncCall(CalendarFragment activity) {
-        if (mCalendarFragment == null) {
-            mCalendarFragment = activity;
-        }
-        if (mCalendarTask == null) {
-            if (activity == null) {
-                loading = true;
-            }
-            mCalendarTask = new CalendarTask(this);
-            mCalendarTask.execute((Void) null);
-        }
-    }
-
-    public void startUserAsyncCall(boolean frontPage) {
-        if (mUpdateTask == null) {
-            // only loading is true if started from main page fragment
-            loading = frontPage;
-            mUpdateTask = new UpdateTask(this);
-            mUpdateTask.execute((Void) null);
-        }
-    }
-
-    public void startAnnouncementsAsyncCall(AnnouncementsFragment activity) {
-        if (mAnnouncementsFragment == null) {
-            mAnnouncementsFragment = activity;
-        }
-        if (mAnnouncementsTask == null) {
-            if (activity == null) {
-                loading = true;
-            }
-            mAnnouncementsTask = new AnnouncementsTask(this);
-            mAnnouncementsTask.execute((Void) null);
-        }
-    }
-
-    public void startCheckInAsyncCall(String qrCode) {
-        if (mCheckInScanTask == null) {
-            mCheckInScanTask = new CheckInScanTask(this, qrCode);
-            mCheckInScanTask.execute((Void) null);
-        }
-    }
-
-    public CalendarFragment getCalendar() {
-        return mCalendarFragment;
-    }
-
-    public void setCalendar(CalendarFragment activity) {
-        mCalendarFragment = activity;
-    }
-
-    public AnnouncementsFragment getAnnouncementsActivity() {
-        return mAnnouncementsFragment;
-    }
-
-    public void stopAsyncTasks() {
-        if (mCalendarTask != null) {
-            mCalendarTask.cancel(true);
-        }
-        if (mUpdateTask != null) {
-            mUpdateTask.cancel(true);
-        }
-
-        if (mAnnouncementsTask != null) {
-            mAnnouncementsTask.cancel(true);
-        }
-
-        if (mAttendedEventsTask != null) {
-            mAttendedEventsTask.cancel(true);
-        }
-
-        if (mCheckInScanTask != null) {
-            mCheckInScanTask.cancel(true);
-        }
-    }
-
-    private void updateFrontPage(FrontPageFragment frontPage) {
-        if (frontPage != null && frontPage.isVisible()) {
-            frontPage.updateNews();
-            frontPage.updatePoints();
-            frontPage.showProgress(false);
-        }
-    }
-
-    private void updateProfile(MembershipFragment membershipFragment) {
-        if (membershipFragment != null && membershipFragment.isVisible()) {
-            membershipFragment.update();
-        }
-    }
-
-    private void updateAttendedEvents(MembershipFragment membershipFragment) {
-        if (membershipFragment != null && membershipFragment.isVisible()) {
-            membershipFragment.updateAttendedEvents();
-        }
-    }
-
-    public void finishAnnouncementsTask() {
-        mAnnouncementsTask = null;
-        if (currentTag.equals(MAIN_TAG)) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            if (mCalendarTask == null && mUpdateTask == null) {
-                FrontPageFragment frontPage = (FrontPageFragment) fragmentManager.findFragmentByTag(MAIN_TAG);
-                updateFrontPage(frontPage);
-                loading = false;
-            }
-        }
-    }
-
-    public void finishCalendarTask() {
-        mCalendarTask = null;
-        if (currentTag.equals(MAIN_TAG)) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            if (mAnnouncementsTask == null && mUpdateTask == null) {
-                FrontPageFragment frontPage = (FrontPageFragment) fragmentManager.findFragmentByTag(MAIN_TAG);
-                updateFrontPage(frontPage);
-                loading = false;
-            }
-        }
-    }
-
-    public void finishUpdateUserTask() {
-        mUpdateTask = null;
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        if (currentTag.equals(MAIN_TAG) && mAnnouncementsTask == null && mCalendarTask == null) {
-            FrontPageFragment frontPage = (FrontPageFragment) fragmentManager.findFragmentByTag(MAIN_TAG);
-            updateFrontPage(frontPage);
-            loading = false;
-        } else if (currentTag.equals(PROFILE_TAG)) {
-            MembershipFragment membershipFragment = (MembershipFragment) fragmentManager.findFragmentByTag(PROFILE_TAG);
-            updateProfile(membershipFragment);
-            loading = false;
-        }
-    }
-
-    public void finishGetAttendedEventsTask() {
-        mAttendedEventsTask = null;
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        if (currentTag.equals(PROFILE_TAG)) {
-            MembershipFragment membershipFragment = (MembershipFragment) fragmentManager.findFragmentByTag(PROFILE_TAG);
-            updateAttendedEvents(membershipFragment);
-        }
-    }
-
-    public void finishCheckInTask() {
-        mCheckInScanTask = null;
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        if (currentTag.equals(MAIN_TAG)) {
-            FrontPageFragment frontPage = (FrontPageFragment) fragmentManager.findFragmentByTag(MAIN_TAG);
-            updateFrontPage(frontPage);
-        } else if (currentTag.equals(PROFILE_TAG)) {
-            MembershipFragment membershipFragment = (MembershipFragment) fragmentManager.findFragmentByTag(PROFILE_TAG);
-            updateProfile(membershipFragment);
-        }
+    public AsyncTaskManager getTaskManager() {
+        return mTaskManager;
     }
 }

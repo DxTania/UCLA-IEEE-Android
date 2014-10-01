@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/caldroid_white"
     tools:context="com.ucla_ieee.app.MainActivity$PlaceholderFragment">
 
     <TextView

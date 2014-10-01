@@ -62,28 +62,26 @@ public class CheckInScanTask extends AsyncTask<Void, Void, String> {
         JsonObject json = mUtil.getJsonObjectFromString(response);
         if (json == null) {
             Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_SHORT).show();
+            mContext.getTaskManager().finishCheckInTask();
             return;
         }
 
         if (json.get("success").getAsInt() == 1) {
-            // TODO: update attended events list (in session manager?)
             Toast.makeText(mContext, "Thanks for checking in!", Toast.LENGTH_SHORT).show();
             JsonObject user = json.get("user").getAsJsonObject();
 
-            String email, name, id;
-            int points;
-
-            email = user.get("email").getAsString();
-            name = user.get("name").getAsString();
-            id = user.get("ieee_id").getAsString();
-            points = user.get("points").getAsInt();
+            String email = user.get("email").getAsString();
+            String name = user.get("name").getAsString();
+            String id = user.get("ieee_id").getAsString();
+            int points = user.get("points").getAsInt();
 
             mSessionManager.updateSession(email, name, id, points);
+            mSessionManager.addAttendedEvent(json.get("event").getAsJsonObject());
 
         } else {
             Toast.makeText(mContext, json.get("error_message").getAsString(), Toast.LENGTH_SHORT).show();
         }
 
-        mContext.finishCheckInTask();
+        mContext.getTaskManager().finishCheckInTask();
     }
 }

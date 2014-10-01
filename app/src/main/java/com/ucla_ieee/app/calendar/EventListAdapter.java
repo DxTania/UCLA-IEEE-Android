@@ -7,25 +7,29 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.google.gson.JsonArray;
 import com.ucla_ieee.app.R;
+import com.ucla_ieee.app.user.SessionManager;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 public class EventListAdapter extends ArrayAdapter<Event> {
-    private final Context context;
-    private final List<Event> events;
+    private final Context mContext;
+    private final List<Event> mEvents;
+    private final SessionManager mSessionManager;
 
-    public EventListAdapter(Context context, List<Event> events) {
-        super(context, R.layout.snippet_event, events);
-        this.context = context;
-        this.events = events;
+    public EventListAdapter(Context mContext, List<Event> events) {
+        super(mContext, R.layout.snippet_event, events);
+        this.mContext = mContext;
+        this.mEvents = events;
+        this.mSessionManager = new SessionManager(mContext);
         sort();
     }
 
     public void sort() {
-        Collections.sort(events, new Comparator<Event>() {
+        Collections.sort(mEvents, new Comparator<Event>() {
             @Override
             public int compare(Event lhs, Event rhs) {
                 return lhs.getStartDate().compareTo(rhs.getStartDate());
@@ -49,7 +53,7 @@ public class EventListAdapter extends ArrayAdapter<Event> {
         ViewHolder viewHolder = new ViewHolder();
 
         if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) context
+            LayoutInflater inflater = (LayoutInflater) mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.snippet_event, parent, false);
             viewHolder.summary = (TextView) convertView.findViewById(R.id.summaryText);
@@ -60,8 +64,16 @@ public class EventListAdapter extends ArrayAdapter<Event> {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        Event event = events.get(position);
-        // TODO: Show symbol if user has attended that event (viewHolder.checkIn)
+        Event event = mEvents.get(position);
+        JsonArray attendedEvents = mSessionManager.getAttendedEvents();
+        if (attendedEvents != null) {
+            for (int i = 0; i < attendedEvents.size(); i++) {
+                if (attendedEvents.get(i).getAsJsonObject().get("event_id").getAsString().equals(event.getId())) {
+                    viewHolder.checkIn.setVisibility(View.VISIBLE);
+                    break;
+                }
+            }
+        }
         viewHolder.summary.setText(event.getSummary());
         viewHolder.location.setText(event.getLocationTime());
 

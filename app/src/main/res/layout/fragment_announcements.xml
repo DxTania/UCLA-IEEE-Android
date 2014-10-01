@@ -3,7 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/caldroid_white"
     tools:context="com.ucla_ieee.app.content.AnnouncementsFragment">
+
+    <ProgressBar
+        android:id="@+id/refresh_process"
+        style="?android:attr/progressBarStyle"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"/>
 
     <ListView
         android:layout_width="fill_parent"

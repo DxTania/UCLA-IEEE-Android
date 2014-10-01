@@ -1,5 +1,9 @@
 package com.ucla_ieee.app.content;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -7,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.ucla_ieee.app.MainActivity;
@@ -19,8 +22,9 @@ import java.util.List;
 
 
 public class AnnouncementsFragment extends Fragment {
-    AnnouncementsListAdapter mListAdapter;
-    MainActivity mainActivity;
+    private AnnouncementsListAdapter mListAdapter;
+    private MainActivity mainActivity;
+    private View mProgressView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -29,6 +33,8 @@ public class AnnouncementsFragment extends Fragment {
 
         ListView announcements = (ListView) rootView.findViewById(R.id.announcementsList);
         SessionManager sessionManager = new SessionManager(this.getActivity());
+
+        mProgressView = rootView.findViewById(R.id.refresh_process);
 
         mainActivity = (MainActivity) getActivity();
         mListAdapter = new AnnouncementsListAdapter(this.getActivity(), new ArrayList<Announcement>());
@@ -55,12 +61,6 @@ public class AnnouncementsFragment extends Fragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        mainActivity.finishAnnouncementsTask();
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
@@ -73,10 +73,33 @@ public class AnnouncementsFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            mainActivity.startAnnouncementsAsyncCall(this);
-            Toast.makeText(getActivity(), "Updating announcements...", Toast.LENGTH_SHORT).show();
+            showProgress(true);
+            mainActivity.getTaskManager().startAnnouncementsAsyncCall(this);
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    public void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
     }
 }
