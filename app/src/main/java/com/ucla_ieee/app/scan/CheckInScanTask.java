@@ -74,8 +74,10 @@ public class CheckInScanTask extends AsyncTask<Void, Void, String> {
             String name = user.get("name").getAsString();
             String id = user.get("ieee_id").getAsString();
             int points = user.get("points").getAsInt();
+            String major = user.get("major").getAsString();
+            String year = user.get("year").getAsString();
 
-            mSessionManager.updateSession(email, name, id, points);
+            mSessionManager.updateSession(email, name, id, points, major, year);
             mSessionManager.addAttendedEvent(json.get("event").getAsJsonObject());
 
         } else {

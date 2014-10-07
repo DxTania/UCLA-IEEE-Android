@@ -29,10 +29,11 @@ public class RegisterActivity extends Activity {
         final EditText fnameView = (EditText) findViewById(R.id.reg_firstName);
         final EditText lnameView = (EditText) findViewById(R.id.reg_lastName);
         final EditText rpasswordView = (EditText) findViewById(R.id.retype_password);
+        final EditText majorView = (EditText) findViewById(R.id.reg_major);
         registerForm = (LinearLayout) findViewById(R.id.register_form);
         registerProgress = (ProgressBar) findViewById(R.id.register_progress);
         // SPINNER!
-        Spinner spinner = (Spinner) findViewById(R.id.reg_year);
+        final Spinner spinner = (Spinner) findViewById(R.id.reg_year);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.years)) {
@@ -72,7 +73,8 @@ public class RegisterActivity extends Activity {
                 String rpassword = rpasswordView.getText().toString();
                 String firstname = fnameView.getText().toString();
                 String lastname = lnameView.getText().toString();
-
+                String major = majorView.getText().toString();
+                String year = spinner.getSelectedItem().toString();
 
                 if (!rpassword.equals(password)) {
                     rpasswordView.setError("Passwords don't match!");
@@ -88,7 +90,7 @@ public class RegisterActivity extends Activity {
                 }
 
                 showProgress(true);
-                mAuthTask = new RegisterTask(RegisterActivity.this, email, password, firstname, lastname);
+                mAuthTask = new RegisterTask(RegisterActivity.this, email, password, firstname, lastname, major, year);
                 mAuthTask.execute((Void) null);
             }
         });

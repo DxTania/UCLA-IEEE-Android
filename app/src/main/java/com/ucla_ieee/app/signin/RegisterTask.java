@@ -34,13 +34,18 @@ public class RegisterTask extends AsyncTask<Void, Void, String> {
     private final String mPassword;
     private final String mFirstName;
     private final String mLastName;
+    private final String mMajor;
+    private final String mYear;
 
-    RegisterTask(RegisterActivity registerActivity, String email, String password, String firstname, String lastname) {
+    RegisterTask(RegisterActivity registerActivity, String email, String password, String firstname, String lastname,
+     String major, String year) {
         this.registerActivity = registerActivity;
         mEmail = email;
         mPassword = password;
         mFirstName = firstname;
         mLastName = lastname;
+        mMajor = major;
+        mYear = year;
     }
 
     @Override
@@ -55,6 +60,8 @@ public class RegisterTask extends AsyncTask<Void, Void, String> {
         loginParams.add(new BasicNameValuePair("password", mPassword));
         loginParams.add(new BasicNameValuePair("firstname", mFirstName));
         loginParams.add(new BasicNameValuePair("lastname", mLastName));
+        loginParams.add(new BasicNameValuePair("major", mMajor));
+        loginParams.add(new BasicNameValuePair("year", mYear));
 
         try {
             httpPost.setEntity(new UrlEncodedFormEntity(loginParams));

@@ -2,6 +2,7 @@ package com.ucla_ieee.app.calendar;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import com.ucla_ieee.app.newsfeed.News;
 
 import java.text.SimpleDateFormat;
@@ -126,7 +127,7 @@ public class Event implements Parcelable {
      */
     public String getLocationTime() {
         String time = "";
-        String loc = getLocation() == null ? "" : " at " + getLocation();
+        String loc = TextUtils.isEmpty(getLocation()) ? "" : " at " + getLocation();
 
         if (getStartDate() != null && !getAllDay()) {
             SimpleDateFormat format = new SimpleDateFormat("h:mma");

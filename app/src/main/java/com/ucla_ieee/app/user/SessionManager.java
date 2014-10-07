@@ -77,12 +77,14 @@ public class SessionManager {
         mEditor.commit();
     }
 
-    public void updateSession(String email, String name, String id, int points) {
+    public void updateSession(String email, String name, String id, int points, String major, String year) {
         mEditor = mSharedPrefs.edit();
         mEditor.putString(Keys.EMAIL.s(), email);
         mEditor.putString(Keys.NAME.s(), name);
         mEditor.putString(Keys.IEEE_ID.s(), id);
         mEditor.putInt(Keys.POINTS.s(), points);
+        mEditor.putString(Keys.MAJOR.s(), major);
+        mEditor.putString(Keys.YEAR.s(), year);
         mEditor.commit();
     }
 
@@ -118,6 +120,14 @@ public class SessionManager {
         return mSharedPrefs.getString(Keys.IEEE_ID.s(), "");
     }
 
+    public String getMajor() {
+        return mSharedPrefs.getString(Keys.MAJOR.s(), "");
+    }
+
+    public String getYear() {
+        return mSharedPrefs.getString(Keys.YEAR.s(), "");
+    }
+
     public String getCookie() {
         return mSharedPrefs.getString(Keys.COOKIE.s(), null);
     }
@@ -137,7 +147,7 @@ public class SessionManager {
     public enum Keys {
         LOGGED_IN("IsLoggedIn"), EMAIL("email"), TOKEN("syncToken"), JSON("json"), COOKIE("cookie"),
         NAME("name"), IEEE_ID("ieee_id"), ANNOUNCEMENTS("announcements"), POINTS("points"),
-        ATTENDED_EVENTS("attended_events"), NEWS("news");
+        ATTENDED_EVENTS("attended_events"), NEWS("news"), MAJOR("major"), YEAR("year");
 
         private final String text;
 

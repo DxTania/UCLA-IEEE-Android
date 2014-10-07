@@ -64,6 +64,8 @@ public class EventListAdapter extends ArrayAdapter<Event> {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
+        viewHolder.checkIn.setVisibility(View.GONE);
+
         Event event = mEvents.get(position);
         JsonArray attendedEvents = mSessionManager.getAttendedEvents();
         if (attendedEvents != null) {

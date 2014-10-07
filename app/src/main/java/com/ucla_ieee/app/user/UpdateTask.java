@@ -62,14 +62,16 @@ public class UpdateTask extends AsyncTask<Void, Void, String> {
 
         if (json.get("success") != null && json.get("success").getAsInt() == 1) {
             JsonObject user = json.getAsJsonObject("user");
-            String email, name, id;
+            String email, name, id, major, year;
             int points;
             email = user.get("email").getAsString();
             name = user.get("name").getAsString();
             id = user.get("ieee_id").getAsString();
             points = user.get("points").getAsInt();
+            major = user.get("major").getAsString();
+            year = user.get("year").getAsString();
 
-            mSessionManager.updateSession(email, name, id, points);
+            mSessionManager.updateSession(email, name, id, points, major, year);
 
         } else {
             if (json.get("error_message") != null) {

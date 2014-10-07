@@ -22,13 +22,14 @@ import org.apache.http.message.BasicNameValuePair;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MembershipFragment extends Fragment {
     private MembershipEditTask mAuthTask = null;
 
-    private EditText email, name, memberId;
-    private TextView emailText, nameText, memberIdText, passwordText, numPoints, mNoEvents;
+    private EditText email, name, memberId, major;
+    private TextView emailText, nameText, memberIdText, passwordText, numPoints, mNoEvents, mMajorText, mYearText;
     private ImageButton passwordEditPencil;
     private Boolean alertReady = false;
     private String cachePassword = "";
@@ -38,6 +39,7 @@ public class MembershipFragment extends Fragment {
     private List<News> mAttendedEvents;
     private ListView mAttendedEventsView;
     private View mHeader;
+    private Spinner yearSpinner;
 
 
     @Override
@@ -49,6 +51,35 @@ public class MembershipFragment extends Fragment {
         sessionManager = new SessionManager(getActivity());
 
         mHeader = View.inflate(getActivity(), R.layout.snippet_profile, null);
+
+        // TODO: common with register activity
+        yearSpinner = (Spinner) mHeader.findViewById(R.id.memberYear);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.years)) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+
+                View v = super.getView(position, convertView, parent);
+                if (position == getCount()) {
+                    ((TextView)v.findViewById(android.R.id.text1)).setText("");
+                    ((TextView)v.findViewById(android.R.id.text1)).setHint(getItem(getCount())); //"Hint to be displayed"
+                }
+
+                return v;
+            }
+
+            @Override
+            public int getCount() {
+                return super.getCount()-1; // you dont display last item. It is used as hint.
+            }
+
+        };
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        yearSpinner.setAdapter(adapter);
+        yearSpinner.setSelection(adapter.getCount()); //display hint
+
         setUpViews();
         setUpImageButtons();
         setUpSaveChanges();
@@ -76,6 +107,8 @@ public class MembershipFragment extends Fragment {
         memberIdText.setText(sessionManager.getIEEEId());
         passwordText.setText("");
         numPoints.setText(String.valueOf(sessionManager.getPoints()));
+        mMajorText.setText(sessionManager.getMajor());
+        mYearText.setText(sessionManager.getYear());
     }
 
     /**
@@ -98,7 +131,7 @@ public class MembershipFragment extends Fragment {
             }
             event.setId(jsonEvent.get("event_id").getAsString());
             event.setLocation(jsonEvent.get("location").getAsString());
-            event.setAllDay(false);
+            event.setAllDay(jsonEvent.get("all_day").getAsInt() == 1);
             events.add(event);
         }
 
@@ -136,11 +169,15 @@ public class MembershipFragment extends Fragment {
                 // send post request
                 mAuthTask = new MembershipEditTask(MembershipFragment.this, passwordText);
 
-                String newEmail, newName, newId, newPassword;
+                toggleEdits(true);
+
+                String newEmail, newName, newId, newPassword, newMajor, newYear;
                 newEmail = email.getText().toString();
                 newName = name.getText().toString();
                 newId = memberId.getText().toString();
                 newPassword = passwordText.getText().toString();
+                newMajor = mMajorText.getText().toString();
+                newYear = yearSpinner.getSelectedItem().toString();
 
                 List<BasicNameValuePair> valuePairs = new ArrayList<BasicNameValuePair>();
                 if (!newEmail.equals(sessionManager.getEmail())) {
@@ -151,6 +188,12 @@ public class MembershipFragment extends Fragment {
                 }
                 if (!newId.equals(sessionManager.getIEEEId())) {
                     valuePairs.add(new BasicNameValuePair("newId", newId));
+                }
+                if (!newMajor.equals(sessionManager.getMajor())) {
+                    valuePairs.add(new BasicNameValuePair("major", newMajor));
+                }
+                if (!newYear.equals(sessionManager.getYear())) {
+                    valuePairs.add(new BasicNameValuePair("year", newYear));
                 }
                 if (!TextUtils.isEmpty(newPassword)) {
                     valuePairs.add(new BasicNameValuePair("newPassword", newPassword));
@@ -178,6 +221,9 @@ public class MembershipFragment extends Fragment {
                 name.setText(sessionManager.getName());
                 memberIdText.setText(sessionManager.getIEEEId());
                 memberIdText.setText(sessionManager.getIEEEId());
+                mMajorText.setText(sessionManager.getMajor());
+                major.setText(sessionManager.getMajor());
+                mYearText.setText(sessionManager.getYear());
                 passwordText.setText("");
             }
         });
@@ -279,6 +325,16 @@ public class MembershipFragment extends Fragment {
         passwordEditPencil = (ImageButton) mHeader.findViewById(R.id.changePassword);
 
         mNoEvents = (TextView) mHeader.findViewById(R.id.noEventsView);
+
+        mMajorText = (TextView) mHeader.findViewById(R.id.memberMajorText);
+        major = (EditText) mHeader.findViewById(R.id.memberMajor);
+        major.setText(sessionManager.getMajor());
+        mMajorText.setText(sessionManager.getMajor());
+
+        mYearText = (TextView) mHeader.findViewById(R.id.memberYearText);
+        mYearText.setText(sessionManager.getYear());
+        List<String> years = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.years)));
+        yearSpinner.setSelection(years.indexOf(sessionManager.getYear()));
     }
 
     /**
@@ -288,6 +344,8 @@ public class MembershipFragment extends Fragment {
         toggleVisibility(email, emailText, override);
         toggleVisibility(name, nameText, override);
         toggleVisibility(memberId, memberIdText, override);
+        toggleVisibility(major, mMajorText, override);
+        toggleSpinner(yearSpinner, mYearText, override);
     }
 
     private void toggleVisibility(EditText editText, TextView textView, boolean forceText) {
@@ -300,6 +358,17 @@ public class MembershipFragment extends Fragment {
             editText.setVisibility(View.VISIBLE);
             textView.setVisibility(View.GONE);
             passwordEditPencil.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void toggleSpinner(Spinner spinner, TextView textView, boolean forceText) {
+        if (spinner.getVisibility() == View.VISIBLE || forceText) {
+            spinner.setVisibility(View.GONE);
+            textView.setVisibility(View.VISIBLE);
+            textView.setText(spinner.getSelectedItem().toString());
+        } else {
+            spinner.setVisibility(View.VISIBLE);
+            textView.setVisibility(View.GONE);
         }
     }
 
