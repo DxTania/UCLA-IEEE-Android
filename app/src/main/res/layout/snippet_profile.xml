@@ -211,64 +211,6 @@
                     android:background="@android:color/transparent"/>
 
             </LinearLayout>
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="fill_parent"
-                    android:layout_height="50dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:width="0dp"
-                        android:layout_weight="0.3"
-                        android:text="@string/next_reward"
-                        android:textStyle="bold"
-                        android:layout_gravity="center_vertical" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/sample_points"
-                        android:width="0dp"
-                        android:layout_weight="0.6"
-                        android:layout_gravity="center_vertical"
-                        android:textStyle="italic"
-                        android:id="@+id/nextReward"/>
-
-                    <ImageButton
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.1"
-                        android:src="@android:drawable/ic_menu_help"
-                        android:layout_gravity="center_vertical"
-                        android:id="@+id/aboutNextReward"
-                        android:background="@android:color/transparent"
-                        android:contentDescription="@string/question_description"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="fill_parent"
-                    android:layout_height="50dp"
-                    android:paddingLeft="30dp"
-                    android:paddingRight="30dp"
-                    android:visibility="gone"
-                    android:id="@+id/nextRewardHint">
-                    <TextView
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/sample_next_reward"
-                        android:layout_gravity="center" />
-                </LinearLayout>
-
-            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout

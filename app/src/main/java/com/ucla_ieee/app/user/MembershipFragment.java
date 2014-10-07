@@ -185,14 +185,6 @@ public class MembershipFragment extends Fragment {
 
     // Click listeners for image buttons
     private void setUpImageButtons() {
-        ImageButton aboutNextReward = (ImageButton) mHeader.findViewById(R.id.aboutNextReward);
-        aboutNextReward.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LinearLayout ll = (LinearLayout) mHeader.findViewById(R.id.nextRewardHint);
-                ll.setVisibility(ll.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
-            }
-        });
 
         ImageButton aboutPoints = (ImageButton) mHeader.findViewById(R.id.aboutPoints);
         aboutPoints.setOnClickListener(new View.OnClickListener() {

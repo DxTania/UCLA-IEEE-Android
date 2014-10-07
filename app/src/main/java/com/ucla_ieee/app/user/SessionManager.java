@@ -77,6 +77,27 @@ public class SessionManager {
         mEditor.commit();
     }
 
+    public void updateSession(String email, String name, String id, int points) {
+        mEditor = mSharedPrefs.edit();
+        mEditor.putString(Keys.EMAIL.s(), email);
+        mEditor.putString(Keys.NAME.s(), name);
+        mEditor.putString(Keys.IEEE_ID.s(), id);
+        mEditor.putInt(Keys.POINTS.s(), points);
+        mEditor.commit();
+    }
+
+    public void updateAttendedEvents(String events) {
+        mEditor = mSharedPrefs.edit();
+        mEditor.putString(Keys.ATTENDED_EVENTS.s(), events);
+        mEditor.commit();
+    }
+
+    public void addAttendedEvent(JsonObject event) {
+        JsonArray attendedEvents = getAttendedEvents();
+        attendedEvents.add(event);
+        updateAttendedEvents(attendedEvents.toString());
+    }
+
     public boolean isLoggedIn() {
         return mSharedPrefs.getBoolean(Keys.LOGGED_IN.s(), false);
     }
@@ -105,12 +126,6 @@ public class SessionManager {
         return mUtil.getJsonArrayFromString(mSharedPrefs.getString(Keys.ATTENDED_EVENTS.s(), null));
     }
 
-    public void addAttendedEvent(JsonObject event) {
-        JsonArray attendedEvents = getAttendedEvents();
-        attendedEvents.add(event);
-        updateAttendedEvents(attendedEvents.toString());
-    }
-
     public JsonArray getAnnouncements() {
         return mUtil.getJsonArrayFromString(mSharedPrefs.getString(Keys.ANNOUNCEMENTS.s(), null));
     }
@@ -119,25 +134,10 @@ public class SessionManager {
         return mSharedPrefs.getInt(Keys.POINTS.s(), 0);
     }
 
-    public void updateSession(String email, String name, String id, int points) {
-        mEditor = mSharedPrefs.edit();
-        mEditor.putString(Keys.EMAIL.s(), email);
-        mEditor.putString(Keys.NAME.s(), name);
-        mEditor.putString(Keys.IEEE_ID.s(), id);
-        mEditor.putInt(Keys.POINTS.s(), points);
-        mEditor.commit();
-    }
-
-    public void updateAttendedEvents(String events) {
-        mEditor = mSharedPrefs.edit();
-        mEditor.putString(Keys.ATTENDED_EVENTS.s(), events);
-        mEditor.commit();
-    }
-
     public enum Keys {
         LOGGED_IN("IsLoggedIn"), EMAIL("email"), TOKEN("syncToken"), JSON("json"), COOKIE("cookie"),
         NAME("name"), IEEE_ID("ieee_id"), ANNOUNCEMENTS("announcements"), POINTS("points"),
-        ATTENDED_EVENTS("attended_events");
+        ATTENDED_EVENTS("attended_events"), NEWS("news");
 
         private final String text;
 

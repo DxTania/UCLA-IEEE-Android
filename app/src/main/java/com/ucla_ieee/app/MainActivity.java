@@ -54,6 +54,7 @@ public class MainActivity extends FragmentActivity
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mTaskManager = new AsyncTaskManager(this);
 
+        // Get new data
         mTaskManager.startUserAsyncCall(true);
         mTaskManager.startCalendarAsyncCall(null);
         mTaskManager.startAnnouncementsAsyncCall(null);
@@ -69,30 +70,22 @@ public class MainActivity extends FragmentActivity
         mNavigationDrawerFragment.switchFragments(0);
     }
 
-    private void updateFrontPage(FrontPageFragment frontPage) {
-        if (frontPage != null) {
-            frontPage.updateNews();
-            frontPage.updatePoints();
-            frontPage.showProgress(false);
-        }
-    }
-
-    private void updateProfile(MembershipFragment membershipFragment) {
-        if (membershipFragment != null) {
-            membershipFragment.update();
-            membershipFragment.updateAttendedEvents();
-        }
-    }
-
     public void updateUI() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (currentTag.equals(MAIN_TAG)) {
             FrontPageFragment frontPage = (FrontPageFragment) fragmentManager.findFragmentByTag(MAIN_TAG);
-            updateFrontPage(frontPage);
+            if (frontPage != null) {
+                frontPage.updateNews();
+                frontPage.updatePoints();
+                frontPage.showProgress(false);
+            }
             loading = false;
         } else if (currentTag.equals(PROFILE_TAG)) {
             MembershipFragment membershipFragment = (MembershipFragment) fragmentManager.findFragmentByTag(PROFILE_TAG);
-            updateProfile(membershipFragment);
+            if (membershipFragment != null) {
+                membershipFragment.update();
+                membershipFragment.updateAttendedEvents();
+            }
             loading = false;
         } else if (currentTag.equals(ANNOUNCEMENTS_TAG)) {
             AnnouncementsFragment announcementsFragment = (AnnouncementsFragment) fragmentManager.findFragmentByTag

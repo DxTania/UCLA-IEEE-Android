@@ -61,8 +61,10 @@ public class CalendarFragment extends Fragment {
                 }
                 if (mPreviousSelection != null && !sameDay(date, mPreviousSelection)) {
                     if (sameDay(mPreviousSelection, new Date())) {
-                        mCaldroidFragment.setBackgroundResourceForDate(
-                                R.drawable.today_events, mPreviousSelection);
+                        if (mCaldroidFragment.getBackgroundResourceForDate(new Date()) != R.drawable.today_no_events) {
+                            mCaldroidFragment.setBackgroundResourceForDate(
+                                    R.drawable.today_events, mPreviousSelection);
+                        }
                     } else {
                         mCaldroidFragment.setBackgroundResourceForDate(
                                 R.color.caldroid_lime_green, mPreviousSelection);
