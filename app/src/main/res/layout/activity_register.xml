@@ -37,7 +37,7 @@
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:inputType="textEmailAddress"
         android:ems="10"
         android:id="@+id/reg_email"
@@ -46,7 +46,7 @@
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:inputType="textPersonName"
         android:hint="First Name"
         android:ems="10"
@@ -54,15 +54,33 @@
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:inputType="textPersonName"
         android:hint="Last Name"
         android:ems="10"
         android:id="@+id/reg_lastName"/>
 
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:inputType="textPersonName"
+        android:hint="Year"
+        android:spinnerMode="dialog"
+        android:prompt="@string/year"
+        android:ems="10"
+        android:id="@+id/reg_year"/>
+
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
+        android:inputType="textAutoCorrect"
+        android:hint="Major"
+        android:ems="10"
+        android:id="@+id/reg_major"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
         android:inputType="textPassword"
         android:ems="10"
         android:hint="@string/password"
@@ -70,7 +88,7 @@
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:inputType="textPassword"
         android:ems="10"
         android:hint="@string/retype_password"

@@ -7,10 +7,8 @@ import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
+import android.view.ViewGroup;
+import android.widget.*;
 import com.ucla_ieee.app.R;
 
 
@@ -33,6 +31,35 @@ public class RegisterActivity extends Activity {
         final EditText rpasswordView = (EditText) findViewById(R.id.retype_password);
         registerForm = (LinearLayout) findViewById(R.id.register_form);
         registerProgress = (ProgressBar) findViewById(R.id.register_progress);
+        // SPINNER!
+        Spinner spinner = (Spinner) findViewById(R.id.reg_year);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.years)) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+
+                View v = super.getView(position, convertView, parent);
+                if (position == getCount()) {
+                    ((TextView)v.findViewById(android.R.id.text1)).setText("");
+                    ((TextView)v.findViewById(android.R.id.text1)).setHint(getItem(getCount())); //"Hint to be displayed"
+                }
+
+                return v;
+            }
+
+            @Override
+            public int getCount() {
+                return super.getCount()-1; // you dont display last item. It is used as hint.
+            }
+
+        };
+
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
+        spinner.setSelection(adapter.getCount()); //display hint
 
         emailView.setText(getIntent().getStringExtra("email"));
 
