@@ -40,6 +40,7 @@ public class MembershipFragment extends Fragment {
     private ListView mAttendedEventsView;
     private View mHeader;
     private Spinner yearSpinner;
+    List<String> years;
 
 
     @Override
@@ -53,6 +54,7 @@ public class MembershipFragment extends Fragment {
         mHeader = View.inflate(getActivity(), R.layout.snippet_profile, null);
 
         // TODO: common with register activity
+        years = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.years)));
         yearSpinner = (Spinner) mHeader.findViewById(R.id.memberYear);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
@@ -78,7 +80,6 @@ public class MembershipFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         yearSpinner.setAdapter(adapter);
-        yearSpinner.setSelection(adapter.getCount()); //display hint
 
         setUpViews();
         setUpImageButtons();
@@ -101,12 +102,11 @@ public class MembershipFragment extends Fragment {
     }
 
     public void update() {
-        toggleEdits(true);
+        numPoints.setText(String.valueOf(sessionManager.getPoints()));
         emailText.setText(sessionManager.getEmail());
         nameText.setText(sessionManager.getName());
         memberIdText.setText(sessionManager.getIEEEId());
         passwordText.setText("");
-        numPoints.setText(String.valueOf(sessionManager.getPoints()));
         mMajorText.setText(sessionManager.getMajor());
         mYearText.setText(sessionManager.getYear());
     }
@@ -224,6 +224,7 @@ public class MembershipFragment extends Fragment {
                 mMajorText.setText(sessionManager.getMajor());
                 major.setText(sessionManager.getMajor());
                 mYearText.setText(sessionManager.getYear());
+                yearSpinner.setSelection(years.indexOf(sessionManager.getYear()));
                 passwordText.setText("");
             }
         });
@@ -333,7 +334,6 @@ public class MembershipFragment extends Fragment {
 
         mYearText = (TextView) mHeader.findViewById(R.id.memberYearText);
         mYearText.setText(sessionManager.getYear());
-        List<String> years = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.years)));
         yearSpinner.setSelection(years.indexOf(sessionManager.getYear()));
     }
 
