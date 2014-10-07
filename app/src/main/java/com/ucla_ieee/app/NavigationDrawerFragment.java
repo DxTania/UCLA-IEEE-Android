@@ -59,6 +59,16 @@ public class NavigationDrawerFragment extends Fragment {
     private MainActivity activity;
     private int mPosition = 0, mLastPosition;
 
+    public enum Navigation {
+        FRONT_PAGE,
+        ANNOUNCEMENTS,
+        CALENDAR,
+        POINTS_REWARDS,
+        MEMBERSHIP,
+        CHECK_IN,
+        LOGOUT
+    }
+
     public NavigationDrawerFragment() {
     }
 
@@ -106,10 +116,10 @@ public class NavigationDrawerFragment extends Fragment {
                 android.R.id.text1,
                 new String[]{
                         "Front Page",
-                        "Calendar",
-                        "My Membership",
                         "Announcements",
-                        // "Achievements",
+                        "Calendar",
+                        "Getting Points & Rewards",
+                        "My Membership",
                         "Check In",
                         "Logout"
                 }
@@ -136,6 +146,10 @@ public class NavigationDrawerFragment extends Fragment {
             case ANNOUNCEMENTS:
                 activity.setFragmentTitle("Announcements");
                 activity.doFragment(MainActivity.ANNOUNCEMENTS_TAG);
+                break;
+            case POINTS_REWARDS:
+                activity.setFragmentTitle("Points & Rewards");
+                activity.doFragment(MainActivity.POINTS_REWARDS_TAG);
                 break;
             case CHECK_IN:
                 // Check In
@@ -331,16 +345,6 @@ public class NavigationDrawerFragment extends Fragment {
 
     public View getDrawerFragmentView() {
         return mFragmentContainerView;
-    }
-
-    public enum Navigation {
-        FRONT_PAGE,
-        CALENDAR,
-        MEMBERSHIP,
-        ANNOUNCEMENTS,
-        //        ACHIEVEMENTS,
-        CHECK_IN,
-        LOGOUT
     }
 
     /**

@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import com.ucla_ieee.app.calendar.CalendarFragment;
 import com.ucla_ieee.app.content.AnnouncementsFragment;
+import com.ucla_ieee.app.content.PointsRewardsFragment;
 import com.ucla_ieee.app.newsfeed.FrontPageFragment;
 import com.ucla_ieee.app.signin.LoginActivity;
 import com.ucla_ieee.app.user.MembershipFragment;
@@ -24,6 +25,7 @@ public class MainActivity extends FragmentActivity
     public static final String PROFILE_TAG = "profile";
     public static final String MAIN_TAG = "main";
     public static final String ANNOUNCEMENTS_TAG = "announcements";
+    public static final String POINTS_REWARDS_TAG = "points_rewards";
 
     public String currentTag;
     public boolean loading;
@@ -132,6 +134,8 @@ public class MainActivity extends FragmentActivity
                 fragment = new MembershipFragment();
             } else if (tag.equals(ANNOUNCEMENTS_TAG)) {
                 fragment = new AnnouncementsFragment();
+            } else if (tag.equals(POINTS_REWARDS_TAG)) {
+                fragment = new PointsRewardsFragment();
             } else {
                 fragment = new FrontPageFragment();
             }
@@ -158,18 +162,22 @@ public class MainActivity extends FragmentActivity
             // Only show items in the action bar relevant to this screen
             // if the drawer is not showing. Otherwise, let the drawer
             // decide what to show in the action bar.
-            switch (mPosition) {
-                case 0:
+            NavigationDrawerFragment.Navigation selected = NavigationDrawerFragment.Navigation.values()[mPosition];
+            switch (selected) {
+                case FRONT_PAGE:
                     getMenuInflater().inflate(R.menu.main_settings, menu);
                     return false;
-                case 1:
+                case ANNOUNCEMENTS:
                     getMenuInflater().inflate(R.menu.refresh_settings, menu);
                     return false;
-                case 2:
+                case MEMBERSHIP:
                     getMenuInflater().inflate(R.menu.edit_member, menu);
                     return false;
-                case 3:
+                case CALENDAR:
                     getMenuInflater().inflate(R.menu.refresh_settings, menu);
+                    return false;
+                case POINTS_REWARDS:
+                    getMenuInflater().inflate(R.menu.main_settings, menu);
                     return false;
                 default:
                     getMenuInflater().inflate(R.menu.main_settings, menu);
