@@ -16,6 +16,8 @@ import com.ucla_ieee.app.content.AnnouncementsFragment;
 import com.ucla_ieee.app.content.HelpAboutFragment;
 import com.ucla_ieee.app.content.PointsRewardsFragment;
 import com.ucla_ieee.app.newsfeed.FrontPageFragment;
+import com.ucla_ieee.app.scan.IntentIntegrator;
+import com.ucla_ieee.app.scan.IntentResult;
 import com.ucla_ieee.app.signin.LoginActivity;
 import com.ucla_ieee.app.user.MembershipFragment;
 import com.ucla_ieee.app.user.SessionManager;
@@ -72,6 +74,17 @@ public class MainActivity extends FragmentActivity
 
         mNavigationDrawerFragment.selectItem(0);
         mNavigationDrawerFragment.switchFragments(0);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (result != null) {
+            String contents = result.getContents();
+            if (contents != null) {
+                getTaskManager().startCheckInAsyncCall(contents);
+            }
+        }
     }
 
     public void updateUI() {

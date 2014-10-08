@@ -16,6 +16,7 @@ import android.view.*;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import com.ucla_ieee.app.scan.IntentIntegrator;
 import com.ucla_ieee.app.signin.LoginActivity;
 import com.ucla_ieee.app.user.SessionManager;
 
@@ -25,7 +26,6 @@ import com.ucla_ieee.app.user.SessionManager;
  * design guidelines</a> for a complete explanation of the behaviors implemented here.
  */
 public class NavigationDrawerFragment extends Fragment {
-    public static final int SCAN = 0;
 
     /**
      * Remember the position of the selected item.
@@ -155,9 +155,10 @@ public class NavigationDrawerFragment extends Fragment {
                 break;
             case CHECK_IN:
                 // Check In
-                Intent scanIntent = new Intent("com.google.zxing.client.android.SCAN");
-                scanIntent.putExtra("SCAN_MODE", "QR_CODE_MODE");
-                startActivityForResult(scanIntent, SCAN);
+                IntentIntegrator integrator = new IntentIntegrator(getActivity());
+                integrator.initiateScan();
+                selectItem(mLastPosition);
+                mPosition = mLastPosition;
                 break;
             case HELP:
                 activity.setFragmentTitle("Help");
@@ -174,20 +175,6 @@ public class NavigationDrawerFragment extends Fragment {
                 getActivity().finish();
                 break;
             default:
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SCAN && resultCode == Activity.RESULT_OK) {
-            // check in here
-            activity.getTaskManager().startCheckInAsyncCall(data.getStringExtra("SCAN_RESULT"));
-            selectItem(mLastPosition);
-            mPosition = mLastPosition;
-        } else if (requestCode == SCAN) {
-            selectItem(mLastPosition);
-            mPosition = mLastPosition;
         }
     }
 
