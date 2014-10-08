@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
@@ -75,17 +76,26 @@ public class RegisterActivity extends Activity {
                 String lastname = lnameView.getText().toString();
                 String major = majorView.getText().toString();
                 String year = spinner.getSelectedItem().toString();
+                String[] fields = {email, password, rpassword, firstname, lastname, major, year};
 
-                if (!rpassword.equals(password)) {
-                    rpasswordView.setError("Passwords don't match!");
-                    rpasswordView.requestFocus();
-                    return;
+                for (String field: fields) {
+                    if (TextUtils.isEmpty(field)) {
+                        Toast.makeText(getApplicationContext(), "All fields are required", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                 }
 
-                if (!LoginActivity.isPasswordValid(password)) {
-                    passwordView.setError("Passwords must be at least 4 char long and include at " +
-                            "least one number");
+                if (!LoginActivity.isEmailValid(email)) {
+                    emailView.setError(getString(R.string.error_invalid_email));
+                    emailView.requestFocus();
+                    return;
+                }else if (!LoginActivity.isPasswordValid(password)) {
+                    passwordView.setError(getString(R.string.error_invalid_password));
                     passwordView.requestFocus();
+                    return;
+                } else if (!rpassword.equals(password)) {
+                    rpasswordView.setError("Passwords don't match!");
+                    rpasswordView.requestFocus();
                     return;
                 }
 

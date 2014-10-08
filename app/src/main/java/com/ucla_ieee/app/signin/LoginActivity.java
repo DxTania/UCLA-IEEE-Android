@@ -190,7 +190,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             cancel = true;
         }
 
-        if (TextUtils.isEmpty(password) && !TextUtils.isEmpty(email)) {
+        if (!cancel && TextUtils.isEmpty(password) && !TextUtils.isEmpty(email)) {
             Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
             registerIntent.putExtra("email", email);
             startActivity(registerIntent);
