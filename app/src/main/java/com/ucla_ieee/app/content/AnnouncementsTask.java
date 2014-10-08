@@ -79,7 +79,7 @@ public class AnnouncementsTask extends AsyncTask<Void, Void, String> {
 
             mSessionManager.storeAnnouncements(announcements.toString());
             if (mContext.getTaskManager().getAnnouncementsActivity() != null) {
-                mContext.getTaskManager().getAnnouncementsActivity().updateAnnouncements(announcements);
+                mContext.getTaskManager().getAnnouncementsActivity().updateAnnouncements();
             }
         }
 

@@ -96,6 +96,7 @@ public class MainActivity extends FragmentActivity
                     (ANNOUNCEMENTS_TAG);
             if (announcementsFragment != null) {
                 announcementsFragment.showProgress(false);
+                announcementsFragment.updateAnnouncements();
             }
         }
     }

@@ -2,24 +2,20 @@ package com.ucla_ieee.app.signin;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.text.TextUtils;
 import android.widget.Toast;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 import com.ucla_ieee.app.MainActivity;
 import com.ucla_ieee.app.user.SessionManager;
-import org.apache.http.HttpEntity;
+import com.ucla_ieee.app.util.JsonServerUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +32,7 @@ public class RegisterTask extends AsyncTask<Void, Void, String> {
     private final String mLastName;
     private final String mMajor;
     private final String mYear;
+    private final JsonServerUtil mUtil;
 
     RegisterTask(RegisterActivity registerActivity, String email, String password, String firstname, String lastname,
      String major, String year) {
@@ -46,6 +43,7 @@ public class RegisterTask extends AsyncTask<Void, Void, String> {
         mLastName = lastname;
         mMajor = major;
         mYear = year;
+        mUtil = new JsonServerUtil();
     }
 
     @Override
@@ -54,63 +52,30 @@ public class RegisterTask extends AsyncTask<Void, Void, String> {
         HttpClient httpClient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost("http://ieeebruins.org/membership_serve/users.php");
 
-        List<NameValuePair> loginParams = new ArrayList<NameValuePair>();
-        loginParams.add(new BasicNameValuePair("service", "register"));
-        loginParams.add(new BasicNameValuePair("email", mEmail));
-        loginParams.add(new BasicNameValuePair("password", mPassword));
-        loginParams.add(new BasicNameValuePair("firstname", mFirstName));
-        loginParams.add(new BasicNameValuePair("lastname", mLastName));
-        loginParams.add(new BasicNameValuePair("major", mMajor));
-        loginParams.add(new BasicNameValuePair("year", mYear));
+        List<NameValuePair> registerParams = new ArrayList<NameValuePair>();
+        registerParams.add(new BasicNameValuePair("service", "register"));
+        registerParams.add(new BasicNameValuePair("email", mEmail));
+        registerParams.add(new BasicNameValuePair("password", mPassword));
+        registerParams.add(new BasicNameValuePair("firstname", mFirstName));
+        registerParams.add(new BasicNameValuePair("lastname", mLastName));
+        registerParams.add(new BasicNameValuePair("major", mMajor));
+        registerParams.add(new BasicNameValuePair("year", mYear));
 
         try {
-            httpPost.setEntity(new UrlEncodedFormEntity(loginParams));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        try {
+            httpPost.setEntity(new UrlEncodedFormEntity(registerParams));
             HttpResponse response = httpClient.execute(httpPost);
-            HttpEntity entity = response.getEntity();
-
-            if (entity != null) {
-                InputStream instream = entity.getContent();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(instream));
-                StringBuilder builder = new StringBuilder();
-
-                String st;
-                while ((st = reader.readLine()) != null) {
-                    builder.append(st).append("\n");
-                }
-
-                instream.close();
-                return builder.toString();
-            }
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
+            return mUtil.getStringFromServerResponse(response.getEntity());
         } catch (IOException e) {
-            e.printStackTrace();
+            return null;
         }
-
-        return null;
     }
 
     @Override
     protected void onPostExecute(String response) {
         registerActivity.cancelRegister();
 
-        if (TextUtils.isEmpty(response)) {
-            Toast.makeText(registerActivity, "Something went wrong", Toast.LENGTH_SHORT).show();
-            registerActivity.finish();
-            return;
-        }
-
-        JsonObject json;
-        try {
-            JsonParser parser = new JsonParser();
-            json = (JsonObject) parser.parse(response);
-        } catch (JsonSyntaxException e) {
-            e.printStackTrace();
+        JsonObject json = mUtil.getJsonObjectFromString(response);
+        if (json == null) {
             Toast.makeText(registerActivity, "Something went wrong", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -130,7 +95,12 @@ public class RegisterTask extends AsyncTask<Void, Void, String> {
             registerActivity.startActivity(intent);
             registerActivity.finish();
         } else {
-            Toast.makeText(registerActivity, "Something went wrong", Toast.LENGTH_SHORT).show();
+            if (json.get("error_message") != null) {
+                Toast.makeText(registerActivity, json.get("error_message").getAsString(),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(registerActivity, "Something went really wrong", Toast.LENGTH_SHORT).show();
+            }
             registerActivity.finish();
         }
         registerActivity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);

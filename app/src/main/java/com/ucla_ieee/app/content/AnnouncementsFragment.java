@@ -23,6 +23,7 @@ import java.util.List;
 
 public class AnnouncementsFragment extends Fragment {
     private AnnouncementsListAdapter mListAdapter;
+    private SessionManager mSessionManager;
     private MainActivity mainActivity;
     private View mProgressView;
 
@@ -32,19 +33,20 @@ public class AnnouncementsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_announcements, container, false);
 
         ListView announcements = (ListView) rootView.findViewById(R.id.announcementsList);
-        SessionManager sessionManager = new SessionManager(this.getActivity());
+        mSessionManager = new SessionManager(this.getActivity());
 
         mProgressView = rootView.findViewById(R.id.refresh_process);
 
         mainActivity = (MainActivity) getActivity();
         mListAdapter = new AnnouncementsListAdapter(this.getActivity(), new ArrayList<Announcement>());
-        updateAnnouncements(sessionManager.getAnnouncements());
+        updateAnnouncements();
         announcements.setAdapter(mListAdapter);
 
         return rootView;
     }
 
-    public void updateAnnouncements(JsonArray announcements) {
+    public void updateAnnouncements() {
+        JsonArray announcements = mSessionManager.getAnnouncements();
         if (announcements != null) {
             List<Announcement> announcementList = new ArrayList<Announcement>();
             for (int i = 0; i < announcements.size(); i++) {

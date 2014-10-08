@@ -73,7 +73,11 @@ public class CheckInScanTask extends AsyncTask<Void, Void, String> {
             mSessionManager.addAttendedEvent(json.get("event").getAsJsonObject());
 
         } else {
-            Toast.makeText(mContext, json.get("error_message").getAsString(), Toast.LENGTH_SHORT).show();
+            if (json.get("error_message") != null) {
+                Toast.makeText(mContext, json.get("error_message").getAsString(), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(mContext, "Something went seriously wrong", Toast.LENGTH_SHORT).show();
+            }
         }
 
         mContext.getTaskManager().finishCheckInTask();

@@ -2,26 +2,22 @@ package com.ucla_ieee.app.signin;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.text.TextUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 import com.ucla_ieee.app.MainActivity;
 import com.ucla_ieee.app.R;
 import com.ucla_ieee.app.user.SessionManager;
-import org.apache.http.HttpEntity;
+import com.ucla_ieee.app.util.JsonServerUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +32,7 @@ public class LoginTask extends AsyncTask<Void, Void, String> {
     private final TextView mPasswordView;
     private final TextView mEmailView;
     private final LoginActivity mActivity;
+    private final JsonServerUtil mUtil;
 
     LoginTask(LoginActivity activity, String email, String password,
               TextView passwordView, TextView emailView) {
@@ -44,6 +41,7 @@ public class LoginTask extends AsyncTask<Void, Void, String> {
         mPasswordView = passwordView;
         mEmailView = emailView;
         mActivity = activity;
+        mUtil = new JsonServerUtil();
     }
 
     @Override
@@ -59,52 +57,19 @@ public class LoginTask extends AsyncTask<Void, Void, String> {
 
         try {
             httpPost.setEntity(new UrlEncodedFormEntity(loginParams));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            HttpResponse response = httpClient.execute(httpPost);
+            return mUtil.getStringFromServerResponse(response.getEntity());
+        } catch (IOException e) {
             return null;
         }
-
-        try {
-            HttpResponse response = httpClient.execute(httpPost);
-            HttpEntity entity = response.getEntity();
-
-            if (entity != null) {
-                InputStream instream = entity.getContent();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(instream));
-                StringBuilder builder = new StringBuilder();
-
-                String st;
-                while ((st = reader.readLine()) != null) {
-                    builder.append(st).append("\n");
-                }
-
-                instream.close();
-                return builder.toString();
-            }
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
     }
 
     @Override
     protected void onPostExecute(String response) {
         mActivity.cancelLogin();
 
-        if (TextUtils.isEmpty(response)) {
-            Toast.makeText(mActivity, "Something went wrong", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        JsonObject json;
-        try {
-            JsonParser parser = new JsonParser();
-            json = (JsonObject) parser.parse(response);
-        } catch (JsonSyntaxException e) {
-            e.printStackTrace();
+        JsonObject json = mUtil.getJsonObjectFromString(response);
+        if (json == null) {
             Toast.makeText(mActivity, "Something went wrong", Toast.LENGTH_SHORT).show();
             return;
         }
