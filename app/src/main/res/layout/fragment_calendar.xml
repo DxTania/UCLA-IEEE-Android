@@ -2,14 +2,15 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
-              android:layout_height="match_parent"
-              android:layout_width="match_parent"
-              android:orientation="vertical"
-              tools:context="com.ucla_ieee.app.calendar.CalendarFragment">
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                tools:context="com.ucla_ieee.app.calendar.CalendarFragment">
 
-    <FrameLayout android:id="@+id/calendar"
-              android:layout_height="wrap_content"
-              android:layout_width="fill_parent" />
+    <FrameLayout
+        android:id="@+id/calendar"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"/>
 
     <TextView
         android:background="@color/ucla_blue"
@@ -31,7 +32,7 @@
               android:layout_below="@id/dayText"
               android:layout_height="wrap_content"
               android:layout_width="fill_parent"
-              android:minHeight="100dp" />
+              android:minHeight="100dp"/>
 
     <TextView
         android:gravity="center"

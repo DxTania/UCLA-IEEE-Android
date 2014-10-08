@@ -1,11 +1,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@color/caldroid_white"
-    tools:context="com.ucla_ieee.app.MainActivity$PlaceholderFragment">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:background="@color/caldroid_white"
+              android:layout_height="match_parent"
+              android:layout_width="match_parent"
+              android:orientation="vertical"
+              android:paddingTop="@dimen/activity_vertical_margin"
+              tools:context="com.ucla_ieee.app.MainActivity$PlaceholderFragment">
 
     <TextView
         android:background="@color/ucla_blue"
@@ -18,6 +18,7 @@
         android:textColor="@color/caldroid_white"
         android:textSize="40sp"
         android:textStyle="bold"/>
+
     <TextView
         android:background="@color/caldroid_gray"
         android:gravity="center"
@@ -25,61 +26,63 @@
         android:layout_gravity="center"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:layout_marginTop="-97dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
+        android:layout_marginTop="-97dp"
         android:layout_width="wrap_content"
+        android:lines="1"
         android:padding="10dp"
+        android:scrollbarFadeDuration="0"
+        android:scrollbars="horizontal"
         android:text="9999/9999"
         android:textSize="60sp"
-        android:lines="1"
-        android:scrollbars="horizontal"
-        android:scrollbarFadeDuration="0"
         />
 
     <Space
         android:background="@color/caldroid_black"
         android:layout_height="10dp"
         android:layout_width="fill_parent"/>
+
     <RelativeLayout
-        android:layout_width="fill_parent"
+        android:background="@color/ucla_blue"
         android:layout_height="35dp"
-        android:background="@color/ucla_blue">
+        android:layout_width="fill_parent">
+
         <TextView
+            android:gravity="center"
             android:id="@+id/textView3"
+            android:layout_gravity="center_vertical"
             android:layout_height="fill_parent"
-            android:layout_width="wrap_content"
             android:layout_marginLeft="10sp"
+            android:layout_width="wrap_content"
             android:text="@string/news_feed"
             android:textColor="@color/caldroid_white"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:gravity="center"
-            android:layout_gravity="center_vertical"
             android:typeface="normal"/>
+
         <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_alignParentRight="true"
-            android:layout_gravity="center_vertical"
-            android:scaleType="centerInside"
-            android:id="@+id/refresh_button"
             android:background="@color/caldroid_transparent"
             android:contentDescription="@string/refresh_button"
+            android:id="@+id/refresh_button"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center_vertical"
+            android:layout_height="fill_parent"
+            android:layout_width="wrap_content"
+            android:scaleType="centerInside"
             android:src="@drawable/ic_action_refresh"/>
-        </RelativeLayout>
-
+    </RelativeLayout>
 
 
     <ProgressBar
         android:id="@+id/refresh_process"
-        style="?android:attr/progressBarStyle"
         android:layout_gravity="center"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:visibility="gone"/>
+        android:layout_marginTop="8dp"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        style="?android:attr/progressBarStyle"/>
 
     <ListView
         android:id="@+id/newsFeed"

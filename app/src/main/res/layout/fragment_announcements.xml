@@ -1,24 +1,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/caldroid_white"
-    tools:context="com.ucla_ieee.app.content.AnnouncementsFragment">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:background="@color/caldroid_white"
+              android:layout_height="match_parent"
+              android:layout_width="match_parent"
+              android:orientation="vertical"
+              tools:context="com.ucla_ieee.app.content.AnnouncementsFragment">
 
     <ProgressBar
         android:id="@+id/refresh_process"
-        style="?android:attr/progressBarStyle"
         android:layout_gravity="center"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:visibility="gone"/>
+        android:layout_marginTop="8dp"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        style="?android:attr/progressBarStyle"/>
 
     <ListView
-        android:layout_width="fill_parent"
+        android:id="@+id/announcementsList"
         android:layout_height="fill_parent"
-        android:id="@+id/announcementsList"/>
+        android:layout_width="fill_parent"/>
 
 </LinearLayout>

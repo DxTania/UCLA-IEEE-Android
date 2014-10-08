@@ -1,105 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
               android:gravity="center_horizontal"
+              android:layout_height="match_parent"
+              android:layout_width="match_parent"
+              android:orientation="vertical"
               android:paddingBottom="@dimen/activity_vertical_margin"
               android:paddingLeft="@dimen/activity_horizontal_margin"
               android:paddingRight="@dimen/activity_horizontal_margin"
               android:paddingTop="@dimen/activity_vertical_margin">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:contentDescription="@string/ieee_logo"
         android:id="@+id/imageView"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/logo"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:contentDescription="@string/ieee_logo"
+        android:layout_width="wrap_content"
+        android:src="@drawable/logo"
         />
 
     <!-- Login progress -->
     <ProgressBar
         android:id="@+id/register_progress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:visibility="gone"/>
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        style="?android:attr/progressBarStyleLarge"/>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:orientation="vertical"
-                  android:layout_width="match_parent"
+                  android:id="@+id/register_form"
                   android:layout_height="match_parent"
-                  android:id="@+id/register_form">
+                  android:layout_width="match_parent"
+                  android:orientation="vertical">
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:inputType="textEmailAddress"
-        android:ems="10"
-        android:id="@+id/reg_email"
-        android:hint="Email"
-        />
+        <EditText
+            android:ems="10"
+            android:hint="Email"
+            android:id="@+id/reg_email"
+            android:inputType="textEmailAddress"
+            android:layout_height="40dp"
+            android:layout_width="match_parent"
+            />
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:inputType="textPersonName"
-        android:hint="First Name"
-        android:ems="10"
-        android:id="@+id/reg_firstName"/>
+        <EditText
+            android:ems="10"
+            android:hint="First Name"
+            android:id="@+id/reg_firstName"
+            android:inputType="textPersonName"
+            android:layout_height="40dp"
+            android:layout_width="match_parent"/>
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:inputType="textPersonName"
-        android:hint="Last Name"
-        android:ems="10"
-        android:id="@+id/reg_lastName"/>
+        <EditText
+            android:ems="10"
+            android:hint="Last Name"
+            android:id="@+id/reg_lastName"
+            android:inputType="textPersonName"
+            android:layout_height="40dp"
+            android:layout_width="match_parent"/>
 
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:inputType="text"
-        android:hint="Year"
-        android:spinnerMode="dialog"
-        android:prompt="@string/year"
-        android:ems="10"
-        android:id="@+id/reg_year"/>
+        <Spinner
+            android:ems="10"
+            android:hint="Year"
+            android:id="@+id/reg_year"
+            android:inputType="text"
+            android:layout_height="40dp"
+            android:layout_width="match_parent"
+            android:prompt="@string/year"
+            android:spinnerMode="dialog"/>
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:inputType="textAutoCorrect"
-        android:hint="Major"
-        android:ems="10"
-        android:id="@+id/reg_major"/>
+        <EditText
+            android:ems="10"
+            android:hint="Major"
+            android:id="@+id/reg_major"
+            android:inputType="textAutoCorrect"
+            android:layout_height="40dp"
+            android:layout_width="match_parent"/>
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:hint="@string/password"
-        android:id="@+id/reg_password"/>
+        <EditText
+            android:ems="10"
+            android:hint="@string/password"
+            android:id="@+id/reg_password"
+            android:inputType="textPassword"
+            android:layout_height="40dp"
+            android:layout_width="match_parent"/>
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:hint="@string/retype_password"
-        android:id="@+id/retype_password"
-        android:layout_gravity="center_horizontal"/>
+        <EditText
+            android:ems="10"
+            android:hint="@string/retype_password"
+            android:id="@+id/retype_password"
+            android:inputType="textPassword"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="40dp"
+            android:layout_width="match_parent"/>
 
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/register"
-        android:id="@+id/register_button"
-        android:layout_gravity="center_horizontal"/>
-        </LinearLayout>
+        <Button
+            android:id="@+id/register_button"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:text="@string/register"/>
+    </LinearLayout>
 </LinearLayout>

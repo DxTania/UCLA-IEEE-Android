@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="70dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:layout_marginTop="5dp">
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:text="@string/long_sample_text"
-            android:id="@+id/contentText"
-            android:gravity="center_vertical"
-            android:lines="2"
-            android:layout_gravity="center_horizontal"
-            android:singleLine="false"
-            android:ellipsize="end"/>
+              android:layout_height="70dp"
+              android:layout_marginTop="5dp"
+              android:layout_width="fill_parent"
+              android:orientation="vertical"
+              android:paddingBottom="5dp"
+              android:paddingTop="5dp">
 
     <TextView
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:id="@+id/contentText"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="40dp"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="15dp"
         android:layout_width="fill_parent"
-        android:layout_height="20dp"
-        android:text="@string/sample_date_loc"
-        android:textStyle="bold"
+        android:lines="2"
+        android:singleLine="false"
+        android:text="@string/long_sample_text"/>
+
+    <TextView
+        android:ellipsize="end"
         android:gravity="right"
         android:id="@+id/datePosted"
-        android:singleLine="true"
-        android:ellipsize="end"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="20dp"
         android:layout_marginRight="7dp"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_width="fill_parent"
+        android:singleLine="true"
+        android:text="@string/sample_date_loc"
+        android:textStyle="bold"/>
 </LinearLayout>
