@@ -43,6 +43,9 @@ public class SessionManager {
         // Points
         mEditor.putInt(Keys.POINTS.s(), !json.get(Keys.POINTS.s()).isJsonNull() ?
                 json.get(Keys.POINTS.s()).getAsInt() : 0);
+        // Total Points
+        mEditor.putInt(Keys.TOTAL_POINTS.s(), !json.get(Keys.TOTAL_POINTS.s()).isJsonNull() ?
+                json.get(Keys.TOTAL_POINTS.s()).getAsInt() : 0);
         mEditor.commit();
     }
 
@@ -77,14 +80,15 @@ public class SessionManager {
         mEditor.commit();
     }
 
-    public void updateSession(String email, String name, String id, int points, String major, String year) {
+    public void updateSession(JsonObject user) {
         mEditor = mSharedPrefs.edit();
-        mEditor.putString(Keys.EMAIL.s(), email);
-        mEditor.putString(Keys.NAME.s(), name);
-        mEditor.putString(Keys.IEEE_ID.s(), id);
-        mEditor.putInt(Keys.POINTS.s(), points);
-        mEditor.putString(Keys.MAJOR.s(), major);
-        mEditor.putString(Keys.YEAR.s(), year);
+        mEditor.putString(Keys.EMAIL.s(), user.get("email").getAsString());
+        mEditor.putString(Keys.NAME.s(), user.get("name").getAsString());
+        mEditor.putString(Keys.IEEE_ID.s(), user.get("ieee_id").getAsString());
+        mEditor.putInt(Keys.POINTS.s(), user.get("points").getAsInt());
+        mEditor.putString(Keys.MAJOR.s(), user.get("major").getAsString());
+        mEditor.putString(Keys.YEAR.s(), user.get("year").getAsString());
+        mEditor.putInt(Keys.TOTAL_POINTS.s(), user.get("total_points").getAsInt());
         mEditor.commit();
     }
 
@@ -144,10 +148,14 @@ public class SessionManager {
         return mSharedPrefs.getInt(Keys.POINTS.s(), 0);
     }
 
+    public int getTotalPoints() {
+        return mSharedPrefs.getInt(Keys.TOTAL_POINTS.s(), 0);
+    }
+
     public enum Keys {
         LOGGED_IN("IsLoggedIn"), EMAIL("email"), TOKEN("syncToken"), JSON("json"), COOKIE("cookie"),
         NAME("name"), IEEE_ID("ieee_id"), ANNOUNCEMENTS("announcements"), POINTS("points"),
-        ATTENDED_EVENTS("attended_events"), NEWS("news"), MAJOR("major"), YEAR("year");
+        ATTENDED_EVENTS("attended_events"), NEWS("news"), MAJOR("major"), YEAR("year"), TOTAL_POINTS("total_points");
 
         private final String text;
 

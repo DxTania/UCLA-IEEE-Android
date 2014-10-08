@@ -40,7 +40,8 @@ public class FrontPageFragment extends Fragment {
 
         mPointsView = (TextView) rootView.findViewById(R.id.numPoints);
         mSessionManager = new SessionManager(getActivity());
-        mPointsView.setText(String.valueOf(mSessionManager.getPoints()));
+        mPointsView.setText(String.valueOf(mSessionManager.getPoints()) + "/"
+                + String.valueOf(mSessionManager.getTotalPoints()));
         mProgressView = rootView.findViewById(R.id.refresh_process);
 
         final MainActivity mainActivity = (MainActivity) getActivity();
@@ -75,7 +76,8 @@ public class FrontPageFragment extends Fragment {
     }
 
     public void updatePoints() {
-        mPointsView.setText(String.valueOf(mSessionManager.getPoints()));
+        mPointsView.setText(String.valueOf(mSessionManager.getPoints()) + "/"
+                + String.valueOf(mSessionManager.getTotalPoints()));
     }
 
     public void updateNews() {

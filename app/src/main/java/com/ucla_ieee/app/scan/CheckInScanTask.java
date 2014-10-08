@@ -37,6 +37,7 @@ public class CheckInScanTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected String doInBackground(Void... params) {
+        // TODO: Verify checking in with GPS (send coords to php or get coords from php?)
 
         HttpClient httpClient = new DefaultHttpClient();
 
@@ -68,16 +69,7 @@ public class CheckInScanTask extends AsyncTask<Void, Void, String> {
 
         if (json.get("success").getAsInt() == 1) {
             Toast.makeText(mContext, "Thanks for checking in!", Toast.LENGTH_SHORT).show();
-            JsonObject user = json.get("user").getAsJsonObject();
-
-            String email = user.get("email").getAsString();
-            String name = user.get("name").getAsString();
-            String id = user.get("ieee_id").getAsString();
-            int points = user.get("points").getAsInt();
-            String major = user.get("major").getAsString();
-            String year = user.get("year").getAsString();
-
-            mSessionManager.updateSession(email, name, id, points, major, year);
+            mSessionManager.updateSession(json.getAsJsonObject("user"));
             mSessionManager.addAttendedEvent(json.get("event").getAsJsonObject());
 
         } else {

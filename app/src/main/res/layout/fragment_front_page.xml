@@ -25,11 +25,17 @@
         android:layout_gravity="center"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:layout_marginTop="-100dp"
-        android:layout_width="300dp"
+        android:layout_marginTop="-97dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_width="wrap_content"
         android:padding="10dp"
-        android:text="@string/points_preview"
-        android:textSize="75sp"/>
+        android:text="9999/9999"
+        android:textSize="60sp"
+        android:lines="1"
+        android:scrollbars="horizontal"
+        android:scrollbarFadeDuration="0"
+        />
 
     <Space
         android:background="@color/caldroid_black"

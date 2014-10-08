@@ -42,7 +42,6 @@ public class MembershipFragment extends Fragment {
     private Spinner yearSpinner;
     List<String> years;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -50,6 +49,7 @@ public class MembershipFragment extends Fragment {
 
         mAttendedEvents = new ArrayList<News>();
         sessionManager = new SessionManager(getActivity());
+        mAttendedEventsView = (ListView) rootView.findViewById(R.id.attendedEventList);
 
         mHeader = View.inflate(getActivity(), R.layout.snippet_profile, null);
 
@@ -84,25 +84,13 @@ public class MembershipFragment extends Fragment {
         setUpViews();
         setUpImageButtons();
         setUpSaveChanges();
-
-        // TODO: QR Codes should be the id of the calendar event. SHould we verify checking in with GPS?
-        mAttendedEventsView = (ListView) rootView.findViewById(R.id.attendedEventList);
-        mAttendedEventsView.addHeaderView(mHeader);
-        List<News> news = new ArrayList<News>();
-        for (Event event : jsonEventsToEvents(sessionManager.getAttendedEvents())) {
-            news.add(event.getAsNews());
-        }
-        if (news.size() > 0 ) {
-            mNoEvents.setVisibility(View.GONE);
-        }
-        mEventListAdapter = new NewsFeedListAdapter(getActivity(), news);
-        mAttendedEventsView.setAdapter(mEventListAdapter);
+        setUpAttendedEventsView();
 
         return rootView;
     }
 
     public void update() {
-        numPoints.setText(String.valueOf(sessionManager.getPoints()));
+        numPoints.setText(String.valueOf(sessionManager.getPoints() + "/" + sessionManager.getTotalPoints()));
         emailText.setText(sessionManager.getEmail());
         nameText.setText(sessionManager.getName());
         memberIdText.setText(sessionManager.getIEEEId());
@@ -158,6 +146,19 @@ public class MembershipFragment extends Fragment {
         } else {
             mNoEvents.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void setUpAttendedEventsView() {
+        mAttendedEventsView.addHeaderView(mHeader);
+        List<News> news = new ArrayList<News>();
+        for (Event event : jsonEventsToEvents(sessionManager.getAttendedEvents())) {
+            news.add(event.getAsNews());
+        }
+        if (news.size() > 0 ) {
+            mNoEvents.setVisibility(View.GONE);
+        }
+        mEventListAdapter = new NewsFeedListAdapter(getActivity(), news);
+        mAttendedEventsView.setAdapter(mEventListAdapter);
     }
 
     // Click listener for save changes button
@@ -320,7 +321,7 @@ public class MembershipFragment extends Fragment {
         memberIdText.setText(sessionManager.getIEEEId());
 
         numPoints = (TextView) mHeader.findViewById(R.id.numPoints);
-        numPoints.setText(String.valueOf(sessionManager.getPoints()));
+        numPoints.setText(String.valueOf(sessionManager.getPoints() + "/" + sessionManager.getTotalPoints()));
 
         passwordText = (TextView) mHeader.findViewById(R.id.passwordText);
         passwordEditPencil = (ImageButton) mHeader.findViewById(R.id.changePassword);
