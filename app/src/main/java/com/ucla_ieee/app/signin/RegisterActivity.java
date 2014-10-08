@@ -8,9 +8,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.*;
 import com.ucla_ieee.app.R;
+import com.ucla_ieee.app.content.YearSpinner;
 
 
 public class RegisterActivity extends Activity {
@@ -35,27 +35,7 @@ public class RegisterActivity extends Activity {
         registerProgress = (ProgressBar) findViewById(R.id.register_progress);
         // SPINNER!
         final Spinner spinner = (Spinner) findViewById(R.id.reg_year);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.years)) {
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-
-                View v = super.getView(position, convertView, parent);
-                if (position == getCount()) {
-                    ((TextView)v.findViewById(android.R.id.text1)).setText("");
-                    ((TextView)v.findViewById(android.R.id.text1)).setHint(getItem(getCount())); //"Hint to be displayed"
-                }
-
-                return v;
-            }
-
-            @Override
-            public int getCount() {
-                return super.getCount()-1; // you dont display last item. It is used as hint.
-            }
-
-        };
+        ArrayAdapter<String> adapter = new YearSpinner(this);
 
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

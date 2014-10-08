@@ -210,7 +210,6 @@ public class CalendarFragment extends Fragment {
         }
 
         // Add new events to calendar and color the dates
-        // TODO: test that new added events for today get refreshed on refresh
         for (Event event : newEvents) {
             Date start = event.getStartDate();
             if (start != null) {

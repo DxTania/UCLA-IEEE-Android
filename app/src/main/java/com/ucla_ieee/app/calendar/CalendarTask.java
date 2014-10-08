@@ -17,7 +17,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,16 +43,26 @@ public class CalendarTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected String doInBackground(Void... params) {
-//        if (!mSessionManager.isLoggedIn()) {
-//            return null;
-//        }
-
         List<NameValuePair> calendarParams = new ArrayList<NameValuePair>();
         calendarParams.add(new BasicNameValuePair("key", API_KEY));
-        // TODO: Only retrieve events for current school year
         String syncToken = mSessionManager.getSyncToken();
         if (!TextUtils.isEmpty(syncToken)) {
             calendarParams.add(new BasicNameValuePair("syncToken", syncToken));
+        } else {
+            // Only get events from the start of the school year in September
+            SimpleDateFormat timeMin = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+            SimpleDateFormat now = new SimpleDateFormat("yyyy-MM-dd");
+            int curYear = Calendar.getInstance().get(Calendar.YEAR);
+            int curMonth = Calendar.getInstance().get(Calendar.MONTH);
+            if (++curMonth < 7) { // If we are towards the end of a school year
+                curYear--; // Use September from last year
+            }
+            try {
+                Date yearStart = now.parse(String.valueOf(curYear) + "-09-01");
+                calendarParams.add(new BasicNameValuePair("timeMin", timeMin.format(yearStart)));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
         String paramString = URLEncodedUtils.format(calendarParams, "UTF-8");
         HttpGet httpGet = new HttpGet("https://www.googleapis.com/calendar/v3/calendars/"
@@ -66,7 +80,7 @@ public class CalendarTask extends AsyncTask<Void, Void, String> {
     @Override
     protected void onPostExecute(String response) {
         JsonObject json = mUtil.getJsonObjectFromString(response);
-        if (json == null) {
+        if (json == null || json.get("items") == null) {
             Toast.makeText(mContext, "Couldn't load new events :(", Toast.LENGTH_SHORT).show();
             mContext.getTaskManager().finishCalendarTask();
             return; // error
@@ -94,8 +108,6 @@ public class CalendarTask extends AsyncTask<Void, Void, String> {
                 mContext.getTaskManager().getCalendar().addEvents(newItems);
             }
         }
-
-        // TODO: Deal with 410 GONE response
 
         mContext.getTaskManager().finishCalendarTask();
     }
