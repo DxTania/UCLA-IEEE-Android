@@ -72,7 +72,6 @@ public class MembershipEditTask extends AsyncTask<List<BasicNameValuePair>, Void
         }
 
         if (json.get("success") != null && json.get("success").getAsInt() == 1) {
-
             mSessionManager.updateSession(json.getAsJsonObject("user"));
             mTextView.setText("");
             Toast.makeText(mContext.getActivity(), "Changes saved successfully", Toast.LENGTH_SHORT).show();

@@ -74,7 +74,7 @@
             android:ems="10"
             android:hint="Major"
             android:id="@+id/reg_major"
-            android:inputType="textAutoCorrect"
+            android:inputType="textCapSentences"
             android:layout_height="40dp"
             android:layout_width="match_parent"/>
 

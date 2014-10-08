@@ -67,7 +67,7 @@ public class CheckInScanTask extends AsyncTask<Void, Void, String> {
             return;
         }
 
-        if (json.get("success").getAsInt() == 1) {
+        if (json.get("success") != null && json.get("success").getAsInt() == 1) {
             Toast.makeText(mContext, "Thanks for checking in!", Toast.LENGTH_SHORT).show();
             mSessionManager.updateSession(json.getAsJsonObject("user"));
             mSessionManager.addAttendedEvent(json.get("event").getAsJsonObject());
