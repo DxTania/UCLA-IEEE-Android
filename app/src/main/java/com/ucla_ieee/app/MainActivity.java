@@ -76,6 +76,7 @@ public class MainActivity extends FragmentActivity
 
     public void updateUI() {
         FragmentManager fragmentManager = getSupportFragmentManager();
+        loading = false;
         if (currentTag.equals(MAIN_TAG)) {
             FrontPageFragment frontPage = (FrontPageFragment) fragmentManager.findFragmentByTag(MAIN_TAG);
             if (frontPage != null) {
@@ -83,14 +84,12 @@ public class MainActivity extends FragmentActivity
                 frontPage.updatePoints();
                 frontPage.showProgress(false);
             }
-            loading = false;
         } else if (currentTag.equals(PROFILE_TAG)) {
             MembershipFragment membershipFragment = (MembershipFragment) fragmentManager.findFragmentByTag(PROFILE_TAG);
             if (membershipFragment != null) {
                 membershipFragment.update();
                 membershipFragment.updateAttendedEvents();
             }
-            loading = false;
         } else if (currentTag.equals(ANNOUNCEMENTS_TAG)) {
             AnnouncementsFragment announcementsFragment = (AnnouncementsFragment) fragmentManager.findFragmentByTag
                     (ANNOUNCEMENTS_TAG);
