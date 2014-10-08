@@ -66,6 +66,7 @@ public class NavigationDrawerFragment extends Fragment {
         POINTS_REWARDS,
         MEMBERSHIP,
         CHECK_IN,
+        HELP,
         LOGOUT
     }
 
@@ -121,6 +122,7 @@ public class NavigationDrawerFragment extends Fragment {
                         "Getting Points & Rewards",
                         "My Membership",
                         "Check In",
+                        "Help",
                         "Logout"
                 }
         ));
@@ -156,6 +158,10 @@ public class NavigationDrawerFragment extends Fragment {
                 Intent scanIntent = new Intent("com.google.zxing.client.android.SCAN");
                 scanIntent.putExtra("SCAN_MODE", "QR_CODE_MODE");
                 startActivityForResult(scanIntent, SCAN);
+                break;
+            case HELP:
+                activity.setFragmentTitle("Help");
+                activity.doFragment(MainActivity.HELP_TAG);
                 break;
             case LOGOUT:
                 // Logout

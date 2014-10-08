@@ -73,4 +73,24 @@
     <string name="refresh_button">Refresh button</string>
     <string name="undo_changes">Undo Changes</string>
     <string name="year">Year</string>
+    <string name="attributions_list">\n&#8226; Bullhorn designed by Shane Miller from the thenounproject.com
+        \n\n&#8226; Calendar (icon) designed by Laurent Patain from the thenounproject.com
+        \n\n&#8226; Calendar widget created by Roomorama</string>
+    <string name="how_to_get_points">&#8226; Signing up with this app (10 points)
+        \n&#8226; Checking into events (15 points)
+        \n&#8226; Attending lab cleanup (20 points)
+        \n&#8226; Starting a project
+        \n&#8226; Finishing a project
+        \n&#8226; Helping out IEEE\n</string>
+    <string name="about_rewards">\nYou can cash in any number of points to the webmaster by emailing
+        webmaster@ieee.ucla.edu\n</string>
+    <string name="what_rewards">
+        &#8226; IEEE swag bag (100 points)
+        \n&#8226; 3D printing credit (exchange rate fluctuating)
+        \n&#8226; More to come!\n</string>
+    <string name="banquet_prize">At the end of the year, the member who earned the most total points will become IEEE member of the
+        year and get automatically invited to our end-of-the-year banquet!</string>
+    <string name="questions_comments_concerns">Questions, comments, concerns, bugs?</string>
+    <string name="direct_to_webmaster">\nPlease direct these to IEEE\'s webmaster: webmaster@ieee.ucla.edu</string>
+    <string name="attributions">Attributions</string>
 </resources>

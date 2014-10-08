@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import com.ucla_ieee.app.calendar.CalendarFragment;
 import com.ucla_ieee.app.content.AnnouncementsFragment;
+import com.ucla_ieee.app.content.HelpAboutFragment;
 import com.ucla_ieee.app.content.PointsRewardsFragment;
 import com.ucla_ieee.app.newsfeed.FrontPageFragment;
 import com.ucla_ieee.app.signin.LoginActivity;
@@ -26,6 +27,7 @@ public class MainActivity extends FragmentActivity
     public static final String MAIN_TAG = "main";
     public static final String ANNOUNCEMENTS_TAG = "announcements";
     public static final String POINTS_REWARDS_TAG = "points_rewards";
+    public static final String HELP_TAG = "help";
 
     public String currentTag;
     public boolean loading;
@@ -136,6 +138,8 @@ public class MainActivity extends FragmentActivity
                 fragment = new AnnouncementsFragment();
             } else if (tag.equals(POINTS_REWARDS_TAG)) {
                 fragment = new PointsRewardsFragment();
+            } else if (tag.equals(HELP_TAG)) {
+                fragment = new HelpAboutFragment();
             } else {
                 fragment = new FrontPageFragment();
             }
@@ -177,6 +181,9 @@ public class MainActivity extends FragmentActivity
                     getMenuInflater().inflate(R.menu.refresh_settings, menu);
                     return false;
                 case POINTS_REWARDS:
+                    getMenuInflater().inflate(R.menu.main_settings, menu);
+                    return false;
+                case HELP:
                     getMenuInflater().inflate(R.menu.main_settings, menu);
                     return false;
                 default:
