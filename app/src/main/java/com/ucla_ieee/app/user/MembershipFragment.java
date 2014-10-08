@@ -74,7 +74,9 @@ public class MembershipFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        mAlertDialog.dismiss();
+        if (mAlertDialog != null) {
+            mAlertDialog.dismiss();
+        }
     }
 
     /**

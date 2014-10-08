@@ -98,13 +98,9 @@ public class CalendarFragment extends Fragment {
         mCaldroidFragment = new CaldroidFragment();
         Bundle args = new Bundle();
         Calendar cal = Calendar.getInstance();
-        if (savedInstanceState != null) {
-            mCaldroidFragment.restoreStatesFromKey(savedInstanceState, "CALDROID_SAVED_STATE");
-        } else {
-            args.putInt(CaldroidFragment.MONTH, cal.get(Calendar.MONTH) + 1);
-            args.putInt(CaldroidFragment.YEAR, cal.get(Calendar.YEAR));
-            mCaldroidFragment.setArguments(args);
-        }
+        args.putInt(CaldroidFragment.MONTH, cal.get(Calendar.MONTH) + 1);
+        args.putInt(CaldroidFragment.YEAR, cal.get(Calendar.YEAR));
+        mCaldroidFragment.setArguments(args);
         mCaldroidFragment.setCaldroidListener(listener);
         getFragmentManager().beginTransaction()
                 .replace(R.id.calendar, mCaldroidFragment)
@@ -169,16 +165,6 @@ public class CalendarFragment extends Fragment {
                     mCaldroidFragment.setBackgroundResourceForDate(R.color.caldroid_white, oldDate);
                 }
             }
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        // TODO: figure out saving the month they were looking @
-        if (mCaldroidFragment != null) {
-            mCaldroidFragment.saveStatesToKey(outState, "CALDROID_SAVED_STATE");
         }
     }
 
