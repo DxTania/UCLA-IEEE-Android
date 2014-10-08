@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -41,6 +42,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     private View mProgressView;
     private View mEmailLoginFormView;
     private View mLoginFormView;
+    private Button mForgotPassword;
 
     public static boolean isEmailValid(String email) {
         return email.contains("@") && email.contains(".");
@@ -54,7 +56,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SessionManager sessionManager = new SessionManager(this);
+        final SessionManager sessionManager = new SessionManager(this);
         if (sessionManager.isLoggedIn()) {
             startActivity(new Intent(this, MainActivity.class));
             finish();
@@ -83,6 +85,16 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             @Override
             public void onClick(View view) {
                 attemptLogin();
+            }
+        });
+
+        final Context context = this;
+        mForgotPassword = (Button) findViewById(R.id.forgot_password_button);
+        mForgotPassword.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ForgotPasswordTask task = new ForgotPasswordTask(context, mEmailView.getText().toString());
+                task.execute((Void) null);
             }
         });
 

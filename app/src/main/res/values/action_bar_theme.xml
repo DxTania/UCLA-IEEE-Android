@@ -4,10 +4,11 @@
     <style name="CustomActionBarTheme"
            parent="@android:style/Theme.Holo.Light">
         <item name="android:actionBarStyle">@style/CustomActionBarTheme.ActionBar</item>
+        <item name="android:actionOverflowButtonStyle">@style/MyActionButtonOverflow</item>
         <item name="android:actionMenuTextColor">@color/caldroid_black</item>
     </style>
 
-    <style name="CustomActionBarTheme.ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+    <style name="CustomActionBarTheme.ActionBar" parent="@android:style/Widget.Holo.ActionBar">
         <item name="android:background">@color/ucla_blue</item>
         <item name="android:titleTextStyle">@style/CustomActionBarTheme.ActionBar.Text</item>
     </style>
@@ -15,5 +16,10 @@
     <style name="CustomActionBarTheme.ActionBar.Text" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/caldroid_white</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="MyActionButtonOverflow" parent="android:style/Widget.Holo.ActionButton.Overflow">
+        <item name="android:background">?android:attr/actionBarItemBackground</item>
+        <item name="android:contentDescription">"Lala"</item>
     </style>
 </resources>
