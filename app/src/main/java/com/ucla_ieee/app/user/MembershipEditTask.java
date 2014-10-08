@@ -33,8 +33,8 @@ public class MembershipEditTask extends AsyncTask<List<BasicNameValuePair>, Void
     public MembershipEditTask(Fragment context, TextView passwordText) {
         mContext = (MembershipFragment) context;
         mSessionManager = new SessionManager(mContext.getActivity());
-        mEmail = mSessionManager.getEmail();
-        mCookie = mSessionManager.getCookie();
+        mEmail = mSessionManager.getString(SessionManager.Keys.EMAIL);
+        mCookie = mSessionManager.getString(SessionManager.Keys.COOKIE);
         mTextView = passwordText;
         mUtil = new JsonServerUtil();
     }

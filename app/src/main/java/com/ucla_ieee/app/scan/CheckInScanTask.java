@@ -43,8 +43,8 @@ public class CheckInScanTask extends AsyncTask<Void, Void, String> {
 
         List<NameValuePair> checkInParams = new ArrayList<NameValuePair>();
         checkInParams.add(new BasicNameValuePair("service", "check_in"));
-        checkInParams.add(new BasicNameValuePair("cookie", mSessionManager.getCookie()));
-        checkInParams.add(new BasicNameValuePair("email", mSessionManager.getEmail()));
+        checkInParams.add(new BasicNameValuePair("cookie", mSessionManager.getString(SessionManager.Keys.COOKIE)));
+        checkInParams.add(new BasicNameValuePair("email", mSessionManager.getString(SessionManager.Keys.EMAIL)));
         checkInParams.add(new BasicNameValuePair("eventId", mEventId));
 
         HttpPost httpPost = new HttpPost("http://ieeebruins.org/membership_serve/users.php");

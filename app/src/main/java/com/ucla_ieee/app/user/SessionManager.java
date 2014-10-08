@@ -16,11 +16,9 @@ public class SessionManager {
     private static final String PREF_NAME = "UCLAIEEEPrefs";
     private SharedPreferences mSharedPrefs;
     private Editor mEditor;
-    private Context mContext;
     private JsonServerUtil mUtil;
 
     public SessionManager(Context context) {
-        mContext = context;
         mSharedPrefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         mEditor = null;
         mUtil = new JsonServerUtil();
@@ -58,10 +56,6 @@ public class SessionManager {
         mEditor.commit();
     }
 
-    public String getSyncToken() {
-        return mSharedPrefs.getString(Keys.TOKEN.s(), null);
-    }
-
     public void setSyncToken(String token) {
         mEditor = mSharedPrefs.edit();
         mEditor.putString(Keys.TOKEN.s(), token);
@@ -70,7 +64,7 @@ public class SessionManager {
 
     public void storeCalReq(String s) {
         mEditor = mSharedPrefs.edit();
-        mEditor.putString(Keys.JSON.s(), s);
+        mEditor.putString(Keys.CALENDAR.s(), s);
         mEditor.commit();
     }
 
@@ -85,9 +79,9 @@ public class SessionManager {
         mEditor.putString(Keys.EMAIL.s(), user.get("email").getAsString());
         mEditor.putString(Keys.NAME.s(), user.get("name").getAsString());
         mEditor.putString(Keys.IEEE_ID.s(), user.get("ieee_id").getAsString());
-        mEditor.putInt(Keys.POINTS.s(), user.get("points").getAsInt());
         mEditor.putString(Keys.MAJOR.s(), user.get("major").getAsString());
         mEditor.putString(Keys.YEAR.s(), user.get("year").getAsString());
+        mEditor.putInt(Keys.POINTS.s(), user.get("points").getAsInt());
         mEditor.putInt(Keys.TOTAL_POINTS.s(), user.get("total_points").getAsInt());
         mEditor.commit();
     }
@@ -99,7 +93,7 @@ public class SessionManager {
     }
 
     public void addAttendedEvent(JsonObject event) {
-        JsonArray attendedEvents = getAttendedEvents();
+        JsonArray attendedEvents = getJsonArray(Keys.ATTENDED_EVENTS);
         attendedEvents.add(event);
         updateAttendedEvents(attendedEvents.toString());
     }
@@ -108,52 +102,20 @@ public class SessionManager {
         return mSharedPrefs.getBoolean(Keys.LOGGED_IN.s(), false);
     }
 
-    public JsonArray getCalReq() {
-        return mUtil.getJsonArrayFromString(mSharedPrefs.getString(Keys.JSON.s(), null));
+    public String getString(Keys name) {
+        return mSharedPrefs.getString(name.s(), "");
     }
 
-    public String getEmail() {
-        return mSharedPrefs.getString(Keys.EMAIL.s(), "");
+    public JsonArray getJsonArray(Keys name) {
+        return mUtil.getJsonArrayFromString(mSharedPrefs.getString(name.s(), null));
     }
 
-    public String getName() {
-        return mSharedPrefs.getString(Keys.NAME.s(), "");
-    }
-
-    public String getIEEEId() {
-        return mSharedPrefs.getString(Keys.IEEE_ID.s(), "");
-    }
-
-    public String getMajor() {
-        return mSharedPrefs.getString(Keys.MAJOR.s(), "");
-    }
-
-    public String getYear() {
-        return mSharedPrefs.getString(Keys.YEAR.s(), "");
-    }
-
-    public String getCookie() {
-        return mSharedPrefs.getString(Keys.COOKIE.s(), null);
-    }
-
-    public JsonArray getAttendedEvents() {
-        return mUtil.getJsonArrayFromString(mSharedPrefs.getString(Keys.ATTENDED_EVENTS.s(), null));
-    }
-
-    public JsonArray getAnnouncements() {
-        return mUtil.getJsonArrayFromString(mSharedPrefs.getString(Keys.ANNOUNCEMENTS.s(), null));
-    }
-
-    public int getPoints() {
-        return mSharedPrefs.getInt(Keys.POINTS.s(), 0);
-    }
-
-    public int getTotalPoints() {
-        return mSharedPrefs.getInt(Keys.TOTAL_POINTS.s(), 0);
+    public int getInt(Keys name) {
+        return mSharedPrefs.getInt(name.s(), 0);
     }
 
     public enum Keys {
-        LOGGED_IN("IsLoggedIn"), EMAIL("email"), TOKEN("syncToken"), JSON("json"), COOKIE("cookie"),
+        LOGGED_IN("IsLoggedIn"), EMAIL("email"), TOKEN("syncToken"), CALENDAR("json"), COOKIE("cookie"),
         NAME("name"), IEEE_ID("ieee_id"), ANNOUNCEMENTS("announcements"), POINTS("points"),
         ATTENDED_EVENTS("attended_events"), NEWS("news"), MAJOR("major"), YEAR("year"), TOTAL_POINTS("total_points");
 

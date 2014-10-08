@@ -40,7 +40,7 @@ public class UpdateTask extends AsyncTask<Void, Void, String> {
 
         List<NameValuePair> getParams = new ArrayList<NameValuePair>();
         getParams.add(new BasicNameValuePair("service", "get_user"));
-        getParams.add(new BasicNameValuePair("email", mSessionManager.getEmail()));
+        getParams.add(new BasicNameValuePair("email", mSessionManager.getString(SessionManager.Keys.EMAIL)));
 
         try {
             httpPost.setEntity(new UrlEncodedFormEntity(getParams));

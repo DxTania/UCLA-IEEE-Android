@@ -45,7 +45,7 @@ public class CalendarTask extends AsyncTask<Void, Void, String> {
     protected String doInBackground(Void... params) {
         List<NameValuePair> calendarParams = new ArrayList<NameValuePair>();
         calendarParams.add(new BasicNameValuePair("key", API_KEY));
-        String syncToken = mSessionManager.getSyncToken();
+        String syncToken = mSessionManager.getString(SessionManager.Keys.TOKEN);
         if (!TextUtils.isEmpty(syncToken)) {
             calendarParams.add(new BasicNameValuePair("syncToken", syncToken));
         } else {
@@ -92,7 +92,7 @@ public class CalendarTask extends AsyncTask<Void, Void, String> {
         }
 
         JsonArray newItems = json.get("items").getAsJsonArray();
-        JsonArray prevItems = mSessionManager.getCalReq();
+        JsonArray prevItems = mSessionManager.getJsonArray(SessionManager.Keys.CALENDAR);
         if (prevItems == null) {
             mSessionManager.storeCalReq(newItems.toString());
         } else if (newItems.size() > 0) {

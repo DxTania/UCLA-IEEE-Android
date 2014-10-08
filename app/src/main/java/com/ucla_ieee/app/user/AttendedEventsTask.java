@@ -31,7 +31,7 @@ public class AttendedEventsTask extends AsyncTask<Void, Void, String> {
     public AttendedEventsTask(Context context) {
         mContext = (MainActivity) context;
         mSessionManager = new SessionManager(mContext);
-        mEmail = mSessionManager.getEmail();
+        mEmail = mSessionManager.getString(SessionManager.Keys.EMAIL);
         mUtil = new JsonServerUtil();
     }
 

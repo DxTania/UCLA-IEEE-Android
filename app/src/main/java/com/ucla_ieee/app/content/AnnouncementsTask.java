@@ -49,7 +49,7 @@ public class AnnouncementsTask extends AsyncTask<Void, Void, String> {
         }
 
         if (announcements.size() > 0) {
-            JsonArray oldAnnouncements = mSessionManager.getAnnouncements();
+            JsonArray oldAnnouncements = mSessionManager.getJsonArray(SessionManager.Keys.ANNOUNCEMENTS);
             int lastId = 0; // so we can still mark things as unread, give old announcements length of 0
             if (oldAnnouncements == null) {
                 oldAnnouncements = new JsonArray();

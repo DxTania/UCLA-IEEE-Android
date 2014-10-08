@@ -18,6 +18,7 @@ import com.ucla_ieee.app.calendar.Event;
 import com.ucla_ieee.app.content.YearSpinner;
 import com.ucla_ieee.app.newsfeed.News;
 import com.ucla_ieee.app.newsfeed.NewsFeedListAdapter;
+import com.ucla_ieee.app.signin.LoginActivity;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.text.ParseException;
@@ -36,13 +37,14 @@ public class MembershipFragment extends Fragment {
     private ImageButton mPasswordEditPencil;
     private ListView mAttendedEventsView;
     private View mHeader;
+    private AlertDialog mAlertDialog;
 
     private NewsFeedListAdapter mEventListAdapter;
     private List<News> mAttendedEvents;
     private SessionManager mSessionManager;
 
     private Boolean mAlertReady = false;
-    private String mChangedPassword = "";
+    private String mCachedPassword = "";
     private List<String> mYears;
 
     @Override
@@ -69,14 +71,25 @@ public class MembershipFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        mAlertDialog.dismiss();
+    }
+
+    /**
+     * Updates the membership UI to reflect most updated values that may have been updating
+     * by an Asynchronous call
+     */
     public void update() {
-        mPointsText.setText(String.valueOf(mSessionManager.getPoints() + "/" + mSessionManager.getTotalPoints()));
-        mEmailText.setText(mSessionManager.getEmail());
-        mNameText.setText(mSessionManager.getName());
-        mMemberIdText.setText(mSessionManager.getIEEEId());
+        mPointsText.setText(String.valueOf(mSessionManager.getInt(SessionManager.Keys.POINTS) + "/"
+                + mSessionManager.getInt(SessionManager.Keys.TOTAL_POINTS)));
+        mEmailText.setText(mSessionManager.getString(SessionManager.Keys.EMAIL));
+        mNameText.setText(mSessionManager.getString(SessionManager.Keys.NAME));
+        mMemberIdText.setText(mSessionManager.getString(SessionManager.Keys.IEEE_ID));
         mPasswordText.setText("");
-        mMajorText.setText(mSessionManager.getMajor());
-        mYearText.setText(mSessionManager.getYear());
+        mMajorText.setText(mSessionManager.getString(SessionManager.Keys.MAJOR));
+        mYearText.setText(mSessionManager.getString(SessionManager.Keys.YEAR));
     }
 
     /**
@@ -107,12 +120,12 @@ public class MembershipFragment extends Fragment {
     }
 
     /**
-     * Updates attended events with info from session
+     * Updates attended events with info from most updated session
      */
     public void updateAttendedEvents() {
         mAttendedEvents.clear();
         mEventListAdapter.clear();
-        JsonArray jsonEvents = mSessionManager.getAttendedEvents();
+        JsonArray jsonEvents = mSessionManager.getJsonArray(SessionManager.Keys.ATTENDED_EVENTS);
         if (jsonEvents != null) {
             for (Event event : jsonEventsToEvents(jsonEvents)) {
                 mAttendedEvents.add(event.getAsNews());
@@ -128,10 +141,14 @@ public class MembershipFragment extends Fragment {
         }
     }
 
+    /**
+     * In order to scroll both the profile and attended events, the profile
+     * is used as a header view
+     */
     private void setUpAttendedEventsView() {
         mAttendedEventsView.addHeaderView(mHeader);
         List<News> news = new ArrayList<News>();
-        for (Event event : jsonEventsToEvents(mSessionManager.getAttendedEvents())) {
+        for (Event event : jsonEventsToEvents(mSessionManager.getJsonArray(SessionManager.Keys.ATTENDED_EVENTS))) {
             news.add(event.getAsNews());
         }
         if (news.size() > 0 ) {
@@ -141,7 +158,9 @@ public class MembershipFragment extends Fragment {
         mAttendedEventsView.setAdapter(mEventListAdapter);
     }
 
-    // Click listener for save changes button
+    /**
+     * Save changes if at least one field is different than the current session
+     */
     private void setUpSaveChanges() {
         Button saveChanges = (Button) mHeader.findViewById(R.id.saveChanges);
         saveChanges.setOnClickListener(new View.OnClickListener() {
@@ -161,24 +180,24 @@ public class MembershipFragment extends Fragment {
                 newYear = mYearSpinner.getSelectedItem().toString();
 
                 List<BasicNameValuePair> valuePairs = new ArrayList<BasicNameValuePair>();
-                if (!newEmail.equals(mSessionManager.getEmail())) {
+                if (!newEmail.equals(mSessionManager.getString(SessionManager.Keys.EMAIL))) {
                     valuePairs.add(new BasicNameValuePair("newEmail", newEmail));
                 }
-                if (!newName.equals(mSessionManager.getName())) {
+                if (!newName.equals(mSessionManager.getString(SessionManager.Keys.NAME))) {
                     valuePairs.add(new BasicNameValuePair("newName", newName));
                 }
-                if (!newId.equals(mSessionManager.getIEEEId())) {
+                if (!newId.equals(mSessionManager.getString(SessionManager.Keys.IEEE_ID))) {
                     valuePairs.add(new BasicNameValuePair("newId", newId));
                 }
-                if (!newMajor.equals(mSessionManager.getMajor())) {
+                if (!newMajor.equals(mSessionManager.getString(SessionManager.Keys.MAJOR))) {
                     valuePairs.add(new BasicNameValuePair("major", newMajor));
                 }
-                if (!newYear.equals(mSessionManager.getYear())) {
+                if (!newYear.equals(mSessionManager.getString(SessionManager.Keys.YEAR))) {
                     valuePairs.add(new BasicNameValuePair("year", newYear));
                 }
                 if (!TextUtils.isEmpty(newPassword)) {
                     valuePairs.add(new BasicNameValuePair("newPassword", newPassword));
-                    valuePairs.add(new BasicNameValuePair("password", mChangedPassword));
+                    valuePairs.add(new BasicNameValuePair("password", mCachedPassword));
                 }
 
                 if (valuePairs.size() == 0) {
@@ -187,7 +206,6 @@ public class MembershipFragment extends Fragment {
                 }
 
                 mAuthTask.execute(valuePairs);
-                toggleEdits(true);
             }
         });
 
@@ -196,16 +214,16 @@ public class MembershipFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 toggleEdits(true);
-                mEmailText.setText(mSessionManager.getEmail());
-                mEmail.setText(mSessionManager.getEmail());
-                mNameText.setText(mSessionManager.getName());
-                mName.setText(mSessionManager.getName());
-                mMemberIdText.setText(mSessionManager.getIEEEId());
-                mMemberIdText.setText(mSessionManager.getIEEEId());
-                mMajorText.setText(mSessionManager.getMajor());
-                mMajor.setText(mSessionManager.getMajor());
-                mYearText.setText(mSessionManager.getYear());
-                mYearSpinner.setSelection(mYears.indexOf(mSessionManager.getYear()));
+                mEmailText.setText(mSessionManager.getString(SessionManager.Keys.EMAIL));
+                mEmail.setText(mSessionManager.getString(SessionManager.Keys.EMAIL));
+                mNameText.setText(mSessionManager.getString(SessionManager.Keys.NAME));
+                mName.setText(mSessionManager.getString(SessionManager.Keys.NAME));
+                mMemberIdText.setText(mSessionManager.getString(SessionManager.Keys.IEEE_ID));
+                mMemberIdText.setText(mSessionManager.getString(SessionManager.Keys.IEEE_ID));
+                mMajorText.setText(mSessionManager.getString(SessionManager.Keys.MAJOR));
+                mMajor.setText(mSessionManager.getString(SessionManager.Keys.MAJOR));
+                mYearText.setText(mSessionManager.getString(SessionManager.Keys.YEAR));
+                mYearSpinner.setSelection(mYears.indexOf(mSessionManager.getString(SessionManager.Keys.YEAR)));
                 mPasswordText.setText("");
             }
         });
@@ -235,14 +253,16 @@ public class MembershipFragment extends Fragment {
         });
     }
 
-    // Password change alert dialog TODO: Can't change password twice in a row and can't undo
+    /**
+     * For password changing
+     */
     private void setUpAlertDialog() {
         View ll = LayoutInflater.from(getActivity()).inflate(R.layout.snippet_password_popup, null);
         final EditText newPasswordView = (EditText) ll.findViewById(R.id.newPassword);
         final EditText retypedPasswordView = (EditText) ll.findViewById(R.id.retypedPassword);
         final EditText passwordView = (EditText) ll.findViewById(R.id.curPassword);
 
-        final AlertDialog alert = new AlertDialog.Builder(getActivity())
+        mAlertDialog = new AlertDialog.Builder(getActivity())
                 .setTitle("Change Password")
                 .setMessage("Please fill in the following fields")
                 .setView(ll)
@@ -254,10 +274,10 @@ public class MembershipFragment extends Fragment {
                 }).create();
 
         if (!mAlertReady) {
-            alert.setOnShowListener(new DialogInterface.OnShowListener() {
+            mAlertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
                 @Override
                 public void onShow(DialogInterface dialog) {
-                    Button button = alert.getButton(DialogInterface.BUTTON_POSITIVE);
+                    Button button = mAlertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
                     if (button != null) {
                         button.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -268,40 +288,43 @@ public class MembershipFragment extends Fragment {
                                 if (!newPassword.equals(retypedPassword)) {
                                     retypedPasswordView.setError("Passwords don't match!");
                                     retypedPasswordView.requestFocus();
+                                } else if (!LoginActivity.isPasswordValid(newPassword)) {
+                                    newPasswordView.setError(getString(R.string.error_invalid_password));
+                                    newPasswordView.requestFocus();
                                 } else {
-                                    mChangedPassword = passwordView.getText().toString();
+                                    mCachedPassword = passwordView.getText().toString();
                                     mPasswordText.setText(newPassword);
-                                    alert.dismiss();
+                                    mAlertDialog.hide();
                                 }
                             }
                         });
                     }
                 }
             });
-            mAlertReady = true;
         }
 
-        alert.show();
+        mAlertDialog.show();
     }
 
     private void setUpViews() {
         mEmail = (EditText) mHeader.findViewById(R.id.memberEmail);
         mEmailText = (TextView) mHeader.findViewById(R.id.memberEmailText);
-        mEmail.setText(mSessionManager.getEmail());
-        mEmailText.setText(mSessionManager.getEmail());
+        mEmail.setText(mSessionManager.getString(SessionManager.Keys.EMAIL));
+        mEmailText.setText(mSessionManager.getString(SessionManager.Keys.EMAIL));
 
         mName = (EditText) mHeader.findViewById(R.id.memberName);
         mNameText = (TextView) mHeader.findViewById(R.id.memberNameText);
-        mName.setText(mSessionManager.getName());
-        mNameText.setText(mSessionManager.getName());
+        mName.setText(mSessionManager.getString(SessionManager.Keys.NAME));
+        mNameText.setText(mSessionManager.getString(SessionManager.Keys.NAME));
 
         mMemberId = (EditText) mHeader.findViewById(R.id.memberId);
         mMemberIdText = (TextView) mHeader.findViewById(R.id.memberIdText);
-        mMemberId.setText(mSessionManager.getIEEEId());
-        mMemberIdText.setText(mSessionManager.getIEEEId());
+        mMemberId.setText(mSessionManager.getString(SessionManager.Keys.IEEE_ID));
+        mMemberIdText.setText(mSessionManager.getString(SessionManager.Keys.IEEE_ID));
 
         mPointsText = (TextView) mHeader.findViewById(R.id.numPoints);
-        mPointsText.setText(String.valueOf(mSessionManager.getPoints() + "/" + mSessionManager.getTotalPoints()));
+        mPointsText.setText(String.valueOf(mSessionManager.getInt(SessionManager.Keys.POINTS) + "/"
+                + mSessionManager.getInt(SessionManager.Keys.TOTAL_POINTS)));
 
         mPasswordText = (TextView) mHeader.findViewById(R.id.passwordText);
         mPasswordEditPencil = (ImageButton) mHeader.findViewById(R.id.changePassword);
@@ -310,12 +333,12 @@ public class MembershipFragment extends Fragment {
 
         mMajorText = (TextView) mHeader.findViewById(R.id.memberMajorText);
         mMajor = (EditText) mHeader.findViewById(R.id.memberMajor);
-        mMajor.setText(mSessionManager.getMajor());
-        mMajorText.setText(mSessionManager.getMajor());
+        mMajor.setText(mSessionManager.getString(SessionManager.Keys.MAJOR));
+        mMajorText.setText(mSessionManager.getString(SessionManager.Keys.MAJOR));
 
         mYearText = (TextView) mHeader.findViewById(R.id.memberYearText);
-        mYearText.setText(mSessionManager.getYear());
-        mYearSpinner.setSelection(mYears.indexOf(mSessionManager.getYear()));
+        mYearText.setText(mSessionManager.getString(SessionManager.Keys.YEAR));
+        mYearSpinner.setSelection(mYears.indexOf(mSessionManager.getString(SessionManager.Keys.YEAR)));
     }
 
     /**

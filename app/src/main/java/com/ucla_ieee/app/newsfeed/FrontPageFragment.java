@@ -40,8 +40,8 @@ public class FrontPageFragment extends Fragment {
 
         mPointsView = (TextView) rootView.findViewById(R.id.numPoints);
         mSessionManager = new SessionManager(getActivity());
-        mPointsView.setText(String.valueOf(mSessionManager.getPoints()) + "/"
-                + String.valueOf(mSessionManager.getTotalPoints()));
+        mPointsView.setText(String.valueOf(mSessionManager.getInt(SessionManager.Keys.POINTS)) + "/"
+                + String.valueOf(mSessionManager.getInt(SessionManager.Keys.TOTAL_POINTS)));
         mProgressView = rootView.findViewById(R.id.refresh_process);
 
         final MainActivity mainActivity = (MainActivity) getActivity();
@@ -76,10 +76,13 @@ public class FrontPageFragment extends Fragment {
     }
 
     public void updatePoints() {
-        mPointsView.setText(String.valueOf(mSessionManager.getPoints()) + "/"
-                + String.valueOf(mSessionManager.getTotalPoints()));
+        mPointsView.setText(String.valueOf(mSessionManager.getInt(SessionManager.Keys.POINTS)) + "/"
+                + String.valueOf(mSessionManager.getInt(SessionManager.Keys.TOTAL_POINTS)));
     }
 
+    /**
+     * Updates news feed with most recently retrieved announcements and events
+     */
     public void updateNews() {
         mNewsFeedListAdapter.clear();
         List<News> news = getRecentAnnouncements();
@@ -92,7 +95,7 @@ public class FrontPageFragment extends Fragment {
      */
     private List<News> getRecentAnnouncements() {
         List<News> recentAnnouncements = new ArrayList<News>();
-        JsonArray announcements = mSessionManager.getAnnouncements();
+        JsonArray announcements = mSessionManager.getJsonArray(SessionManager.Keys.ANNOUNCEMENTS);
         if (announcements != null) {
             for (int i = 0; i < announcements.size() && i < 10; i++) {
                 JsonObject announcement = announcements.get(i).getAsJsonObject();
@@ -118,7 +121,7 @@ public class FrontPageFragment extends Fragment {
      */
     private List<News> getUpcomingEvents() {
         List<News> upcomingEvents = new ArrayList<News>();
-        JsonArray jsonEvents = mSessionManager.getCalReq();
+        JsonArray jsonEvents = mSessionManager.getJsonArray(SessionManager.Keys.CALENDAR);
         List<Event> cancelled = new ArrayList<Event>();
         List<Event> events = EventManager.createEvents(jsonEvents, cancelled);
 

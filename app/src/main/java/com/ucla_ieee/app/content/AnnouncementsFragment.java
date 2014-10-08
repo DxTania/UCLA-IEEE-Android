@@ -46,7 +46,7 @@ public class AnnouncementsFragment extends Fragment {
     }
 
     public void updateAnnouncements() {
-        JsonArray announcements = mSessionManager.getAnnouncements();
+        JsonArray announcements = mSessionManager.getJsonArray(SessionManager.Keys.ANNOUNCEMENTS);
         if (announcements != null) {
             List<Announcement> announcementList = new ArrayList<Announcement>();
             for (int i = 0; i < announcements.size(); i++) {

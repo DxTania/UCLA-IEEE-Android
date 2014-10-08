@@ -119,7 +119,7 @@ public class CalendarFragment extends Fragment {
 
         // Show/get cached events
         SessionManager sessionManager = new SessionManager(getActivity());
-        JsonArray events = sessionManager.getCalReq();
+        JsonArray events = sessionManager.getJsonArray(SessionManager.Keys.CALENDAR);
         if (events != null) {
             addEvents(events);
         }
