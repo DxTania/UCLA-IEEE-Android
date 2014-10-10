@@ -1,6 +1,7 @@
 package com.ucla_ieee.app.newsfeed;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +15,14 @@ import java.util.*;
 public class NewsFeedListAdapter extends ArrayAdapter<News> {
     private final Context context;
     private final List<News> news;
+    private final Drawable calendar, announcement;
 
     public NewsFeedListAdapter(Context context, List<News> news) {
         super(context, R.layout.snippet_news, news);
         this.context = context;
         this.news = news;
+        this.calendar = context.getResources().getDrawable(R.drawable.calendar);
+        this.announcement = context.getResources().getDrawable(R.drawable.bullhorn);
         sort();
     }
 
@@ -73,9 +77,9 @@ public class NewsFeedListAdapter extends ArrayAdapter<News> {
         viewHolder.summary.setText(newsSnippet.getContent());
 
         if (newsSnippet.getType().equals("calendar")) {
-            viewHolder.type.setImageResource(R.drawable.calendar);
+            viewHolder.type.setImageDrawable(calendar);
         } else {
-            viewHolder.type.setImageResource(R.drawable.bullhorn);
+            viewHolder.type.setImageDrawable(announcement);
         }
 
         return convertView;

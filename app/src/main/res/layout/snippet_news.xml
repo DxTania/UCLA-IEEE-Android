@@ -22,8 +22,7 @@
             android:layout_margin="5dp"
             android:layout_weight="0.15"
             android:layout_width="0dp"
-            android:padding="4dp"
-            android:src="@drawable/bullhorn"/>
+            android:padding="4dp"/>
 
         <LinearLayout
             android:layout_height="60dp"
