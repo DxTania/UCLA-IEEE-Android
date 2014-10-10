@@ -11,7 +11,8 @@ import com.ucla_ieee.app.user.AttendedEventsTask;
 import com.ucla_ieee.app.user.UpdateTask;
 
 /**
- * Created by rawrtan on 10/1/14.
+ * This class manages different types of asynchronous calls and sets up
+ * a handler in order to update the UI when needed
  */
 public class AsyncTaskManager {
     private CalendarTask mCalendarTask;
@@ -24,6 +25,8 @@ public class AsyncTaskManager {
     private Handler mHandler;
     private MainActivity mActivity;
 
+    // TODO: retry async call if it fails!!
+    // stop at some number of calls depending on how long they took to complete...
     public AsyncTaskManager(MainActivity mainActivity) {
         this.mActivity = mainActivity;
         mHandler = new Handler() {
