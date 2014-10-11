@@ -65,7 +65,6 @@ public class MembershipFragment extends Fragment {
 
         setUpViews();
         setUpImageButtons();
-        setUpSaveChanges();
         setUpAttendedEventsView();
 
         return rootView;
@@ -158,77 +157,6 @@ public class MembershipFragment extends Fragment {
         }
         mEventListAdapter = new NewsFeedListAdapter(getActivity(), news);
         mAttendedEventsView.setAdapter(mEventListAdapter);
-    }
-
-    /**
-     * Save changes if at least one field is different than the current session
-     */
-    private void setUpSaveChanges() {
-        Button saveChanges = (Button) mHeader.findViewById(R.id.saveChanges);
-        saveChanges.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // send post request
-                mAuthTask = new MembershipEditTask(MembershipFragment.this, mPasswordText);
-
-                toggleEdits(true);
-
-                String newEmail, newName, newId, newPassword, newMajor, newYear;
-                newEmail = mEmail.getText().toString();
-                newName = mName.getText().toString();
-                newId = mMemberId.getText().toString();
-                newPassword = mPasswordText.getText().toString();
-                newMajor = mMajorText.getText().toString();
-                newYear = mYearSpinner.getSelectedItem().toString();
-
-                List<BasicNameValuePair> valuePairs = new ArrayList<BasicNameValuePair>();
-                if (!newEmail.equals(mSessionManager.getString(SessionManager.Keys.EMAIL))) {
-                    valuePairs.add(new BasicNameValuePair("newEmail", newEmail));
-                }
-                if (!newName.equals(mSessionManager.getString(SessionManager.Keys.NAME))) {
-                    valuePairs.add(new BasicNameValuePair("newName", newName));
-                }
-                if (!newId.equals(mSessionManager.getString(SessionManager.Keys.IEEE_ID))) {
-                    valuePairs.add(new BasicNameValuePair("newId", newId));
-                }
-                if (!newMajor.equals(mSessionManager.getString(SessionManager.Keys.MAJOR))) {
-                    valuePairs.add(new BasicNameValuePair("major", newMajor));
-                }
-                if (!newYear.equals(mSessionManager.getString(SessionManager.Keys.YEAR))) {
-                    valuePairs.add(new BasicNameValuePair("year", newYear));
-                }
-                if (!TextUtils.isEmpty(newPassword)) {
-                    valuePairs.add(new BasicNameValuePair("newPassword", newPassword));
-                    valuePairs.add(new BasicNameValuePair("password", mCachedPassword));
-                }
-
-                if (valuePairs.size() == 0) {
-                    Toast.makeText(getActivity(), "Nothing to change", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                mAuthTask.execute(valuePairs);
-            }
-        });
-
-        Button revertChanges = (Button) mHeader.findViewById(R.id.revertChanges);
-        revertChanges.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleEdits(true);
-                mEmailText.setText(mSessionManager.getString(SessionManager.Keys.EMAIL));
-                mEmail.setText(mSessionManager.getString(SessionManager.Keys.EMAIL));
-                mNameText.setText(mSessionManager.getString(SessionManager.Keys.NAME));
-                mName.setText(mSessionManager.getString(SessionManager.Keys.NAME));
-                mMemberIdText.setText(mSessionManager.getString(SessionManager.Keys.IEEE_ID));
-                mMemberIdText.setText(mSessionManager.getString(SessionManager.Keys.IEEE_ID));
-                mMajorText.setText(mSessionManager.getString(SessionManager.Keys.MAJOR));
-                mMajor.setText(mSessionManager.getString(SessionManager.Keys.MAJOR));
-                mYearText.setText(mSessionManager.getString(SessionManager.Keys.YEAR));
-                mYearSpinner.setSelection(mYears.indexOf(mSessionManager.getString(SessionManager.Keys.YEAR)));
-                mPasswordText.setText("");
-            }
-        });
     }
 
     // Click listeners for image buttons
@@ -397,7 +325,68 @@ public class MembershipFragment extends Fragment {
         } else if (id == R.id.action_toggle_edit) {
             toggleEdits(false);
             return true;
+        } else if (id == R.id.action_undo) {
+            undoChanges();
+        } else if (id == R.id.action_save) {
+            saveChanges();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void saveChanges() {
+        mAuthTask = new MembershipEditTask(MembershipFragment.this, mPasswordText);
+
+        toggleEdits(true);
+
+        String newEmail, newName, newId, newPassword, newMajor, newYear;
+        newEmail = mEmail.getText().toString();
+        newName = mName.getText().toString();
+        newId = mMemberId.getText().toString();
+        newPassword = mPasswordText.getText().toString();
+        newMajor = mMajorText.getText().toString();
+        newYear = mYearSpinner.getSelectedItem().toString();
+
+        List<BasicNameValuePair> valuePairs = new ArrayList<BasicNameValuePair>();
+        if (!newEmail.equals(mSessionManager.getString(SessionManager.Keys.EMAIL))) {
+            valuePairs.add(new BasicNameValuePair("newEmail", newEmail));
+        }
+        if (!newName.equals(mSessionManager.getString(SessionManager.Keys.NAME))) {
+            valuePairs.add(new BasicNameValuePair("newName", newName));
+        }
+        if (!newId.equals(mSessionManager.getString(SessionManager.Keys.IEEE_ID))) {
+            valuePairs.add(new BasicNameValuePair("newId", newId));
+        }
+        if (!newMajor.equals(mSessionManager.getString(SessionManager.Keys.MAJOR))) {
+            valuePairs.add(new BasicNameValuePair("major", newMajor));
+        }
+        if (!newYear.equals(mSessionManager.getString(SessionManager.Keys.YEAR))) {
+            valuePairs.add(new BasicNameValuePair("year", newYear));
+        }
+        if (!TextUtils.isEmpty(newPassword)) {
+            valuePairs.add(new BasicNameValuePair("newPassword", newPassword));
+            valuePairs.add(new BasicNameValuePair("password", mCachedPassword));
+        }
+
+        if (valuePairs.size() == 0) {
+            Toast.makeText(getActivity(), "Nothing to change", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        mAuthTask.execute(valuePairs);
+    }
+
+    private void undoChanges() {
+        toggleEdits(true);
+        mEmailText.setText(mSessionManager.getString(SessionManager.Keys.EMAIL));
+        mEmail.setText(mSessionManager.getString(SessionManager.Keys.EMAIL));
+        mNameText.setText(mSessionManager.getString(SessionManager.Keys.NAME));
+        mName.setText(mSessionManager.getString(SessionManager.Keys.NAME));
+        mMemberIdText.setText(mSessionManager.getString(SessionManager.Keys.IEEE_ID));
+        mMemberIdText.setText(mSessionManager.getString(SessionManager.Keys.IEEE_ID));
+        mMajorText.setText(mSessionManager.getString(SessionManager.Keys.MAJOR));
+        mMajor.setText(mSessionManager.getString(SessionManager.Keys.MAJOR));
+        mYearText.setText(mSessionManager.getString(SessionManager.Keys.YEAR));
+        mYearSpinner.setSelection(mYears.indexOf(mSessionManager.getString(SessionManager.Keys.YEAR)));
+        mPasswordText.setText("");
     }
 }
