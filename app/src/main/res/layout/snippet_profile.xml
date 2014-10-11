@@ -292,11 +292,10 @@
     <TextView
         android:background="@color/ucla_blue"
         android:id="@+id/textView3"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:layout_width="fill_parent"
-        android:paddingBottom="5dp"
+        android:gravity="center_vertical"
         android:paddingLeft="10dp"
-        android:paddingTop="5dp"
         android:text="@string/events_attended"
         android:textColor="@color/caldroid_white"
         android:textSize="20sp"
@@ -306,8 +305,7 @@
     <TextView
         android:gravity="center"
         android:id="@+id/noEventsView"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
         android:layout_width="fill_parent"
-        android:paddingTop="20dp"
         android:text="You haven't attended any events!"/>
 </LinearLayout>
