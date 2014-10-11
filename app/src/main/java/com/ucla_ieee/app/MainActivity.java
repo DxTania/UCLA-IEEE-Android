@@ -21,6 +21,7 @@ import com.ucla_ieee.app.scan.IntentResult;
 import com.ucla_ieee.app.signin.LoginActivity;
 import com.ucla_ieee.app.user.MembershipFragment;
 import com.ucla_ieee.app.user.SessionManager;
+import navigation.NavigationDrawerFragment;
 
 public class MainActivity extends FragmentActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {

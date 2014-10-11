@@ -74,8 +74,14 @@
     <string name="undo_changes">Undo Changes</string>
     <string name="year">Year</string>
     <string name="attributions_list">&#8226; Bullhorn designed by Shane Miller from the thenounproject.com
-        \n\n&#8226; Calendar (icon) designed by Laurent Patain from the thenounproject.com
-        \n\n&#8226; Calendar widget created by Roomorama</string>
+    \n\n&#8226; Calendar (icon) designed by Laurent Patain from the thenounproject.com
+    \n\n&#8226; Calendar widget created by Roomorama
+    \n\n&#8226;Log Out designed by useiconic.com from the thenounproject.com
+    \n\n&#8226;Question Mark designed by Mister Pixel from the thenounproject.com
+    \n\n&#8226;Trophy designed by Juan Garces from the thenounproject.com
+    \n\n&#8226;Star designed by Alex S. Lakas from the thenounproject.com
+    \n\n&#8226;Map Marker designed by Dmitry Baranovskiy from the thenounproject.com
+    \n\n&#8226;User designed by Richard Schumann from the thenounproject.com</string>
     <string name="how_to_get_points">&#8226; Signing up with this app (10 points)
         \n&#8226; Checking into events (15 points)
         \n&#8226; Attending lab cleanup (20 points)

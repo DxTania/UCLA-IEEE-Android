@@ -134,7 +134,7 @@ public class FrontPageFragment extends Fragment {
 
         for (int i = 0; i < events.size() && upcomingEvents.size() < 5; i++) {
             Event event = events.get(i);
-            if (event.getStartDate().compareTo(new Date()) > 0) {
+            if (event.getEndDate().compareTo(new Date()) > 0) {
                 upcomingEvents.add(event.getAsNews());
             }
         }

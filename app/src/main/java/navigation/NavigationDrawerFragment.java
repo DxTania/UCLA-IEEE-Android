@@ -1,4 +1,4 @@
-package com.ucla_ieee.app;
+package navigation;
 
 
 import android.app.ActionBar;
@@ -14,8 +14,9 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.*;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import com.ucla_ieee.app.MainActivity;
+import com.ucla_ieee.app.R;
 import com.ucla_ieee.app.scan.IntentIntegrator;
 import com.ucla_ieee.app.signin.LoginActivity;
 import com.ucla_ieee.app.user.SessionManager;
@@ -111,11 +112,7 @@ public class NavigationDrawerFragment extends Fragment {
                 selectItem(position);
             }
         });
-        mDrawerListView.setAdapter(new ArrayAdapter<String>(
-                getActionBar().getThemedContext(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
-                new String[]{
+        mDrawerListView.setAdapter(new NavigationDrawerListAdapter(getActivity(), new String[]{
                         "Front Page",
                         "Announcements",
                         "Calendar",
@@ -124,8 +121,7 @@ public class NavigationDrawerFragment extends Fragment {
                         "Check In",
                         "Help",
                         "Logout"
-                }
-        ));
+                }, mDrawerListView));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
     }
