@@ -131,7 +131,9 @@ public class MainActivity extends FragmentActivity
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         mPosition = position;
-        invalidateOptionsMenu();
+        if (mNavigationDrawerFragment != null) {
+            invalidateOptionsMenu();
+        }
     }
 
     /**
