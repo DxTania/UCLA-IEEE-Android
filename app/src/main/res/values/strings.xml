@@ -84,15 +84,15 @@
     \n\n&#8226;User designed by Richard Schumann from the thenounproject.com</string>
     <string name="how_to_get_points">&#8226; Signing up with this app (10 points)
         \n&#8226; Checking into events (15 points)
-        \n&#8226; Attending lab cleanup (20 points)
         \n&#8226; Starting a project
         \n&#8226; Finishing a project
         \n&#8226; Helping out IEEE\n</string>
     <string name="about_rewards">You can cash in any number of points to the webmaster by emailing
         webmaster@ieee.ucla.edu\n</string>
     <string name="what_rewards">
-        &#8226; IEEE swag bag (100 points)
-        \n&#8226; 3D printing credit (exchange rate fluctuating)
+        &#8226; IEEE swag bag (150 points)
+        \n&#8226; 1-2 Small mill boards (150 points)
+        \n&#8226; 3D printing credit, 1 print up to 6 grams (50 points)
         \n&#8226; More to come!\n</string>
     <string name="banquet_prize">At the end of the year, the member who earned the most total points will become IEEE member of the
         year and get automatically invited to our end-of-the-year banquet!</string>
@@ -101,4 +101,6 @@
     <string name="attributions">Attributions</string>
     <string name="points_how_to">How to Get Points</string>
     <string name="rewards">Rewards</string>
+    <string name="news_date">Jan 11</string>
+    <string name="sample_time">XX:XXAM at IEEE Lab</string>
 </resources>

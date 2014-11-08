@@ -1,13 +1,14 @@
 package com.ucla_ieee.app;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -23,7 +24,7 @@ import com.ucla_ieee.app.user.MembershipFragment;
 import com.ucla_ieee.app.user.SessionManager;
 import navigation.NavigationDrawerFragment;
 
-public class MainActivity extends FragmentActivity
+public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
     public static final String CAL_TAG = "calendar";
     public static final String PROFILE_TAG = "profile";
@@ -53,6 +54,8 @@ public class MainActivity extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -75,6 +78,7 @@ public class MainActivity extends FragmentActivity
 
         mNavigationDrawerFragment.selectItem(0);
         mNavigationDrawerFragment.switchFragments(0);
+
     }
 
     @Override
@@ -170,8 +174,8 @@ public class MainActivity extends FragmentActivity
     }
 
     public void restoreActionBar() {
-        ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        ActionBar actionBar = getSupportActionBar();
+//        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
     }
@@ -183,27 +187,28 @@ public class MainActivity extends FragmentActivity
             // if the drawer is not showing. Otherwise, let the drawer
             // decide what to show in the action bar.
             NavigationDrawerFragment.Navigation selected = NavigationDrawerFragment.Navigation.values()[mPosition];
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             switch (selected) {
                 case FRONT_PAGE:
-                    getMenuInflater().inflate(R.menu.main_settings, menu);
+                    toolbar.inflateMenu(R.menu.main_settings);
                     return false;
                 case ANNOUNCEMENTS:
-                    getMenuInflater().inflate(R.menu.refresh_settings, menu);
+                    toolbar.inflateMenu(R.menu.refresh_settings);
                     return false;
                 case MEMBERSHIP:
-                    getMenuInflater().inflate(R.menu.edit_member, menu);
+                    toolbar.inflateMenu(R.menu.edit_member);
                     return false;
                 case CALENDAR:
-                    getMenuInflater().inflate(R.menu.refresh_settings, menu);
+                    toolbar.inflateMenu(R.menu.refresh_settings);
                     return false;
                 case POINTS_REWARDS:
-                    getMenuInflater().inflate(R.menu.main_settings, menu);
+                    toolbar.inflateMenu(R.menu.main_settings);
                     return false;
                 case HELP:
-                    getMenuInflater().inflate(R.menu.main_settings, menu);
+                    toolbar.inflateMenu(R.menu.main_settings);
                     return false;
                 default:
-                    getMenuInflater().inflate(R.menu.main_settings, menu);
+                    toolbar.inflateMenu(R.menu.main_settings);
             }
             restoreActionBar();
             return true;

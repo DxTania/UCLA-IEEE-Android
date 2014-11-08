@@ -3,9 +3,9 @@ package com.ucla_ieee.app.signin;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.*;
@@ -13,7 +13,7 @@ import com.ucla_ieee.app.R;
 import com.ucla_ieee.app.content.YearSpinner;
 
 
-public class RegisterActivity extends Activity {
+public class RegisterActivity extends ActionBarActivity {
     private RegisterTask mAuthTask = null;
     private LinearLayout registerForm;
     private ProgressBar registerProgress;
@@ -22,6 +22,8 @@ public class RegisterActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         setTitle("Register");
 
