@@ -1,8 +1,8 @@
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 21
-    buildToolsVersion '21.0.2'
+    buildToolsVersion '21.1.1'
 
     defaultConfig {
         minSdkVersion 14
@@ -12,7 +12,7 @@ android {
     }
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
@@ -25,10 +25,10 @@ dependencies {
     //compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':caldroid')
     // You must install or update the Google Repository through the SDK manager to use this dependency.
-    compile 'com.android.support:support-v4:21.0.0'
-    compile 'com.android.support:appcompat-v7:21.0.0'
+    compile 'com.android.support:support-v4:21.0.2'
+    compile 'com.android.support:appcompat-v7:21.0.2'
     compile 'com.android.support:cardview-v7:21.0.0'
-    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'com.google.code.gson:gson:2.3'
     compile 'com.google.zxing:core:2.2@jar'
     // oh
     compile 'com.google.apis:google-api-services-calendar:v3-rev90-1.19.0'

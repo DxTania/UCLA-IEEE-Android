@@ -2,6 +2,7 @@ package com.ucla_ieee.app;
 
 import android.os.Handler;
 import android.os.Message;
+
 import com.ucla_ieee.app.calendar.CalendarFragment;
 import com.ucla_ieee.app.calendar.CalendarTask;
 import com.ucla_ieee.app.content.AnnouncementsFragment;
@@ -131,6 +132,10 @@ public class AsyncTaskManager {
             mAnnouncementsTask = new AnnouncementsTask(mActivity);
             mAnnouncementsTask.execute((Void) null);
         }
+    }
+
+    public void startRewardsAsyncCall() {
+        
     }
 
     public void startCheckInAsyncCall(String qrCode) {
