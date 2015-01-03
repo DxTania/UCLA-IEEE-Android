@@ -46,7 +46,8 @@
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
             android:lineSpacingExtra="4dp"
-            android:text="@string/what_rewards"/>
+            android:text="@string/what_rewards"
+            android:id="@+id/rewards_list"/>
 
         <TextView
             android:layout_height="wrap_content"

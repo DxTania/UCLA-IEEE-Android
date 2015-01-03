@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
 import com.ucla_ieee.app.calendar.CalendarFragment;
 import com.ucla_ieee.app.content.AnnouncementsFragment;
 import com.ucla_ieee.app.content.HelpAboutFragment;
@@ -22,6 +23,7 @@ import com.ucla_ieee.app.scan.IntentResult;
 import com.ucla_ieee.app.signin.LoginActivity;
 import com.ucla_ieee.app.user.MembershipFragment;
 import com.ucla_ieee.app.user.SessionManager;
+
 import navigation.NavigationDrawerFragment;
 
 public class MainActivity extends ActionBarActivity
@@ -69,6 +71,7 @@ public class MainActivity extends ActionBarActivity
         mTaskManager.startCalendarAsyncCall(null);
         mTaskManager.startAnnouncementsAsyncCall(null);
         mTaskManager.startAttendedEventsAsyncCall();
+        mTaskManager.startRewardsAsyncCall(null);
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(

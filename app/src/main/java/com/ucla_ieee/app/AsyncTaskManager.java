@@ -7,6 +7,8 @@ import com.ucla_ieee.app.calendar.CalendarFragment;
 import com.ucla_ieee.app.calendar.CalendarTask;
 import com.ucla_ieee.app.content.AnnouncementsFragment;
 import com.ucla_ieee.app.content.AnnouncementsTask;
+import com.ucla_ieee.app.content.PointsRewardsFragment;
+import com.ucla_ieee.app.content.RewardsTask;
 import com.ucla_ieee.app.scan.CheckInScanTask;
 import com.ucla_ieee.app.user.AttendedEventsTask;
 import com.ucla_ieee.app.user.UpdateTask;
@@ -21,8 +23,10 @@ public class AsyncTaskManager {
     private CheckInScanTask mCheckInScanTask;
     private UpdateTask mUpdateTask;
     private AttendedEventsTask mAttendedEventsTask;
+    private RewardsTask mRewardsTask;
     private CalendarFragment mCalendarFragment;
     private AnnouncementsFragment mAnnouncementsFragment;
+    private PointsRewardsFragment mRewardsFragment;
     private Handler mHandler;
     private MainActivity mActivity;
 
@@ -64,6 +68,11 @@ public class AsyncTaskManager {
         if (mCheckInScanTask != null) {
             mCheckInScanTask.cancel(true);
         }
+    }
+
+    public void finishRewardsTask() {
+        mRewardsTask = null;
+        mHandler.sendEmptyMessageDelayed(0, 0);
     }
 
     public void finishAnnouncementsTask() {
@@ -134,8 +143,14 @@ public class AsyncTaskManager {
         }
     }
 
-    public void startRewardsAsyncCall() {
-        
+    public void startRewardsAsyncCall(PointsRewardsFragment activity) {
+        if (mRewardsFragment == null) {
+            mRewardsFragment = activity;
+        }
+        if (mRewardsTask == null) {
+            mRewardsTask = new RewardsTask(mActivity);
+            mRewardsTask.execute((Void) null);
+        }
     }
 
     public void startCheckInAsyncCall(String qrCode) {
@@ -155,5 +170,9 @@ public class AsyncTaskManager {
 
     public AnnouncementsFragment getAnnouncementsActivity() {
         return mAnnouncementsFragment;
+    }
+
+    public PointsRewardsFragment getRewardsActivity() {
+        return mRewardsFragment;
     }
 }

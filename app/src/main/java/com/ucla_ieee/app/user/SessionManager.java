@@ -3,6 +3,7 @@ package com.ucla_ieee.app.user;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.ucla_ieee.app.util.JsonServerUtil;
@@ -74,6 +75,12 @@ public class SessionManager {
         mEditor.commit();
     }
 
+    public void storeRewards(String s) {
+        mEditor = mSharedPrefs.edit();
+        mEditor.putString(Keys.REWARDS.s(), s);
+        mEditor.commit();
+    }
+
     public void updateSession(JsonObject user) {
         mEditor = mSharedPrefs.edit();
         mEditor.putString(Keys.EMAIL.s(), user.get("email").getAsString());
@@ -117,7 +124,8 @@ public class SessionManager {
     public enum Keys {
         LOGGED_IN("IsLoggedIn"), EMAIL("email"), TOKEN("syncToken"), CALENDAR("json"), COOKIE("cookie"),
         NAME("name"), IEEE_ID("ieee_id"), ANNOUNCEMENTS("announcements"), POINTS("points"),
-        ATTENDED_EVENTS("attended_events"), NEWS("news"), MAJOR("major"), YEAR("year"), TOTAL_POINTS("total_points");
+        ATTENDED_EVENTS("attended_events"), NEWS("news"), MAJOR("major"), YEAR("year"), TOTAL_POINTS("total_points"),
+        REWARDS("rewards");
 
         private final String text;
 
