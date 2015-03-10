@@ -25,6 +25,7 @@ Here are some things that would be cool to get done
 * Make the app look prettier
   * I really have no idea
   * Don't ask me for help, but I can tell you if I think something looks bad or not
+  * I hate XML
 * Whatever you can think of!
   * Lab hours incorporation
   * Social networking and messaging
