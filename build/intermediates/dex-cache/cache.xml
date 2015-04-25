@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/rawrtan/AndroidStudioProjects/ucla-ieee-app/app/build/intermediates/exploded-aar/ucla-ieee-app/caldroid/unspecified/libs/date4j.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="18889a91ddc87a008bce37fb516047f8aa43331a">
+        <dex dex="/Users/rawrtan/AndroidStudioProjects/ucla-ieee-app/app/build/intermediates/pre-dexed/debug/date4j-e18fedab3df0b27f9b08da54d81878edf9476c72.jar" />
+    </item>
+    <item
+        jar="/Users/rawrtan/AndroidStudioProjects/ucla-ieee-app/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.1.1/libs/internal_impl-22.1.1.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="9e070ad32b2700b0343e8e0cccc437733d91ba3a">
+        <dex dex="/Users/rawrtan/AndroidStudioProjects/ucla-ieee-app/app/build/intermediates/pre-dexed/debug/internal_impl-22.1.1-8f0f63bf7e3adcfcbc7e447b0ad8c869a7cad4b9.jar" />
+    </item>
+    <item
+        jar="/Users/rawrtan/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/1.3.9/40719ea6961c0cb6afaeb6a921eaa1f6afd4cfdf/jsr305-1.3.9.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="40719ea6961c0cb6afaeb6a921eaa1f6afd4cfdf">
+        <dex dex="/Users/rawrtan/AndroidStudioProjects/ucla-ieee-app/app/build/intermediates/pre-dexed/debug/jsr305-1.3.9-3a7ce7396e2b19871c4f6695ad62dc714a9fc2df.jar" />
+    </item>
+    <item
+        jar="/Users/rawrtan/AndroidStudioProjects/ucla-ieee-app/app/build/intermediates/exploded-aar/ucla-ieee-app/caldroid/unspecified/classes.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="8de8953e68238e0a77ea877e51c43fb6b260f4f0">
+        <dex dex="/Users/rawrtan/AndroidStudioProjects/ucla-ieee-app/app/build/intermediates/pre-dexed/debug/classes-c3b1101d7041cf9e5c8c7ad3176f464b062ddbda.jar" />
+    </item>
+    <item
+        jar="/Users/rawrtan/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.1.3/f6c3aed1cdfa21b5c1737c915186ea93a95a58bd/jackson-core-2.1.3.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="f6c3aed1cdfa21b5c1737c915186ea93a95a58bd">
+        <dex dex="/Users/rawrtan/AndroidStudioProjects/ucla-ieee-app/app/build/intermediates/pre-dexed/debug/jackson-core-2.1.3-e6fa311ea8e6441b9d2b86da89e151e0013cebd8.jar" />
+    </item>
+    <item
+        jar="/Users/rawrtan/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/22.1.1/support-annotations-22.1.1.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="01d051a6bfb1218b1db2d3a5af0480ac2c25c42a">
+        <dex dex="/Users/rawrtan/AndroidStudioProjects/ucla-ieee-app/app/build/intermediates/pre-dexed/debug/support-annotations-22.1.1-75104e6167e9e95fa5d1557e11fbb57627e470ba.jar" />
+    </item>
+    <item
+        jar="/Users/rawrtan/.gradle/caches/modules-2/files-2.1/com.google.guava/guava-jdk5/13.0/381ae6c8add7c98e9bcddb1e0b898400cd6fc3f7/guava-jdk5-13.0.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="381ae6c8add7c98e9bcddb1e0b898400cd6fc3f7">
+        <dex dex="/Users/rawrtan/AndroidStudioProjects/ucla-ieee-app/app/build/intermediates/pre-dexed/debug/guava-jdk5-13.0-aa745094605514e1026ef84e4c29af6f8818bf55.jar" />
+    </item>
+    <item
+        jar="/Users/rawrtan/AndroidStudioProjects/ucla-ieee-app/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.1.1/classes.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="c95ba8152923e4872e86a82cfcba9a51c0214328">
+        <dex dex="/Users/rawrtan/AndroidStudioProjects/ucla-ieee-app/app/build/intermediates/pre-dexed/debug/classes-d829359eb17b2de7d4978225952a5f5e7c06f44c.jar" />
+    </item>
+    <item
+        jar="/Users/rawrtan/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client/1.19.0/cdca49ad0977c040f603478aa2e16b2775c8fec6/google-http-client-1.19.0.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="cdca49ad0977c040f603478aa2e16b2775c8fec6">
+        <dex dex="/Users/rawrtan/AndroidStudioProjects/ucla-ieee-app/app/build/intermediates/pre-dexed/debug/google-http-client-1.19.0-d4bf8a6e3cc655b6031db9cea51b306e3d49a815.jar" />
+    </item>
+    <item
+        jar="/Users/rawrtan/AndroidStudioProjects/ucla-ieee-app/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.2/classes.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="7ae2d38807a43b2f2185ff4089a92c790b579e54">
+        <dex dex="/Users/rawrtan/AndroidStudioProjects/ucla-ieee-app/app/build/intermediates/pre-dexed/debug/classes-63cffa25aacd420f7a5603977b58b962ac684658.jar" />
+    </item>
+    <item
+        jar="/Users/rawrtan/.gradle/caches/modules-2/files-2.1/com.google.api-client/google-api-client/1.19.0/6a21277d9bebe267b7ddee028b241eebc756c040/google-api-client-1.19.0.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="6a21277d9bebe267b7ddee028b241eebc756c040">
+        <dex dex="/Users/rawrtan/AndroidStudioProjects/ucla-ieee-app/app/build/intermediates/pre-dexed/debug/google-api-client-1.19.0-feb1b0467357a51318099cc26cf2a0d49c11d0a7.jar" />
+    </item>
+    <item
+        jar="/Users/rawrtan/AndroidStudioProjects/ucla-ieee-app/app/build/intermediates/exploded-aar/com.android.support/cardview-v7/21.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="7d2525cba8ed61fff102977caed964fc22061e34">
+        <dex dex="/Users/rawrtan/AndroidStudioProjects/ucla-ieee-app/app/build/intermediates/pre-dexed/debug/classes-fa204e1babb2682570860a12144cc9a47b6e9cd0.jar" />
+    </item>
+    <item
+        jar="/Users/rawrtan/.gradle/caches/modules-2/files-2.1/com.google.apis/google-api-services-calendar/v3-rev90-1.19.0/65df4480f62d92215536310608ea58a2ecd71197/google-api-services-calendar-v3-rev90-1.19.0.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="65df4480f62d92215536310608ea58a2ecd71197">
+        <dex dex="/Users/rawrtan/AndroidStudioProjects/ucla-ieee-app/app/build/intermediates/pre-dexed/debug/google-api-services-calendar-v3-rev90-1.19.0-aa4e2cc2b8731ae90d9abe0d67b119713ae7b370.jar" />
+    </item>
+    <item
+        jar="/Users/rawrtan/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.3/5fc52c41ef0239d1093a1eb7c3697036183677ce/gson-2.3.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="5fc52c41ef0239d1093a1eb7c3697036183677ce">
+        <dex dex="/Users/rawrtan/AndroidStudioProjects/ucla-ieee-app/app/build/intermediates/pre-dexed/debug/gson-2.3-e64836cd76d6b03d39929683b3802b05077dce63.jar" />
+    </item>
+    <item
+        jar="/Users/rawrtan/.gradle/caches/modules-2/files-2.1/com.google.zxing/core/2.2/cba0b93b0072105d808ef7a00a107a4eb97874e7/core-2.2.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="cba0b93b0072105d808ef7a00a107a4eb97874e7">
+        <dex dex="/Users/rawrtan/AndroidStudioProjects/ucla-ieee-app/app/build/intermediates/pre-dexed/debug/core-2.2-64d6f827e2b9a7ea1238c9ebea31f2285aeeae1d.jar" />
+    </item>
+    <item
+        jar="/Users/rawrtan/.gradle/caches/modules-2/files-2.1/com.google.oauth-client/google-oauth-client/1.19.0/d473a8962e14a707a3716637e4898bb2dd9643f2/google-oauth-client-1.19.0.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="d473a8962e14a707a3716637e4898bb2dd9643f2">
+        <dex dex="/Users/rawrtan/AndroidStudioProjects/ucla-ieee-app/app/build/intermediates/pre-dexed/debug/google-oauth-client-1.19.0-c128aebe7dbf73c5828528bcbae11420e99f0306.jar" />
+    </item>
+    <item
+        jar="/Users/rawrtan/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client-jackson2/1.19.0/81dbf9795d387d5e80e55346582d5f2fb81a42eb/google-http-client-jackson2-1.19.0.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="81dbf9795d387d5e80e55346582d5f2fb81a42eb">
+        <dex dex="/Users/rawrtan/AndroidStudioProjects/ucla-ieee-app/app/build/intermediates/pre-dexed/debug/google-http-client-jackson2-1.19.0-8ce6493e3ac9e3183c7a62f032e6d1b3891a314b.jar" />
+    </item>
+
+</items>
