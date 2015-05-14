@@ -51,9 +51,7 @@ public class AnnouncementsFragment extends Fragment {
             List<Announcement> announcementList = new ArrayList<Announcement>();
             for (int i = 0; i < announcements.size(); i++) {
                 JsonObject announcement = announcements.get(i).getAsJsonObject();
-                announcementList.add(new Announcement(announcement.get("unread").getAsBoolean(),
-                        announcement.get("content").getAsString(),
-                        announcement.get("datePosted").getAsString(), announcement.get("id").getAsInt()));
+                announcementList.add(new Announcement(announcement));
             }
             mListAdapter.clear();
             mListAdapter.addAll(announcementList);

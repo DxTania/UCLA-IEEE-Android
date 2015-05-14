@@ -1,5 +1,7 @@
 package com.ucla_ieee.app.content;
 
+import com.google.gson.JsonObject;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -13,15 +15,16 @@ public class Announcement {
     private int id;
     private boolean unread;
 
-    public Announcement(Boolean unread, String content, String date, int id) {
-        this.unread = unread;
-        this.content = content;
+    public Announcement(JsonObject jsonObject) {
+        this.unread = jsonObject.get("unread").getAsBoolean();
+        this.content = jsonObject.get("content").getAsString();
         try {
-            this.date = (new SimpleDateFormat("yyyy-MM-dd")).parse(date);
+            this.date = (new SimpleDateFormat("yyyy-MM-dd"))
+                    .parse(jsonObject.get("datePosted").getAsString());
         } catch (ParseException e) {
             this.date = new Date();
         }
-        this.id = id;
+        this.id = jsonObject.get("id").getAsInt();
     }
 
     public Date getDate() {
